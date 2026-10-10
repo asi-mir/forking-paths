@@ -224,6 +224,8 @@ export const ForkChoiceSchema = z.object({
   at: PlaceIdSchema, // the fork place
   atName: z.string(),
   taken: z.object({ to: PlaceIdSchema, name: z.string(), cue: CueSchema.nullable() }),
+  // How the way on was picked (from the path step); "nearest" means the photo did not pick it.
+  chosenBy: z.enum(["cue", "meaning", "nearest", "only-link"]).optional(),
   notTaken: z.array(
     z.object({
       to: PlaceIdSchema,

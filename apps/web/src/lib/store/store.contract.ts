@@ -129,6 +129,16 @@ export function storeContract(name: string, make: MakeStore, reset: () => Promis
         expect(await findReusableQuest(BASE.lat, BASE.lng, { lang: "en", minutes: 25 }, { store })).toBeNull();
         expect(await nearestSavedQuest(BASE.lat, BASE.lng, { lang: "tr", minutes: 15 }, { store })).toBeNull();
       });
+
+      it("does not reuse a quest with a gated place (it may be closed now)", async () => {
+        const gated = validQuest({ title: "gated", center: { lat: BASE.lat + 0.001, lng: BASE.lng } });
+        gated.places = gated.places.map((p, i) => (i === 1 ? { ...p, gated: true } : p));
+        await store.saveQuest(gated);
+        expect(await findReusableQuest(BASE.lat, BASE.lng, { lang: "en", minutes: 15 }, { store })).toBeNull();
+        expect(await nearestSavedQuest(BASE.lat, BASE.lng, { lang: "en", minutes: 15 }, { store })).toBeNull();
+        await store.saveQuest(validQuest({ title: "open", center: { lat: BASE.lat + 0.002, lng: BASE.lng } }));
+        expect((await findReusableQuest(BASE.lat, BASE.lng, { lang: "en", minutes: 15 }, { store }))?.quest.title).toBe("open");
+      });
     });
 
     describe("runs and attempts", () => {

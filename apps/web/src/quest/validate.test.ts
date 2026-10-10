@@ -34,6 +34,16 @@ describe("validateQuest: the valid fixtures pass", () => {
     expect(q.validation).toEqual({ firstTryOk: true, firstTryErrors: [], repaired: false });
   });
 
+  it("keeps an uncited fact whose number a clue states, so its source stays in the case file", () => {
+    const f = threeStop();
+    const first = f.facts.find((x) => x.placeId === "P2")!;
+    f.facts.push({ ...first, id: "F8", text: "The Test Library holds 4,000 handwritten books." });
+    place(f, "P2").clue = "Head up the lane toward the doorway of a library with 4,000 books.";
+    const r = run(f);
+    expect(r.ok ? [] : r.errors).toEqual([]);
+    if (r.ok) expect(r.quest.facts.map((x) => x.id)).toContain("F8");
+  });
+
   it("accepts the 4-stop quest with two forks", () => {
     const r = run(fourStop());
     expect(r.ok ? [] : r.errors).toEqual([]);
@@ -195,6 +205,13 @@ describe("safetyIssues", () => {
     "Photograph the simit seller on the corner.",
     "Step onto the street to see the arch.",
     "Walk into the middle of the road.",
+    "Cross Necatibey Avenue toward the pier.",
+    "Cross Kemeraltı Caddesi to the old hamam.",
+    "Cross the wide avenue to the fountain.",
+    "Cross the busy main road to the mosque.",
+    "Dash to the far side of the boulevard.",
+    "She crosses the street to the arch.",
+    "Walk across Kemeraltı Caddesi.",
   ])("blocks %j", (line) => {
     expect(safetyIssues(line)).not.toEqual([]);
   });
@@ -211,6 +228,7 @@ describe("safetyIssues", () => {
     "Two arches stand here; photograph one of them.",
     "This fountain has two faces. Find the one that looks onto the street.",
     "A window opens onto the road above the arch.",
+    "The café sits across from the street corner fountain.",
   ])("allows %j", (line) => {
     expect(safetyIssues(line)).toEqual([]);
   });

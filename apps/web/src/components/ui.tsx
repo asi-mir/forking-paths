@@ -58,8 +58,24 @@ export function TopBar({ left, right, tone = "paper" }: { left: ReactNode; right
   );
 }
 
-export function Label({ children, className = "" }: { children: ReactNode; className?: string }) {
+export function Label({ children, className = "", as = "p" }: { children: ReactNode; className?: string; as?: "p" | "h1" }) {
+  if (as === "h1") {
+    return (
+      <h1 className={`label outline-none ${className}`} tabIndex={-1} data-phase-heading="">
+        {children}
+      </h1>
+    );
+  }
   return <p className={`label ${className}`}>{children}</p>;
+}
+
+/** A screen's heading for screen readers only; it takes focus when the screen changes. */
+export function PhaseHeading({ children }: { children: ReactNode }) {
+  return (
+    <h1 className="sr-only outline-none" tabIndex={-1} data-phase-heading="">
+      {children}
+    </h1>
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -236,12 +252,12 @@ export function Narration({
         </span>
         {line.text}
       </blockquote>
-      <div className="mt-4 flex min-h-11 items-center gap-3 pl-6">
-        {line.clipId && narrator ? (
+      {line.clipId && narrator ? (
+        <div className="mt-4 flex min-h-11 items-center gap-3 pl-6">
           <button
             type="button"
             onClick={toggle}
-            aria-label={playing ? "Stop the narrator" : "Play the narrator"}
+            aria-label={playing ? "Stop the narrator" : "Listen to the narrator"}
             data-testid={testId ? `${testId}-play` : undefined}
             className={`flex h-11 items-center gap-2 rounded-full border-[1.5px] pl-3 pr-4 text-[14px] font-medium transition ${
               tone === "pocket" ? "border-pocket-ink/35 text-pocket-ink" : "border-ink/30 text-ink active:bg-ink/5"
@@ -251,10 +267,8 @@ export function Narration({
             <span>{playing ? "Stop" : "Listen"}</span>
             {playing ? <Bars /> : null}
           </button>
-        ) : (
-          <span className={`label ${tone === "pocket" ? "!text-pocket-muted" : ""}`}>Text only</span>
-        )}
-      </div>
+        </div>
+      ) : null}
     </figure>
   );
 }
@@ -280,19 +294,51 @@ export function SourceChip({ source }: { source: CitedFact["source"] }) {
   );
 }
 
+/** Facts grouped by the page they came from, in first-seen order. */
+export function groupFacts(facts: readonly CitedFact[]): CitedFact[][] {
+  const groups = new Map<string, CitedFact[]>();
+  for (const f of facts) groups.set(f.url, [...(groups.get(f.url) ?? []), f]);
+  return [...groups.values()];
+}
+
 /** A fact with where it came from: the source, the exact query and the link. */
 export function FactCard({ fact }: { fact: CitedFact }) {
+  return <FactGroup facts={[fact]} />;
+}
+
+/**
+ * The facts from one page: the source, each fact's text, the exact query and the link, with
+ * the query and the link shown once for the page.
+ */
+export function FactGroup({ facts }: { facts: CitedFact[] }) {
+  const fact = facts[0];
+  if (!fact) return null;
+  const queries = [...new Set(facts.map((f) => f.query))];
+  const many = facts.length > 1;
   return (
     <article className="rounded-[10px] border border-rule bg-card p-4 shadow-[0_1px_0_rgb(28_26_23/0.06)]" data-testid="fact">
       <div className="mb-2.5 flex items-center justify-between gap-3">
         <SourceChip source={fact.source} />
-        <span className="font-mono text-[11px] text-muted">{fact.id}</span>
+        <span className="font-mono text-[11px] text-muted">{facts.map((f) => f.id).join(" · ")}</span>
       </div>
-      <p className="text-[15.5px] leading-[1.55] text-ink">{fact.text}</p>
-      <p className="mt-3 break-words font-mono text-[12px] leading-[1.5] text-muted">
-        <span className="select-none">query </span>
-        <span className="text-ink">&ldquo;{fact.query}&rdquo;</span>
-      </p>
+      {many ? (
+        <ul className="space-y-2.5">
+          {facts.map((f) => (
+            <li key={f.id} className="flex gap-2.5 text-[15.5px] leading-[1.55] text-ink">
+              <span className="mt-[3px] shrink-0 font-mono text-[11px] text-muted">{f.id}</span>
+              <span>{f.text}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-[15.5px] leading-[1.55] text-ink">{fact.text}</p>
+      )}
+      {queries.map((q) => (
+        <p key={q} className="mt-3 break-words font-mono text-[12px] leading-[1.5] text-muted">
+          <span className="select-none">query </span>
+          <span className="text-ink">&ldquo;{q}&rdquo;</span>
+        </p>
+      ))}
       <a
         href={fact.url}
         target="_blank"
@@ -313,11 +359,31 @@ export function FactList({ facts, label = "Where this comes from" }: { facts: Ci
     <section className="mt-6">
       <Label className="mb-3">{label}</Label>
       <div className="flex flex-col gap-3">
-        {facts.map((f) => (
-          <FactCard key={f.id} fact={f} />
+        {groupFacts(facts).map((g) => (
+          <FactGroup key={g[0].url} facts={g} />
         ))}
       </div>
+      <FactLicence facts={facts} />
     </section>
+  );
+}
+
+/** The licence line for reused Wikipedia text, shown under any list that has some. */
+export function FactLicence({ facts, className = "mt-3" }: { facts: readonly CitedFact[]; className?: string }) {
+  if (!facts.some((f) => f.source === "wikipedia")) return null;
+  return (
+    <p className={`${className} text-[12.5px] leading-snug text-muted`} data-testid="fact-licence">
+      Text from Wikipedia,{" "}
+      <a
+        href="https://creativecommons.org/licenses/by-sa/4.0/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="font-medium text-link underline underline-offset-2"
+      >
+        CC BY-SA 4.0
+      </a>
+      . Facts may be shortened or translated.
+    </p>
   );
 }
 
@@ -330,11 +396,14 @@ export function Snapshot({
   caption,
   rotate = -1.5,
   className = "",
+  alt = "",
 }: {
   src: string;
   caption?: ReactNode;
   rotate?: number;
   className?: string;
+  /** Describes the photo; empty when the text next to it already says what it is. */
+  alt?: string;
 }) {
   return (
     <figure
@@ -343,7 +412,7 @@ export function Snapshot({
     >
       <span aria-hidden className="absolute -top-2.5 left-1/2 h-5 w-16 -translate-x-1/2 rotate-[2deg] bg-paper-deep/80 shadow-sm" />
       {/* eslint-disable-next-line @next/next/no-img-element -- a local blob URL from this phone */}
-      <img src={src} alt="" className="aspect-[4/3] w-full object-cover" />
+      <img src={src} alt={alt} className="aspect-[4/3] w-full object-cover" />
       {caption ? <figcaption className="mt-2 px-0.5 font-mono text-[11px] leading-snug text-muted">{caption}</figcaption> : null}
     </figure>
   );

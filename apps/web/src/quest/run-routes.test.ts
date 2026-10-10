@@ -7,7 +7,7 @@ import { FinishResponseSchema, PHOTO_MAX_BYTES, PhotoResultSchema, StartRunRespo
 import { reasonBridge } from "./bridge";
 import { DEMO_QUEST_ID, demoQuest } from "./demo";
 import { placeById } from "./routes";
-import { beginRun, finishWalk, loadQuest, photoStep, warmLocalReader } from "./run-service";
+import { beginRun, finishWalk, loadQuest, photoStep, warmLocalReader, withVoiceDeadline } from "./run-service";
 import type { Verdict } from "./schema";
 
 // The routes call the real photo check and fork rule; only Gemma is replaced (no network).
@@ -173,6 +173,35 @@ describe("POST /api/runs/[runId]/photo", () => {
     expect(await store.attemptsFor(runId)).toHaveLength(1);
   });
 
+  it("stops calling the reader once today's photo checks are used up", async () => {
+    vi.stubEnv("BUDGET_READER_PER_DAY", "1");
+    try {
+      nextVerdict = { plausible: false, confidence: 0.9, observed: "a laptop screen", cue: null };
+      const runId = await start();
+      const first = await photoRoute(photoRequest(runId, { placeId: "P1" }), ctx(runId));
+      expect(first.status).toBe(200);
+      expect(reads).toHaveLength(1);
+      const second = await photoRoute(photoRequest(runId, { placeId: "P1" }), ctx(runId));
+      expect(second.status).toBe(503);
+      expect(await second.json()).toMatchObject({ code: "reader-unavailable" });
+      expect(reads).toHaveLength(1);
+    } finally {
+      vi.unstubAllEnvs();
+    }
+  });
+
+  it("refuses a new walk once today's walks are used up", async () => {
+    vi.stubEnv("BUDGET_RUNS_PER_DAY", "1");
+    try {
+      await start();
+      const res = await startRoute(post({ questId: DEMO_QUEST_ID }));
+      expect(res.status).toBe(429);
+      expect(await res.json()).toMatchObject({ code: "over-cap" });
+    } finally {
+      vi.unstubAllEnvs();
+    }
+  });
+
   it("sends the same answer again for a stop already done (a lost response)", async () => {
     const runId = await start();
     const P1 = loc("P1");
@@ -261,5 +290,14 @@ describe("warmLocalReader", () => {
     expect(warmLocalReader(env, fake, Date.now() + 7_200_000)).toBe(true);
     expect(calls[0][0]).toBe("https://gemma.tunnel.test/api/generate");
     expect(new Headers(calls[0][1]?.headers).get("authorization")).toBe("Basic dGVzdDpub3QtcmVhbA==");
+  });
+});
+
+describe("withVoiceDeadline", () => {
+  it("gives the clip when the voice answers in time, and text only when it is late or fails", async () => {
+    expect(await withVoiceDeadline(async () => "clip-1", 50)("a line")).toBe("clip-1");
+    const slow = () => new Promise<string>((resolve) => setTimeout(() => resolve("clip-2"), 200));
+    expect(await withVoiceDeadline(slow, 20)("a line")).toBeNull();
+    expect(await withVoiceDeadline(async () => Promise.reject(new Error("429")), 50)("a line")).toBeNull();
   });
 });

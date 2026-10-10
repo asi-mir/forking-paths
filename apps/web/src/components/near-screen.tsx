@@ -8,11 +8,12 @@ import { DESK_CITIES, type DeskCity } from "@/play/cities";
 import { ApiFailure, fetchQuestLine, fetchQuestView } from "@/play/client";
 import { CUE_TAG, distanceText } from "@/play/labels";
 import { readPosition } from "@/play/photo";
+import { MAX_USABLE_ACCURACY_M } from "@/quest/check";
 import { StartLog, useDeskStart } from "./desk-demo-screen";
 import { ArrowRightIcon, DeskIcon, ForkMark, PinIcon, PlayIcon, StopIcon } from "./icons";
-import { ErrorNote, FactCard, Label, PrimaryButton, Screen } from "./ui";
+import { ErrorNote, FactGroup, FactLicence, groupFacts, Label, PrimaryButton, Screen } from "./ui";
 
-type Where = { s: "idle" } | { s: "asking" } | { s: "denied" } | { s: "unavailable" };
+type Where = { s: "idle" } | { s: "asking" } | { s: "denied" } | { s: "unavailable" } | { s: "coarse"; accuracy: number };
 type Made = { view: QuestView; made: CreateQuestResponse; place: string };
 
 /** /demo/near: "Generate a quest near me", or in a city from the list when location is not available. */
@@ -73,6 +74,10 @@ export function NearScreen() {
       setWhere({ s: r.reason === "denied" ? "denied" : "unavailable" });
       return;
     }
+    if (r.fix.accuracy > MAX_USABLE_ACCURACY_M) {
+      setWhere({ s: "coarse", accuracy: r.fix.accuracy });
+      return;
+    }
     setWhere({ s: "idle" });
     await generate(r.fix.lat, r.fix.lng, "near you");
   };
@@ -116,6 +121,11 @@ export function NearScreen() {
           <p className="mt-3 text-[14.5px] leading-snug" data-testid="near-denied">
             {where.s === "denied" ? "Location is blocked for this site." : "Your device could not find its position."} Pick a
             city instead.
+          </p>
+        ) : where.s === "coarse" ? (
+          <p className="mt-3 text-[14.5px] leading-snug" data-testid="near-coarse">
+            Your location is approximate (±{where.accuracy} m). Turn on Precise Location, or wait a moment and try again.
+            Or pick a city.
           </p>
         ) : null}
       </section>
@@ -193,43 +203,56 @@ function CityButton({ city, disabled, onPick }: { city: DeskCity; disabled: bool
 
 let player: HTMLAudioElement | null = null;
 
-function PlayLine({ questId, line, onPlaying }: { questId: string; line: QuestViewLine; onPlaying: (key: string | null) => void }) {
-  const [state, setState] = useState<{ s: "idle" | "loading" | "playing" } | { s: "text"; why: string }>({ s: "idle" });
-  const live = useRef(true);
-  // Set in the effect body too: React's development double mount runs the cleanup once first.
-  useEffect(() => {
-    live.current = true;
-    return () => {
-      live.current = false;
-    };
-  }, []);
+/** Stops the preview's line, wherever it was started. */
+function stopPlayer() {
+  if (player) {
+    player.onended = null;
+    player.pause();
+  }
+  player = null;
+}
+
+/** Shared by every line of the preview: which one plays, and whether voice is off for all. */
+type LineControl = {
+  playing: string | null;
+  setPlaying: (key: string | null) => void;
+  textOnly: string | null;
+  setTextOnly: (why: string) => void;
+};
+
+function PlayLine({ questId, line, ctl }: { questId: string; line: QuestViewLine; ctl: LineControl }) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  // Voice is off for this case: the reason shows once, under the briefing, and no line offers play.
+  if (ctl.textOnly !== null) return null;
+  const active = ctl.playing === line.key;
 
   const play = async () => {
-    if (state.s === "playing") {
-      player?.pause();
-      setState({ s: "idle" });
-      onPlaying(null);
+    if (active) {
+      stopPlayer();
+      ctl.setPlaying(null);
       return;
     }
-    setState({ s: "loading" });
+    setLoading(true);
+    setError(null);
     try {
       const res = await fetchQuestLine(questId, line.key);
-      if (!live.current) return;
       if (!res.line.clipId) {
-        setState({ s: "text", why: res.reason ?? "This line shows as text." });
+        ctl.setTextOnly(res.reason ?? "This line shows as text.");
         return;
       }
-      player?.pause();
-      player = new Audio(API.audio(res.line.clipId));
-      player.onended = () => {
-        if (live.current) setState({ s: "idle" });
-        onPlaying(null);
+      stopPlayer();
+      const el = new Audio(API.audio(res.line.clipId));
+      player = el;
+      el.onended = () => {
+        if (player === el) ctl.setPlaying(null);
       };
-      await player.play();
-      setState({ s: "playing" });
-      onPlaying(line.key);
+      await el.play();
+      ctl.setPlaying(line.key);
     } catch (err) {
-      if (live.current) setState({ s: "text", why: err instanceof ApiFailure ? err.message : "The line could not be played." });
+      setError(err instanceof ApiFailure ? err.message : "The line could not be played.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -238,25 +261,25 @@ function PlayLine({ questId, line, onPlaying }: { questId: string; line: QuestVi
       <button
         type="button"
         onClick={() => void play()}
-        disabled={state.s === "loading"}
+        disabled={loading}
         data-testid={`play-${line.key}`}
         className="flex h-11 items-center gap-1.5 rounded-full border-[1.5px] border-ink/30 pl-3 pr-4 text-[13.5px] font-medium active:bg-ink/5 disabled:opacity-60"
       >
-        {state.s === "playing" ? <StopIcon size={14} /> : <PlayIcon size={14} />}
-        {state.s === "loading" ? "Voicing…" : state.s === "playing" ? "Stop" : "Play this line"}
+        {active ? <StopIcon size={14} /> : <PlayIcon size={14} />}
+        {loading ? "Voicing…" : active ? "Stop" : "Play this line"}
       </button>
-      {state.s === "text" ? <span className="text-[12.5px] leading-snug text-muted" data-testid="line-text-only">{state.why}</span> : null}
+      {error ? <span className="text-[12.5px] leading-snug text-muted" data-testid="line-error">{error}</span> : null}
     </div>
   );
 }
 
-function Line({ questId, label, line, onPlaying }: { questId: string; label: string; line: QuestViewLine; onPlaying: (k: string | null) => void }) {
+function Line({ questId, label, line, ctl }: { questId: string; label: string; line: QuestViewLine; ctl: LineControl }) {
   return (
     <div className="mt-3">
       <p className="label mb-1">{label}</p>
       <p className="narration text-[17px] leading-[1.4]">{line.text}</p>
       {line.facts?.length ? <p className="mt-1 font-mono text-[11px] text-muted">cites {line.facts.join(", ")}</p> : null}
-      <PlayLine questId={questId} line={line} onPlaying={onPlaying} />
+      <PlayLine questId={questId} line={line} ctl={ctl} />
     </div>
   );
 }
@@ -275,20 +298,33 @@ function QuestPreview({
   startError: string | null;
 }) {
   const { view, made: res } = made;
-  const [, setPlaying] = useState<string | null>(null);
+  const [playing, setPlaying] = useState<string | null>(null);
+  const [textOnly, setTextOnly] = useState<string | null>(null);
+  const ctl: LineControl = { playing, setPlaying, textOnly, setTextOnly };
+  // Leaving the preview (another place, or the desk run) stops its line.
+  useEffect(() => () => stopPlayer(), []);
+  const back = () => {
+    stopPlayer();
+    onBack();
+  };
+  const playCase = () => {
+    stopPlayer();
+    setPlaying(null);
+    onPlay();
+  };
   const q = view.questId;
   const forks = view.places.filter((p) => p.fork).length;
   return (
     <Screen
       top={<DeskTop />}
       actions={
-        <PrimaryButton onClick={onPlay} disabled={startLog !== null} testId="preview-play" icon={<ArrowRightIcon size={20} />}>
+        <PrimaryButton onClick={playCase} disabled={startLog !== null} testId="preview-play" icon={<ArrowRightIcon size={20} />}>
           {startLog ? "Starting…" : "Play this case from your desk"}
         </PrimaryButton>
       }
     >
       <section className="pt-5" data-testid="quest-preview">
-        <button type="button" onClick={onBack} className="label -my-2 inline-flex min-h-11 items-center underline underline-offset-2">
+        <button type="button" onClick={back} className="label -my-2 inline-flex min-h-11 items-center underline underline-offset-2">
           ← Another place
         </button>
         <p className="label mt-3">
@@ -315,7 +351,12 @@ function QuestPreview({
             <p className="mt-1 font-mono text-[11px] text-muted">cites {view.mystery.facts.join(", ")}</p>
           </details>
         </div>
-        <Line questId={q} label="The briefing" line={view.briefing} onPlaying={setPlaying} />
+        <Line questId={q} label="The briefing" line={view.briefing} ctl={ctl} />
+        {textOnly ? (
+          <p className="mt-2 text-[13px] leading-snug text-muted" data-testid="line-text-only">
+            {textOnly}
+          </p>
+        ) : null}
       </section>
 
       {startError ? (
@@ -336,9 +377,9 @@ function QuestPreview({
               <span className="font-mono text-[13px] text-muted">{String(i + 1).padStart(2, "0")} </span>
               {p.name}
             </h2>
-            <Line questId={q} label="Clue" line={p.clue} onPlaying={setPlaying} />
-            <Line questId={q} label="At the place" line={p.look} onPlaying={setPlaying} />
-            <Line questId={q} label="The reveal" line={p.reveal} onPlaying={setPlaying} />
+            <Line questId={q} label="Clue" line={p.clue} ctl={ctl} />
+            <Line questId={q} label="At the place" line={p.look} ctl={ctl} />
+            <Line questId={q} label="The reveal" line={p.reveal} ctl={ctl} />
             {p.links.length > 0 ? (
               <div className="mt-4 border-t border-dashed border-rule pt-3">
                 <p className="label mb-1">{p.fork ? "The ways on (by the detail photographed)" : "The way on"}</p>
@@ -350,7 +391,7 @@ function QuestPreview({
                     </p>
                     <p className="narration mt-1 text-[16px] leading-[1.4]">{l.reason.text}</p>
                     {l.reason.facts?.length ? <p className="mt-1 font-mono text-[11px] text-muted">cites {l.reason.facts.join(", ")}</p> : null}
-                    <PlayLine questId={q} line={l.reason} onPlaying={setPlaying} />
+                    <PlayLine questId={q} line={l.reason} ctl={ctl} />
                   </div>
                 ))}
               </div>
@@ -360,16 +401,17 @@ function QuestPreview({
       </section>
 
       <section className="mt-6">
-        <Line questId={q} label="The finale" line={view.finale} onPlaying={setPlaying} />
+        <Line questId={q} label="The finale" line={view.finale} ctl={ctl} />
       </section>
 
       <section className="mt-8">
         <Label className="mb-3">Every fact in this case</Label>
         <div className="flex flex-col gap-3" data-testid="preview-facts">
-          {view.facts.map((f) => (
-            <FactCard key={f.id} fact={f} />
+          {groupFacts(view.facts).map((g) => (
+            <FactGroup key={g[0].url} facts={g} />
           ))}
         </div>
+        <FactLicence facts={view.facts} />
         {view.editedByHand.length > 0 ? (
           <p className="mt-4 text-[13px] leading-snug text-muted">
             Gemma wrote this case from the fetched facts; {view.editedByHand.length} lines were edited by hand.

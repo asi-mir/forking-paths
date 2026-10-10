@@ -49,6 +49,17 @@ describe("bridge line checks", () => {
     );
   });
 
+  it.each([
+    "Cross Necatibey Avenue toward the pier.",
+    "Cross Kemeraltı Caddesi to the old hamam.",
+    "Cross the wide avenue to the fountain.",
+    "Cross the busy main road to the mosque.",
+    "Dash to the far side of the boulevard.",
+  ])("rejects a line that sends the player across a road: %j", (line) => {
+    const text = `That gilded inscription points on. ${line}`;
+    expect(bridgeIssues({ ...good, text }, ctx).join()).toMatch(/across a road/);
+  });
+
   it("rejects a line that does not name the detail, or runs too long", () => {
     expect(bridgeIssues({ ...good, text: "A warden of the tower built a mosque. Head downhill toward the water." }, ctx).join()).toMatch(
       /does not name the detail/,

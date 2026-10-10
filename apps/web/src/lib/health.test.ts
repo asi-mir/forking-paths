@@ -16,7 +16,7 @@ describe("healthReport", () => {
     expect(body.database).toEqual({ kind: "memory", ok: true });
     expect(body.models.writer).toEqual({ ok: true, provider: "ollama", model: "ollama/gemma4:e4b" });
     expect(body.services).toEqual({ google: false, serpapi: false, voice: { configured: false, live: false }, sentry: false });
-    expect(body.caps).toEqual({ quests: 3, serpapi: 40, "tts-chars": 4000 });
+    expect(body.caps).toEqual({ quests: 3, serpapi: 40, reader: 300, runs: 1000, "tts-chars": 4000 });
     expect(body.commit).toBeNull();
   });
 

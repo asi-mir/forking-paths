@@ -16,6 +16,11 @@ import type { Place, Verdict } from "./schema";
 export const PRESENCE_RADIUS_M = 60;
 /** The phone's reported accuracy widens the radius by at most this much. */
 export const MAX_ACCURACY_SLACK_M = 50;
+/**
+ * A reading less accurate than this is not used as GPS (a coarse fix: Precise Location off, or
+ * a cell or Wi-Fi fallback, often 1-3 km wide). The photo decides instead, as with no GPS.
+ */
+export const MAX_USABLE_ACCURACY_M = 150;
 /** With GPS missing, the photo passes when the reader is at least this sure it was taken here. */
 export const PASS_CONFIDENCE = 0.7;
 
@@ -24,7 +29,11 @@ export type Position = LatLng & { accuracyM?: number };
 
 /** What GPS says about the player and the place. */
 export type Presence =
-  | { gps: false }
+  | {
+      gps: false;
+      /** Set when a reading came in but was too coarse to use (its accuracy, in metres). */
+      coarseAccuracyM?: number;
+    }
   | {
       gps: true;
       near: boolean;
@@ -53,7 +62,8 @@ export function hasFix(position: Partial<Position> | null | undefined): position
 
 /**
  * Presence: `near` = distance to the place ≤ 60 m + min(accuracy, 50 m). A missing or broken
- * reading gives `{ gps: false }`.
+ * reading gives `{ gps: false }`, and so does a coarse one (accuracy above 150 m), which also
+ * keeps its accuracy so the attempt still shows it.
  */
 export function presence(place: Pick<Place, "location">, position: Partial<Position> | null | undefined): Presence {
   if (!hasFix(position)) return { gps: false };
@@ -61,6 +71,7 @@ export function presence(place: Pick<Place, "location">, position: Partial<Posit
     typeof position.accuracyM === "number" && Number.isFinite(position.accuracyM) && position.accuracyM >= 0
       ? position.accuracyM
       : null;
+  if (accuracy !== null && accuracy > MAX_USABLE_ACCURACY_M) return { gps: false, coarseAccuracyM: accuracy };
   const radiusM = PRESENCE_RADIUS_M + Math.min(accuracy ?? 0, MAX_ACCURACY_SLACK_M);
   const d = distanceM(position, place.location);
   return {

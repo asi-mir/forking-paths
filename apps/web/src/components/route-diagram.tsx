@@ -7,7 +7,7 @@ import type { CaseFile } from "@/quest/api";
  */
 
 const W = 350;
-const H = 150;
+const H = 156;
 const MID = 68;
 const PAD = 26;
 const OFFSET = 46;
@@ -44,7 +44,7 @@ export function RouteDiagram({ caseFile }: { caseFile: CaseFile }) {
     });
   });
 
-  const height = alts.some((a) => a.ay > MID) ? H : MID + 46; // no branch below: no empty band
+  const height = alts.some((a) => a.ay > MID) ? H : MID + 50; // no branch below: no empty band
 
   return (
     <figure>
@@ -65,8 +65,8 @@ export function RouteDiagram({ caseFile }: { caseFile: CaseFile }) {
         <path d={`M ${x(0)} ${MID} L ${answerX} ${MID}`} stroke="var(--ink)" strokeWidth="2.6" strokeLinecap="round" />
         {alts.map((a) => (
           <g key={`n-${a.key}`}>
-            <circle cx={a.ax} cy={a.ay} r="11" fill="var(--card)" stroke="var(--muted)" strokeWidth="1.6" strokeDasharray="3 3" />
-            <text x={a.ax} y={a.ay + 4} textAnchor="middle" fontFamily="var(--font-plex-mono)" fontSize="12" fill="var(--muted)">
+            <circle cx={a.ax} cy={a.ay} r="12" fill="var(--card)" stroke="var(--muted)" strokeWidth="1.6" strokeDasharray="3 3" />
+            <text x={a.ax} y={a.ay + 4.5} textAnchor="middle" fontFamily="var(--font-plex-mono)" fontSize="13" fill="var(--muted)">
               {a.letter}
             </text>
           </g>
@@ -98,10 +98,10 @@ export function RouteDiagram({ caseFile }: { caseFile: CaseFile }) {
             </g>
           );
         })}
-        <text x={answerX} y={MID + 36} textAnchor="middle" fontFamily="var(--font-plex-mono)" fontSize="10" letterSpacing="1.5" fill="var(--stamp)">
+        <text x={answerX} y={MID + 40} textAnchor="middle" fontFamily="var(--font-plex-mono)" fontSize="12" letterSpacing="1" fill="var(--stamp)">
           ANSWER
         </text>
-        <text x={x(0)} y={MID + 36} textAnchor="middle" fontFamily="var(--font-plex-mono)" fontSize="10" letterSpacing="1.5" fill="var(--muted)">
+        <text x={x(0)} y={MID + 40} textAnchor="middle" fontFamily="var(--font-plex-mono)" fontSize="12" letterSpacing="1" fill="var(--muted)">
           START
         </text>
       </svg>

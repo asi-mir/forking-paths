@@ -12,4 +12,11 @@ describe("roadNotTakenLine", () => {
   it("falls back to another detail when the link has no cue", () => {
     expect(roadNotTakenLine(null, "Test Library")).toBe("Had you photographed another detail, you would have gone to Test Library.");
   });
+
+  it("does not claim the photo picked the way when the walk took the nearest one", () => {
+    const line = roadNotTakenLine("water", "Test Bathhouse", "nearest");
+    expect(line).not.toMatch(/Had you photographed/);
+    expect(line).toContain("Test Bathhouse");
+    expect(roadNotTakenLine("water", "Test Bathhouse", "cue")).toMatch(/^Had you photographed the water/);
+  });
 });

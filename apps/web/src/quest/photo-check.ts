@@ -64,6 +64,9 @@ export type CheckPhotoInput = {
  */
 export const NEAR_READER_BUDGET_MS = 10_000;
 
+/** The reader error when its daily or per-walk cap stopped the call. */
+export const READER_CAPPED = "today's photo checks are used up";
+
 /**
  * The near-GPS budget per reader provider. Local Gemma on a laptop gets longer: through a tunnel,
  * with the laptop busy, a loaded `gemma4:e4b` took 16.6 s for its first photo and about 3.3 s
@@ -77,6 +80,12 @@ export const NEAR_READER_BUDGET_BY_PROVIDER: Record<Provider, number> = {
 export type CheckPhotoOptions = ReadOptions & {
   /** Total reader budget when GPS says near (default: `NEAR_READER_BUDGET_BY_PROVIDER`). */
   nearBudgetMs?: number;
+  /**
+   * Asked just before the reader call: false skips it (today's photo checks are used up, or this
+   * walk has had its share). GPS still decides, a desk sample still uses its stored result.
+   * Default: always read.
+   */
+  allowRead?: () => Promise<boolean>;
   /** Test seam: the reader call (default `readPhoto`). */
   read?: (input: ReaderInput, options: ReadOptions) => Promise<ReadResult>;
 };
@@ -97,6 +106,8 @@ export type PhotoCheck = {
   readerCalled: boolean;
   /** Why the reader failed, when it did (the stop can still pass on GPS). */
   readerError: string | null;
+  /** True when the reader was not called because its cap was reached. */
+  readerCapped?: boolean;
   /** Reader latency (all requests of the call), for the attempt record. */
   latencyMs: number | null;
   /** `google/gemma-4-26b-a4b-it` style label of the reader that ran, for the attempt record. */
@@ -131,6 +142,23 @@ export async function checkPhoto(input: CheckPhotoInput, options: CheckPhotoOpti
       verdictSource: null,
       hint: hintFor(place, p),
       readerCalled: false,
+      latencyMs: null,
+      provider: null,
+    };
+  }
+
+  if (options.allowRead && !(await options.allowRead().catch(() => true))) {
+    const verdict = input.storedVerdict ?? null;
+    const decision = passRule(p, verdict);
+    return {
+      ...base,
+      decision,
+      verdict,
+      verdictSource: verdict ? "stored" : null,
+      retry: decision.passed ? null : retryMessage(decision.reason),
+      readerCalled: false,
+      readerCapped: true,
+      readerError: READER_CAPPED,
       latencyMs: null,
       provider: null,
     };

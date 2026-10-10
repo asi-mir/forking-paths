@@ -16,7 +16,9 @@ test("the start page before location is asked", async ({ page, context }) => {
   await offline(context);
   await page.goto("/");
   await expect(page.getByTestId("locate")).toBeVisible();
-  await expect(page.getByTestId("start")).toBeDisabled();
+  // The main button stays live (full colour): a tap asks for location first.
+  await expect(page.getByTestId("start")).toBeEnabled();
+  await expect(page.getByText("Turkish later")).toHaveCount(0);
   await expect(page.getByTestId("desk-demo")).toBeVisible();
   await shot(page, 1, "start");
 });
@@ -77,14 +79,18 @@ test("over the daily cap: the nearest saved case is offered, and lines show as t
   await shot(page, 52, "near-over-cap-text-only");
   expect(await questCount()).toBe(1);
 
-  // On the street, the same: the nearest saved case starts, text only.
+  // On the street, the same case is 1.5 km away: it is offered, and starts only on a yes.
   await page.goto("/");
   await expect(page.getByTestId("located")).toBeVisible();
   await page.getByTestId("start").click();
-  await expect(page.getByTestId("start-log")).toContainText("Today's limit for new cases is reached");
+  await expect(page.getByTestId("far-offer")).toContainText("Today's limit for new cases is reached");
+  await expect(page.getByTestId("far-offer")).toContainText("1.5 km");
+  await expect(page).not.toHaveURL(/\/play\//);
+  await page.getByTestId("far-offer-accept").click();
+  await expect(page.getByTestId("start-log")).toContainText("Opening the saved case");
   await page.waitForURL(/\/play\//, { timeout: 30_000 });
   await expect(page.getByTestId("mystery")).toBeVisible();
-  await expect(page.getByText("Text only").first()).toBeVisible();
+  await expect(page.getByTestId("voice-off")).toHaveText("Voice off · text only");
 });
 
 test("over the daily cap far from any saved case: no quest, the desk demo instead", async ({ page, context }) => {

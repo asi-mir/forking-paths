@@ -43,7 +43,7 @@ export function placeById(quest: Pick<Quest, "places">, id: string): Place | und
 }
 
 /** A walked path: place IDs, or path steps of a run record. */
-export type WalkedPath = ReadonlyArray<string> | ReadonlyArray<{ placeId: string }>;
+export type WalkedPath = ReadonlyArray<string> | ReadonlyArray<{ placeId: string; chosenBy?: ForkChoice["chosenBy"] }>;
 
 const pathIds = (path: WalkedPath): string[] =>
   path.map((step) => (typeof step === "string" ? step : step.placeId));
@@ -64,10 +64,13 @@ export function roadNotTaken(quest: Pick<Quest, "places">, path: WalkedPath): Fo
     if (!place || !isFork(place) || nextId === undefined) return;
     const taken = place.links.find((l) => l.to === nextId);
     if (!taken) return;
+    const step = path[i];
+    const chosenBy = typeof step === "string" ? undefined : step.chosenBy;
     choices.push({
       at: place.id,
       atName: place.name,
       taken: { to: taken.to, name: name(taken.to), cue: cueOf(taken.cue) },
+      ...(chosenBy ? { chosenBy } : {}),
       notTaken: place.links
         .filter((l) => l !== taken)
         .map((l) => ({

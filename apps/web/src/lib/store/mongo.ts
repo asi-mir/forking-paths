@@ -12,7 +12,7 @@ import {
   type RunDoc,
 } from "../db";
 import { fromPoint, toPoint } from "../geo";
-import { assertAmount, prepareQuest } from "./shared";
+import { assertAmount, newRunId, prepareQuest } from "./shared";
 import type {
   CounterTake,
   NearQuest,
@@ -111,7 +111,7 @@ export function createMongoStore(opts: { uri: string; dbName: string; now?: () =
 
     async startRun(input: StartRunInput) {
       const doc: RunDoc = {
-        _id: input.id ?? new ObjectId().toHexString(),
+        _id: input.id ?? newRunId(),
         questId: input.questId,
         path: [],
         startedAt: input.startedAt ?? now(),

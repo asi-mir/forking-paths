@@ -40,7 +40,7 @@ import type { Attempt, PathStep, Place, Quest, Run, RunVoice, Verdict } from "./
  * - The photo is used for the check and dropped: nothing here keeps or returns it.
  */
 
-export type RunErrorCode = "not-found" | "finished" | "wrong-place" | "bad-request" | "reader-unavailable" | "not-ready";
+export type RunErrorCode = "not-found" | "finished" | "wrong-place" | "bad-request" | "reader-unavailable" | "not-ready" | "over-cap";
 
 /** A request the run cannot take, with a sentence the phone can show and an HTTP status. */
 export class RunError extends Error {
@@ -140,6 +140,19 @@ export function missesAt(attempts: readonly Attempt[], placeId: string): number 
   return attempts.filter((a) => a.placeId === placeId && !a.passed && (a.distanceM !== null || a.verdict !== null)).length;
 }
 
+/** Attempts at a stop where GPS was missing and the reader gave no answer. */
+export function noVerdictsAt(attempts: readonly Attempt[], placeId: string): number {
+  return attempts.filter((a) => a.placeId === placeId && !a.passed && a.distanceM === null && a.verdict === null).length;
+}
+
+/**
+ * Reader calls one walk may make: every stop's misses, plus two spare per stop. Past it, the
+ * reader is not called (a script that loops photos cannot use up the model quota).
+ */
+export function readerCallsPerRun(quest: Pick<Quest, "places">): number {
+  return quest.places.length * (PHOTO_RETRIES + 2);
+}
+
 // ---------------------------------------------------------------------------
 // Case file
 
@@ -231,9 +244,12 @@ export async function submitPhoto(quest: Quest, state: RunState, input: PhotoInp
 
   const misses = missesAt(state.attempts, place.id);
   if (!check.decision.passed) {
-    // GPS missing and the reader gave no answer: not the player's miss. Save it, say try again.
-    if (check.decision.reason === "no-verdict") throw new ReaderDownError(attempt);
-    if (misses < PHOTO_RETRIES) {
+    // GPS missing and the reader gave no answer: not the player's miss. Save it, say try again;
+    // after PHOTO_RETRIES + 1 such answers at a stop, skip it so the player is never stuck.
+    if (check.decision.reason === "no-verdict" && noVerdictsAt(state.attempts, place.id) < PHOTO_RETRIES) {
+      throw new ReaderDownError(attempt, check.readerCapped === true);
+    }
+    if (check.decision.reason !== "no-verdict" && misses < PHOTO_RETRIES) {
       const retriesLeft = PHOTO_RETRIES - (misses + 1);
       if (check.hint) {
         const hint = { ...check.hint, line: questLine(run.voice, `${place.id}.hint`, place.hint.text) };
@@ -316,8 +332,17 @@ export async function submitPhoto(quest: Quest, state: RunState, input: PhotoInp
 /** GPS missing and the reader failed: no verdict to decide with. Carries the attempt to save. */
 export class ReaderDownError extends RunError {
   override name = "ReaderDownError";
-  constructor(readonly attempt: Attempt) {
-    super("The photo check is not answering right now. Try the photo again in a moment.", "reader-unavailable", 503);
+  constructor(
+    readonly attempt: Attempt,
+    capped = false,
+  ) {
+    super(
+      capped
+        ? "Today's photo checks are used up. Allow location and take the photo again: GPS can pass the stop on its own."
+        : "The photo check is not answering right now. Try the photo again in a moment.",
+      "reader-unavailable",
+      503,
+    );
   }
 }
 

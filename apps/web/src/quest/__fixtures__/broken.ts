@@ -303,9 +303,9 @@ export const BROKEN: BrokenCase[] = [
     expect: /P1 → P3 is \d+ m; every hop must be 250 m or less/,
   },
   {
-    rule: "distance: the start is more than 250 m from the centre",
+    rule: "distance: the start is more than 180 m from the centre",
     make: broken(threeStop, (f) => (f.opts.center = { lat: 41.0235, lng: 28.975 })),
-    expect: /The start P1 is \d+ m from the quest centre; it must be within 250 m/,
+    expect: /The start P1 is \d+ m from the quest centre; it must be within 180 m/,
   },
   {
     rule: "distance: the longest route does not fit the minutes",

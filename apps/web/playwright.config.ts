@@ -1,8 +1,8 @@
 import { defineConfig, devices } from "@playwright/test";
 import { E2E_PORT, E2E_SERVER_ENV } from "./e2e/env";
 
-// Browser checks: `pnpm build && pnpm e2e`. Playwright starts the production build on port 3200
-// with the settings in e2e/env.ts (no paid API call, deterministic results) and stops it after.
+// Browser checks: `NEXT_PUBLIC_SENTRY_DSN= pnpm build && pnpm e2e` (the empty DSN keeps the
+// browser bundle off Sentry). Playwright starts the production build on port 3200 with the settings in e2e/env.ts (no paid API call, deterministic results) and stops it after.
 // They use the system Chrome, headless, with a fresh temporary profile.
 //
 // With E2E_BASE_URL set, no server is started: the checks run against that server instead

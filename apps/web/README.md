@@ -171,8 +171,9 @@ pnpm exec tsx scripts/seed-demo-voice.ts --export   # voice the demo quest (refu
 pnpm exec tsx scripts/voice-sample.ts --out /tmp/narrator-sample   # 3 lines over the ambience (needs ffmpeg for the mix)
 ```
 
-`--export` copies the demo's clips and the sounds into `public/audio/` (with `manifest.json`),
-so the desk demo speaks on a fresh deployment with an empty database and no credits left.
+`--export` copies the demo's clips and the sounds into `public/audio/` (with `manifest.json`).
+Once those files are committed, the desk demo speaks on a fresh deployment with an empty
+database and no credits left; until then, it shows its lines as text.
 `--dry-run` runs any of them against a mock client and memory, writing only to `--out`.
 
 ## Play routes
@@ -207,7 +208,7 @@ Open `/?quest=demo-karakoy` to start a walk on a saved quest instead of finding 
 
 ## Browser checks
 
-`pnpm build && pnpm e2e` plays the app in headless Chrome on a phone viewport (390 × 844).
+`NEXT_PUBLIC_SENTRY_DSN= pnpm build && pnpm e2e` plays the app in headless Chrome on a phone viewport (390 × 844).
 Playwright starts the production build on port 3200 with the settings in
 `e2e/env.ts`: a fresh test database (`forking-paths-qa-e2e`, MongoDB must be running), no Google,
 SerpApi or ElevenLabs key, and a photo reader that never answers, so every result is the same on

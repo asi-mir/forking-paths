@@ -228,6 +228,31 @@ describe("submitPhoto: misses", () => {
     expect(err).toMatchObject({ status: 503, code: "reader-unavailable" });
     expect(missesAt([(err as ReaderDownError).attempt], "P1")).toBe(0);
   });
+
+  it("GPS missing and the reader down every time: the stop is skipped after PHOTO_RETRIES + 1 tries", async () => {
+    const d = deps(() => new Error("HTTP 429"));
+    const w = walk(d);
+    for (let i = 0; i < PHOTO_RETRIES; i++) {
+      const err = await submitPhoto(quest, w.state as RunState, { placeId: "P1", image }, d).catch((e) => e);
+      expect(err).toBeInstanceOf(ReaderDownError);
+      w.state.attempts.push((err as ReaderDownError).attempt);
+    }
+    const r = await w.photo({ placeId: "P1" });
+    expect(r).toMatchObject({ status: "skipped", verdict: null, next: { chosenBy: "nearest" } });
+  });
+
+  it("over the reader cap: no reader call, and a stored desk result still decides", async () => {
+    const d = deps(() => verdict({ cue: "water" }));
+    const capped: RunDeps = { ...d, check: (i, o) => d.check(i, { ...o, allowRead: async () => false }) };
+    const err = await submitPhoto(quest, walk(capped).state as RunState, { placeId: "P1", image }, capped).catch((e) => e);
+    expect(err).toBeInstanceOf(ReaderDownError);
+    expect((err as Error).message).toMatch(/used up/);
+    expect(d.reads).toHaveLength(0);
+    const w = walk(capped);
+    const r = await w.photo({ placeId: "P1", storedVerdict: verdict({ observed: OBSERVED.water, cue: "water" }) });
+    expect(r).toMatchObject({ status: "passed" });
+    expect(d.reads).toHaveLength(0);
+  });
 });
 
 describe("submitPhoto: guards", () => {

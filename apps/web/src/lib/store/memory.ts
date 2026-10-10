@@ -1,7 +1,7 @@
 import type { Attempt, PathStep, Quest, Run } from "@/quest/schema";
 import { CACHE_TTL_S } from "../db";
 import { distanceM } from "../geo";
-import { assertAmount, newId, prepareQuest } from "./shared";
+import { assertAmount, newId, newRunId, prepareQuest } from "./shared";
 import type {
   Clip,
   CounterTake,
@@ -73,7 +73,7 @@ export function createMemoryStore(opts: { now?: () => Date } = {}): Store {
 
     async startRun(input: StartRunInput) {
       const run: Run = {
-        id: input.id ?? newId(),
+        id: input.id ?? newRunId(),
         questId: input.questId,
         path: [],
         startedAt: (input.startedAt ?? now()).toISOString(),

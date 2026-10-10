@@ -12,7 +12,7 @@ picks where you walk next. Every route ends at the same answer.
   Search (via SerpApi) and Wikipedia; your case file links every one.
 - **Your photo picks the path.** At a fork, Gemma reads your detail and picks the next stop;
   the case file shows the road you did not take.
-- **A narrator, not a screen.** A designed character voice (ElevenLabs) guides the walk;
+- **A narrator, not a screen.** An ElevenLabs narrator voice guides the walk;
   nothing plays while you walk, so you hear the street.
 - **Your photos can stay on your machine.** The photo check runs on Gemma from Google AI
   Studio (the public demo) or on your own laptop with Ollama — one environment variable.
@@ -163,7 +163,8 @@ service's Environment tab.
 | `SENTRY_DSN`, `NEXT_PUBLIC_SENTRY_DSN` | optional | Tracing. Leave empty to turn Sentry off. |
 | `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, `SENTRY_PROJECT` | optional | Source map upload from the Render build (all three, or none). |
 | `GEMMA_PROVIDER` = `google`, `GEMMA_WRITER_MODEL` = `gemma-4-31b-it`, `GEMMA_READER_MODEL` = `gemma-4-26b-a4b-it` | set | Which Gemma runs each role. Only Gemma IDs are accepted. |
-| `BUDGET_QUESTS_PER_DAY` = `3`, `BUDGET_SERPAPI_PER_DAY` = `20`, `BUDGET_TTS_CHARS_PER_DAY` = `1000` | set | Daily caps (UTC days) on new quests, SerpApi searches and voiced characters. Tune them to your credits; over a cap the game reuses saved quests and shows lines as text. |
+| `BUDGET_QUESTS_PER_DAY` = `3`, `BUDGET_SERPAPI_PER_DAY` = `20`, `BUDGET_TTS_CHARS_PER_DAY` = `2500` | set | Daily caps (UTC days) on new quests, SerpApi searches and voiced characters. Tune them to your credits; over a cap the game reuses saved quests and shows lines as text. A new quest's lines are voiced all at once or not at all, so keep the character cap at one quest's worth or more (the demo quest's 18 lines are 1,909 characters). |
+| `BUDGET_READER_PER_DAY` = `300`, `BUDGET_RUNS_PER_DAY` = `1000` | set | Daily caps on Gemma photo checks and on walks started. Over the photo-check cap, GPS still passes a stop and a desk sample uses its stored result. |
 | `ELEVENLABS_LIVE` = `1`, `ELEVENLABS_MODEL_ID` = `eleven_v4` | set | Lets the app voice new lines, within the character cap. |
 | `MONGODB_DB` = `forking-paths`, `NEXT_PUBLIC_SENTRY_ENVIRONMENT` = `production`, `NEXT_PUBLIC_MOCK_API` = `0` | set | Database name, trace label, and the real API (not the fixture quest). |
 | `NODE_VERSION` = `22.22.3`, `COREPACK_ENABLE_DOWNLOAD_PROMPT` = `0` | set | Build toolchain: Node 22, and pnpm through corepack without a prompt. |
@@ -192,8 +193,18 @@ Start with [`AGENTS.md`](AGENTS.md): commands, hard rules and how to work.
 
 ## Credits
 
-Gemma 4 (Apache 2.0) by Google. Facts from Wikipedia (CC BY-SA). Built with Next.js, Mastra,
-ElevenLabs, SerpApi, MongoDB Atlas, Sentry and Render. Full credits will be listed here.
+- **Models:** Gemma 4 by Google (Apache 2.0), for writing the cases and reading the photos.
+- **Facts:** text from Wikipedia under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/);
+  facts may be shortened or translated (the demo case translates Turkish pages into English).
+  Each fact links to its page, and the app shows the licence under every fact list. Places and
+  facts can also come from Google Maps and Google Search through SerpApi.
+- **Voice and sound:** the narrator voice and the sound effects (the ambience and two short
+  stingers) are made with ElevenLabs.
+- **Code:** [Next.js](https://nextjs.org) (MIT), [Mastra](https://mastra.ai) (Apache 2.0), the
+  AI SDK (Apache 2.0), the MongoDB Node.js driver (Apache 2.0) and the Sentry SDK (MIT).
+- **Fonts:** Geist, Fraunces and IBM Plex Mono (SIL Open Font License), served by Google Fonts
+  through `next/font`.
+- **Services:** MongoDB Atlas, Sentry and Render host and watch the app.
 
 Desk demo sample photos (Wikimedia Commons, CC BY-SA 4.0, cropped and resized; file pages in
 [`apps/web/public/demo/credits.json`](apps/web/public/demo/credits.json)): Francesco Bini (the

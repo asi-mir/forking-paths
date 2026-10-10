@@ -34,7 +34,8 @@ export type ValidateOptions = {
   lang?: Lang;
   stopsPerRun?: StopsPerRun; // default: from minutes (see stopsForMinutes)
   maxPlaces?: number; // default 6
-  maxHopM?: number; // default 250: centre → start, and every stop → stop
+  maxHopM?: number; // default 250: every stop → stop
+  maxStartM?: number; // default 180: centre → start (the centre is rounded, up to ~70 m off the player)
   maxRadiusM?: number; // default 900: every place from the centre
   maxClueWords?: number; // default 30
   firstTryErrors?: string[]; // set when this is the repaired draft: recorded in quest.validation
@@ -42,7 +43,11 @@ export type ValidateOptions = {
 
 export type ValidateResult = { ok: true; quest: Quest } | { ok: false; errors: string[] };
 
-export const LIMITS = { maxPlaces: 6, maxHopM: 250, maxRadiusM: 900, maxClueWords: 30 };
+/**
+ * `maxStartM` is the hop from the player to the start, less the slack of the rounded centre
+ * (3 decimals: up to ~70 m at Istanbul's latitude), so the real first hop stays within 250 m.
+ */
+export const LIMITS = { maxPlaces: 6, maxHopM: 250, maxStartM: 180, maxRadiusM: 900, maxClueWords: 30 };
 
 /** 15 minutes → 3 stops (one fork); 25 minutes → 4 stops (two forks). */
 export function stopsForMinutes(minutes: number): StopsPerRun {
@@ -128,22 +133,34 @@ type BlockRule = { pattern: RegExp; why: string; fix: string };
  */
 const FACES = String.raw`(?<!\b(?:looks?|looking|looked|faces?|facing|faced|opens?|opening|opened|gives?|giving|gave)\s+)`;
 
+/** Road words, English and Turkish ("caddesi", "sokağı"); ends where the word ends. */
+const ROAD_WORDS = String.raw`(?:road|street|avenue|boulevard|highway|motorway|caddesi|cadde|sokak|sokağı|tram\s*(?:line|tracks?)|tracks?|junction|intersection)(?![\p{L}])`;
+
 /** The safety block list. English first; the Turkish entries are a starting set. */
 const SAFETY_RULES: BlockRule[] = [
   {
-    pattern:
-      /\bcross(?:ing)?\s+(?:over\s+)?(?:the\s+|a\s+)?(?:busy\s+|main\s+)?(?:road|street|avenue|boulevard|highway|motorway|tram\s*(?:line|tracks?)|tracks?|junction|intersection)\b/i,
+    // Up to three words between the verb and the road word: "cross Necatibey Avenue",
+    // "cross Kemeraltı Caddesi", "cross the busy main road".
+    pattern: new RegExp(
+      String.raw`\bcross(?:es|ed|ing)?\s+(?:over\s+)?(?:[\p{L}'’-]+\s+){0,3}${ROAD_WORDS}`,
+      "iu",
+    ),
     why: "sends the player across a road",
     fix: "keep the player on the pavement",
   },
   {
-    pattern:
-      /\b(?:across|over)\s+(?:the\s+|a\s+)?(?:busy\s+|main\s+)?(?:road|street|avenue|boulevard|tram\s*(?:line|tracks?)|tracks?)\b/i,
+    pattern: new RegExp(
+      String.raw`\b(?:across|over)\s+(?:(?!from\s)[\p{L}'’-]+\s+){0,3}${ROAD_WORDS}`,
+      "iu",
+    ),
     why: "sends the player across a road",
     fix: "keep the player on the pavement",
   },
   {
-    pattern: /\bcross(?:ing)?\s+(?:over|to\s+the\s+other\s+side)\b|\bother\s+side\s+of\s+the\s+(?:road|street|avenue|boulevard)\b/i,
+    pattern: new RegExp(
+      String.raw`\bcross(?:es|ed|ing)?\s+(?:over|to\s+the\s+(?:other|far|opposite)\s+side)\b|\b(?:other|far|opposite)\s+side\s+of\s+(?:the\s+)?(?:[\p{L}'’-]+\s+){0,2}${ROAD_WORDS}`,
+      "iu",
+    ),
     why: "sends the player across a road",
     fix: "keep the player on the pavement",
   },
@@ -475,7 +492,8 @@ export function validateQuest(
   const startLoc = loc(w.startPlaceId);
   if (startOk && startLoc) {
     const d = distanceM(opts.center, startLoc);
-    if (d > maxHopM) add(`The start ${w.startPlaceId} is ${Math.round(d)} m from the quest centre; it must be within ${maxHopM} m.`);
+    const maxStartM = opts.maxStartM ?? LIMITS.maxStartM;
+    if (d > maxStartM) add(`The start ${w.startPlaceId} is ${Math.round(d)} m from the quest centre; it must be within ${maxStartM} m.`);
   }
   for (const p of placeById.values()) {
     for (const l of p.links) {
@@ -574,6 +592,19 @@ function buildQuest(
     ...w.finale.factIds,
     ...w.places.flatMap((p) => [...p.reveal.factIds, ...p.links.flatMap((l) => l.factIds)]),
   ]);
+  // Lines that cite nothing (briefing, clue, look line, hint) may still state a number from a
+  // fact. Keep that fact in the quest too, so the case file shows where every number came from.
+  const keepFactFor = (text: string, pool: Fact[]) => {
+    for (const num of numberTokens(text.replace(/\b[FP]\d+\b/g, ""))) {
+      const backing = pool.filter((f) => numbersIn(f.text).includes(num.value));
+      if (backing.length && !backing.some((f) => cited.has(f.id))) cited.add(backing[0].id);
+    }
+  };
+  keepFactFor(w.briefing, facts);
+  for (const p of w.places) {
+    const own = facts.filter((f) => f.placeId === p.id);
+    for (const text of [p.clue, p.look, p.hint]) keepFactFor(text, own);
+  }
   const places: Place[] = w.places.map((p) => {
     const c = candidateById.get(p.id)!;
     const fork = p.links.length > 1;

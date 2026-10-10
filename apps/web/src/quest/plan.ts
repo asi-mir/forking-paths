@@ -29,6 +29,8 @@ export type RouteOption = {
 
 export type PlanOptions = {
   maxHopM?: number;
+  /** Centre → start (default `LIMITS.maxStartM`, the validator's limit). */
+  maxStartM?: number;
   /** Options to return (best first). Default 6. */
   limit?: number;
   /** Fact count per candidate ID (more facts make a better answer place). */
@@ -64,7 +66,8 @@ export function routeOptions(
   const longest = (routes: string[][]) =>
     Math.max(...routes.map((r) => routeLengthM(center, r.map((id) => loc.get(id)!))));
 
-  const starts = ids.filter((id) => distanceM(center, loc.get(id)!) <= maxHop);
+  const maxStart = opts.maxStartM ?? LIMITS.maxStartM;
+  const starts = ids.filter((id) => distanceM(center, loc.get(id)!) <= maxStart);
   const found: (RouteOption & { score: number })[] = [];
 
   for (const s of starts) {

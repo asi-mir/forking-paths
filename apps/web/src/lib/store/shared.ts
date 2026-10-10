@@ -1,3 +1,4 @@
+import { randomBytes } from "node:crypto";
 import { ObjectId } from "mongodb";
 import { QuestSchema, type Quest } from "@/quest/schema";
 import { roundCenter, type LatLng } from "../geo";
@@ -5,6 +6,14 @@ import { roundCenter, type LatLng } from "../geo";
 /** A new id: 24 hex characters, time-ordered (a MongoDB ObjectId as a string). */
 export function newId(): string {
   return new ObjectId().toHexString();
+}
+
+/**
+ * A new run id: 32 random hex characters. The run id is the only key to a walk's photo and
+ * finish routes, so it must not be guessable from another run's id (an ObjectId is).
+ */
+export function newRunId(): string {
+  return randomBytes(16).toString("hex");
 }
 
 /**

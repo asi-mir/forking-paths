@@ -6,10 +6,11 @@ import { getStore, type NearQuest, type Store } from "./store";
  *
  * Call `budgetTake` before the call it pays for. Over a cap it refuses, and the caller
  * makes no SerpApi or ElevenLabs request: "generate near me" offers the nearest saved
- * quest, and lines show as text.
+ * quest, and lines show as text. The photo check (Gemma) and new walks have caps too, so
+ * one client cannot use up the model quota or fill the database for everyone.
  */
 
-export const BUDGET_SERVICES = ["quests", "serpapi", "tts-chars"] as const;
+export const BUDGET_SERVICES = ["quests", "serpapi", "tts-chars", "reader", "runs"] as const;
 export type BudgetService = (typeof BUDGET_SERVICES)[number];
 
 /** Daily caps when the environment does not set them. */
@@ -17,12 +18,16 @@ export const BUDGET_DEFAULTS: Record<BudgetService, number> = {
   quests: 3, // new quests per day
   serpapi: 40, // SerpApi searches per day
   "tts-chars": 4000, // ElevenLabs characters per day
+  reader: 300, // Gemma photo checks per day
+  runs: 1000, // walks started per day (each writes a run record)
 };
 
 export const BUDGET_ENV: Record<BudgetService, string> = {
   quests: "BUDGET_QUESTS_PER_DAY",
   serpapi: "BUDGET_SERPAPI_PER_DAY",
   "tts-chars": "BUDGET_TTS_CHARS_PER_DAY",
+  reader: "BUDGET_READER_PER_DAY",
+  runs: "BUDGET_RUNS_PER_DAY",
 };
 
 /** Today's cap for a service: its environment variable (a whole number ≥ 0), else the default. */
@@ -77,6 +82,17 @@ export async function budgetStatus(service: BudgetService, opts: BudgetOpts = {}
 /** A saved quest this close to the player is reused instead of generating a new one. */
 export const REUSE_RADIUS_KM = 0.5;
 
+/**
+ * A saved quest with a gated place (a courtyard or garden that closes) is not reused: it was
+ * written while the place was open, and the quest does not keep the opening hours to check now.
+ */
+export function reusable(hit: NearQuest): boolean {
+  return !hit.quest.places.some((p) => p.gated === true);
+}
+
+/** How many near quests are looked at, so a gated one does not hide the next. */
+const REUSE_LOOK_AT = 5;
+
 /** The nearest ready quest within ~500 m with the same language and length, or null. */
 export async function findReusableQuest(
   lat: number,
@@ -85,8 +101,8 @@ export async function findReusableQuest(
   opts: { store?: Store } = {},
 ): Promise<NearQuest | null> {
   const store = opts.store ?? getStore();
-  const [hit] = await store.questsNear(lat, lng, REUSE_RADIUS_KM, { ...want, status: "ready", limit: 1 });
-  return hit ?? null;
+  const hits = await store.questsNear(lat, lng, REUSE_RADIUS_KM, { ...want, status: "ready", limit: REUSE_LOOK_AT });
+  return hits.find(reusable) ?? null;
 }
 
 /** How far a saved quest offered over today's cap may be: a short ride away, never another city. */
@@ -103,9 +119,8 @@ export async function nearestSavedQuest(
   opts: { store?: Store } = {},
 ): Promise<NearQuest | null> {
   const store = opts.store ?? getStore();
-  const filter = { lang: want.lang, status: "ready" as const, limit: 1 };
-  const [same] = await store.questsNear(lat, lng, OVER_CAP_RADIUS_KM, { ...filter, minutes: want.minutes });
+  const filter = { lang: want.lang, status: "ready" as const, limit: REUSE_LOOK_AT };
+  const same = (await store.questsNear(lat, lng, OVER_CAP_RADIUS_KM, { ...filter, minutes: want.minutes })).find(reusable);
   if (same) return same;
-  const [other] = await store.questsNear(lat, lng, OVER_CAP_RADIUS_KM, filter);
-  return other ?? null;
+  return (await store.questsNear(lat, lng, OVER_CAP_RADIUS_KM, filter)).find(reusable) ?? null;
 }

@@ -12,7 +12,7 @@ import { ExternalIcon } from "./icons";
 import { ReceiptView } from "./receipt-view";
 import { RouteDiagram, lettersFor } from "./route-diagram";
 import { useRunPhotos } from "./use-run-photos";
-import { FactCard, Label, Screen, Snapshot, Stamp } from "./ui";
+import { FactGroup, FactLicence, groupFacts, Label, Screen, Snapshot, Stamp } from "./ui";
 
 /** The case file: the answer, the route and the road not taken, photos, facts, receipt. */
 export function CaseFileScreen({ runId }: { runId: string }) {
@@ -131,7 +131,7 @@ export function CaseFileScreen({ runId }: { runId: string }) {
                       </span>
                       <div className="min-w-0">
                         <p className="label mb-1">At {fork.atName}</p>
-                        <p className="narration text-[18px] leading-snug">{roadNotTakenLine(alt.cue, alt.name)}</p>
+                        <p className="narration text-[18px] leading-snug">{roadNotTakenLine(alt.cue, alt.name, fork.chosenBy)}</p>
                         <p className="mt-2 text-[14px] leading-snug text-muted">{alt.reason}</p>
                         <FactLinks facts={alt.factIds.flatMap((id) => factById.get(id) ?? [])} />
                       </div>
@@ -143,7 +143,7 @@ export function CaseFileScreen({ runId }: { runId: string }) {
           </Section>
         ) : null}
 
-        <Section n={cf.notTaken.length > 0 ? "V" : "IV"} title="Your photos">
+        <Section n={cf.notTaken.length > 0 ? "V" : "IV"} title={run.desk ? "The photos you picked" : "Your photos"}>
           {photos.length > 0 && !deleted ? (
             <>
               <div className="grid grid-cols-2 gap-x-4 gap-y-5 pt-2" data-testid="photos">
@@ -161,6 +161,7 @@ export function CaseFileScreen({ runId }: { runId: string }) {
                   />
                 ))}
               </div>
+              {run.desk ? null : (
               <p className="mt-4 text-[13.5px] leading-snug text-muted">
                 These stay on this phone. The server checked each photo and kept none.{" "}
                 <button
@@ -175,6 +176,7 @@ export function CaseFileScreen({ runId }: { runId: string }) {
                   Delete them
                 </button>
               </p>
+              )}
             </>
           ) : (
             <p className="text-[14px] text-muted">{deleted ? "Deleted from this phone." : "No photos on this phone."}</p>
@@ -183,13 +185,14 @@ export function CaseFileScreen({ runId }: { runId: string }) {
 
         <Section n={cf.notTaken.length > 0 ? "VI" : "V"} title="Every fact in this case">
           <p className="-mt-1 mb-4 text-[14px] leading-snug text-muted">
-            Each fact the narrator told you, with where it came from, the exact query and the link.
+            Every fact this case was built from, with where it came from, the exact query and the link.
           </p>
           <div className="flex flex-col gap-3" data-testid="facts">
-            {cf.facts.map((f) => (
-              <FactCard key={f.id} fact={f} />
+            {groupFacts(cf.facts).map((g) => (
+              <FactGroup key={g[0].url} facts={g} />
             ))}
           </div>
+          <FactLicence facts={cf.facts} />
         </Section>
       </article>
 
@@ -208,6 +211,15 @@ export function CaseFileScreen({ runId }: { runId: string }) {
           desk={run.desk === true}
         />
       </section>
+      {run.desk ? (
+        <Link
+          href="/demo/near"
+          data-testid="near-from-case"
+          className="mt-6 flex min-h-11 items-center justify-center text-[15px] font-medium text-link underline underline-offset-2"
+        >
+          Generate a quest near me
+        </Link>
+      ) : null}
     </Screen>
   );
 }
@@ -224,19 +236,20 @@ function Section({ n, title, children }: { n: string; title: string; children: R
   );
 }
 
+/** One link per page: "F2, F3 · Bereketzade Çeşmesi". */
 function FactLinks({ facts }: { facts: CitedFact[] }) {
   if (facts.length === 0) return null;
   return (
     <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
-      {facts.map((f) => (
-        <li key={f.id}>
+      {groupFacts(facts).map((g) => (
+        <li key={g[0].url}>
           <a
-            href={f.url}
+            href={g[0].url}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block py-2 font-mono text-[12px] leading-snug text-link underline decoration-link/40 underline-offset-2"
           >
-            {f.id} · {f.sourceTitle}
+            {g.map((f) => f.id).join(", ")} · {g[0].sourceTitle}
             <ExternalIcon size={13} className="ml-1 inline-block align-[-2px]" />
           </a>
         </li>
@@ -248,18 +261,13 @@ function FactLinks({ facts }: { facts: CitedFact[] }) {
 /** Desk demo: play the case again and pick the other detail at the fork. */
 function DeskAgainLink() {
   return (
-    <>
-      <Link
-        href="/demo"
-        data-testid="desk-again"
-        className="flex min-h-14 w-full items-center justify-center rounded-[10px] bg-stamp px-5 text-[17px] font-semibold text-stamp-ink"
-      >
-        Play again and pick the other detail
-      </Link>
-      <Link href="/demo/near" className="flex min-h-11 items-center justify-center text-[15px] font-medium text-link underline underline-offset-2">
-        Generate a quest near me
-      </Link>
-    </>
+    <Link
+      href="/demo"
+      data-testid="desk-again"
+      className="flex min-h-14 w-full items-center justify-center rounded-[10px] bg-stamp px-5 text-[17px] font-semibold text-stamp-ink"
+    >
+      Play again and pick the other detail
+    </Link>
   );
 }
 

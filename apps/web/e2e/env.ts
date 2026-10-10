@@ -3,7 +3,7 @@
  * Playwright with these variables on top of `.env.local`. Next.js keeps a variable that is
  * already set, even when it is empty, so an empty value here switches a key off.
  *
- * - No paid or remote call: no Google, SerpApi or ElevenLabs key; Sentry off on the server.
+ * - No paid or remote call: no Google, SerpApi or ElevenLabs key; Sentry off (both DSNs empty).
  * - The photo reader is local Gemma at a closed port, so it fails at once: a stop passes on GPS
  *   alone, and a desk-demo sample photo uses its stored result (labelled on screen). Every
  *   result is the same on every run.
@@ -39,5 +39,8 @@ export const E2E_SERVER_ENV: Record<string, string> = {
   BUDGET_SERPAPI_PER_DAY: "0",
   BUDGET_TTS_CHARS_PER_DAY: "0",
   SENTRY_DSN: "",
+  // The browser bundle and the server fall back to this one: empty here, and at build time
+  // (build with NEXT_PUBLIC_SENTRY_DSN= set empty), so no e2e trace reaches Sentry.
+  NEXT_PUBLIC_SENTRY_DSN: "",
   SENTRY_ENVIRONMENT: "e2e",
 };

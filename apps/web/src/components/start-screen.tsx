@@ -9,7 +9,9 @@ import { preloadClips } from "@/play/audio";
 import { QUEST_DEADLINE_MS } from "@/quest/api";
 import { ApiFailure, mockRequested, savedQuestParam } from "@/play/client";
 import { distanceText } from "@/play/labels";
+import { isDark } from "@/play/daylight";
 import { type GpsFix, readPosition } from "@/play/photo";
+import { MAX_USABLE_ACCURACY_M } from "@/quest/check";
 import { newRun } from "@/play/run-state";
 import { lastRunId, readRun, useHydrated, writeRun } from "@/play/run-store";
 import { mockQuest } from "@/play/mock";
@@ -20,10 +22,17 @@ type Where =
   | { s: "idle" }
   | { s: "asking" }
   | { s: "ok"; fix: GpsFix }
+  | { s: "coarse"; accuracy: number }
   | { s: "denied" }
   | { s: "unavailable" };
 
 type Minutes = 15 | 25;
+
+/** A saved case further than this (the server's reuse radius) is offered, never started unasked. */
+const NEAR_ENOUGH_M = 500;
+
+/** A saved case found over today's limit, waiting for the player to say yes. */
+type Offer = { questId: string; distanceM: number };
 
 export function StartScreen() {
   const router = useRouter();
@@ -38,11 +47,25 @@ export function StartScreen() {
   const [minutes, setMinutes] = useState<Minutes>(15);
   const [log, setLog] = useState<string[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [offer, setOffer] = useState<Offer | null>(null);
 
-  const locate = async () => {
+  /**
+   * Reads the position. A coarse fix (Precise Location off, or a cell or Wi-Fi fallback) is
+   * refused: a case written around it would start in the wrong streets.
+   */
+  const locate = async (): Promise<GpsFix | null> => {
     setWhere({ s: "asking" });
     const r = await readPosition(15_000, 60_000);
-    setWhere(r.ok ? { s: "ok", fix: r.fix } : { s: r.reason === "denied" ? "denied" : "unavailable" });
+    if (!r.ok) {
+      setWhere({ s: r.reason === "denied" ? "denied" : "unavailable" });
+      return null;
+    }
+    if (r.fix.accuracy > MAX_USABLE_ACCURACY_M) {
+      setWhere({ s: "coarse", accuracy: r.fix.accuracy });
+      return null;
+    }
+    setWhere({ s: "ok", fix: r.fix });
+    return r.fix;
   };
 
   // If location was allowed before, read it straight away; if it was blocked, say so.
@@ -61,11 +84,19 @@ export function StartScreen() {
     };
   }, []);
 
-  const located = where.s === "ok";
-  const canStart = (located || mock) && log === null;
+  const dark = where.s === "ok" && !mock && isDark(where.fix.lat, where.fix.lng);
+  // The main button stays live: with no fix yet, the tap asks for location first.
+  const canStart = (mock || (where.s !== "denied" && where.s !== "asking")) && log === null;
 
   const start = async () => {
     setError(null);
+    setOffer(null);
+    let fix: GpsFix | null = where.s === "ok" ? where.fix : null;
+    if (!fix && !mock) {
+      fix = await locate();
+      if (!fix) return;
+    }
+    const center = fix ?? mockQuest(minutes).center;
     const lines: string[] = [];
     const say = (line: string, replaceLast = false) => {
       if (replaceLast) lines.pop();
@@ -74,7 +105,6 @@ export function StartScreen() {
     };
     try {
       const api = getApi(mock);
-      const center = where.s === "ok" ? where.fix : mockQuest(minutes).center;
       let quest: { questId: string };
       if (savedQuestId) {
         quest = { questId: savedQuestId };
@@ -86,6 +116,12 @@ export function StartScreen() {
         const made = await api
           .createQuest({ lat: center.lat, lng: center.lng, minutes, lang: "en" })
           .finally(() => window.clearTimeout(slow));
+        if (made.overCap && made.distanceM !== undefined && made.distanceM > NEAR_ENOUGH_M) {
+          // Too far to walk to unasked: show the offer and wait for a yes.
+          setLog(null);
+          setOffer({ questId: made.questId, distanceM: made.distanceM });
+          return;
+        }
         say(
           made.overCap
             ? `Today's limit for new cases is reached: here is the nearest saved case${
@@ -98,15 +134,41 @@ export function StartScreen() {
         );
         quest = made;
       }
-      say("Getting the narrator ready…");
-      const run = await api.startRun({ questId: quest.questId });
-      say(run.voice ? "The narrator is ready." : "Voice is off today: every line shows as text.", true);
-      if (run.preload.length > 0) {
-        say(`Loading audio 0/${run.preload.length}`);
-        await preloadClips(run.preload, (done, total) => say(`Loading audio ${done}/${total}`, true));
-      }
-      writeRun(newRun(run, api.mock, Date.now()));
-      router.push(`/play/${encodeURIComponent(run.runId)}`);
+      await begin(quest.questId, say);
+    } catch (err) {
+      setLog(null);
+      setError(err instanceof ApiFailure ? err.message : "Something went wrong. Try again.");
+    }
+  };
+
+  /** Starts the run of a quest and opens the walk. */
+  const begin = async (questId: string, say: (line: string, replaceLast?: boolean) => void) => {
+    const api = getApi(mock);
+    say("Getting the narrator ready…");
+    const run = await api.startRun({ questId });
+    say(run.voice ? "The narrator is ready." : "Voice is off today: every line shows as text.", true);
+    if (run.preload.length > 0) {
+      say(`Loading audio 0/${run.preload.length}`);
+      await preloadClips(run.preload, (done, total) => say(`Loading audio ${done}/${total}`, true));
+    }
+    writeRun(newRun(run, api.mock, Date.now()));
+    router.push(`/play/${encodeURIComponent(run.runId)}`);
+  };
+
+  /** The player said yes to the far saved case. */
+  const acceptOffer = async () => {
+    if (!offer) return;
+    const lines: string[] = [];
+    const say = (line: string, replaceLast = false) => {
+      if (replaceLast) lines.pop();
+      lines.push(line);
+      setLog([...lines]);
+    };
+    setError(null);
+    try {
+      say(`Opening the saved case, ${distanceText(offer.distanceM)} away.`);
+      setOffer(null);
+      await begin(offer.questId, say);
     } catch (err) {
       setLog(null);
       setError(err instanceof ApiFailure ? err.message : "Something went wrong. Try again.");
@@ -126,10 +188,19 @@ export function StartScreen() {
       }
       actions={
         <>
-          <PrimaryButton onClick={start} disabled={!canStart} testId="start" icon={<ArrowRightIcon size={20} />}>
-            {log ? "Starting…" : "Start the walk"}
-          </PrimaryButton>
-          <p className="text-center text-[13px] text-muted">Stay on the pavement, daylight only.</p>
+          {dark ? (
+            <p className="rounded-[10px] border-[1.5px] border-stamp bg-card px-3 py-2 text-[14px] leading-snug text-ink" data-testid="dark-note">
+              It is dark now. Walk in daylight, or try it from your desk.
+            </p>
+          ) : null}
+          {offer ? null : (
+            <PrimaryButton onClick={start} disabled={!canStart} testId="start" icon={<ArrowRightIcon size={20} />}>
+              {log ? "Starting…" : where.s === "asking" ? "Finding you…" : "Start the walk"}
+            </PrimaryButton>
+          )}
+          <p className="text-center text-[13px] text-muted">
+            {where.s === "denied" ? "Location is blocked: try it from your desk instead." : "Stay on the pavement, daylight only."}
+          </p>
         </>
       }
     >
@@ -164,6 +235,14 @@ export function StartScreen() {
               <CheckIcon size={18} />
               Located, to about {where.fix.accuracy} m
             </p>
+          ) : where.s === "coarse" ? (
+            <p className="text-[15px] leading-snug" data-testid="location-coarse">
+              Your location is approximate (±{where.accuracy} m). Turn on Precise Location, or wait a moment and try
+              again.{" "}
+              <button type="button" className="font-medium text-link underline underline-offset-2" onClick={() => void locate()}>
+                Try again
+              </button>
+            </p>
           ) : where.s === "denied" || where.s === "unavailable" ? (
             <>
             <p className="text-[15px] leading-snug" data-testid="location-denied">
@@ -171,7 +250,7 @@ export function StartScreen() {
                 ? "Location is blocked for this site, so the walk cannot find your streets."
                 : "Your phone could not find its position."}{" "}
               {where.s === "unavailable" ? (
-                <button type="button" className="font-medium text-link underline underline-offset-2" onClick={locate}>
+                <button type="button" className="font-medium text-link underline underline-offset-2" onClick={() => void locate()}>
                   Try again
                 </button>
               ) : null}
@@ -189,7 +268,7 @@ export function StartScreen() {
           ) : (
             <button
               type="button"
-              onClick={locate}
+              onClick={() => void locate()}
               disabled={where.s === "asking"}
               data-testid="locate"
               className="flex min-h-14 w-full items-center justify-center gap-2 rounded-[10px] border-[1.5px] border-ink/30 text-[16px] font-medium active:bg-ink/5 disabled:opacity-60"
@@ -222,12 +301,29 @@ export function StartScreen() {
           </div>
         </Row>
         <Row n="03" title="Language" last>
-          <div className="flex min-h-9 items-center justify-between text-[15px]">
+          <div className="flex min-h-9 items-center text-[15px]">
             <span className="font-medium">English</span>
-            <span className="font-mono text-[11px] text-muted">Turkish later</span>
           </div>
         </Row>
       </section>
+
+      {offer ? (
+        <section className="mt-5 rounded-[12px] border-[1.5px] border-ink/25 bg-card px-4 py-4" data-testid="far-offer">
+          <p className="text-[15px] leading-snug">
+            Today&apos;s limit for new cases is reached. The nearest saved case starts {distanceText(offer.distanceM)} from
+            here, so the first clue assumes you walk there first.
+          </p>
+          <button
+            type="button"
+            onClick={() => void acceptOffer()}
+            data-testid="far-offer-accept"
+            className="mt-3 flex min-h-12 w-full items-center justify-center gap-2 rounded-[10px] bg-ink text-[16px] font-medium text-paper"
+          >
+            Play the case {distanceText(offer.distanceM)} away
+          </button>
+          <DeskDemoLink strong />
+        </section>
+      ) : null}
 
       {error ? (
         <div className="mt-5">

@@ -33,7 +33,11 @@ export const CUE_TAG: Record<Cue, string> = {
 };
 
 /** "Had you photographed the water, you would have gone to Test Bathhouse." */
-export function roadNotTakenLine(cue: Cue | null, placeName: string): string {
+export function roadNotTakenLine(cue: Cue | null, placeName: string, chosenBy?: "cue" | "meaning" | "nearest" | "only-link"): string {
+  // The photo did not pick this fork (no reading, or the stop was skipped): say so, not "had you…".
+  if (chosenBy === "nearest") {
+    return `Gemma could not read this photo, so the walk took the nearest way; the other way led to ${placeName}.`;
+  }
   const what = cue ? CUE_PHRASE[cue] : "another detail";
   return `Had you photographed ${what}, you would have gone to ${placeName}.`;
 }

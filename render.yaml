@@ -75,7 +75,13 @@ services:
         value: "3"
       - key: BUDGET_SERPAPI_PER_DAY
         value: "20"
+      # A new quest is voiced all at once (about 1,900 characters), so this cap is at least one
+      # quest's worth: below it, every new quest shows as text only.
       - key: BUDGET_TTS_CHARS_PER_DAY
+        value: "2500"
+      - key: BUDGET_READER_PER_DAY
+        value: "300"
+      - key: BUDGET_RUNS_PER_DAY
         value: "1000"
 
       # --- Sentry (optional: leave the DSNs empty to turn it off) -----------------------

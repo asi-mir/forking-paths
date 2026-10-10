@@ -40,6 +40,7 @@ import {
   Label,
   Narration,
   NarratorContext,
+  PhaseHeading,
   PrimaryButton,
   Screen,
   SecondaryButton,
@@ -47,6 +48,9 @@ import {
   Stamp,
   TopBar,
 } from "./ui";
+
+/** The pocket screen's colour (--pocket in globals.css), for the browser's bars. */
+const POCKET_THEME = "#0f0e0c";
 
 const caseNo = (runId: string) => `Case ${runId.slice(-4).toUpperCase()}`;
 
@@ -58,14 +62,18 @@ export function PlayScreen({ runId }: { runId: string }) {
   useEffect(() => {
     if (!readRun(runId)) return;
     updateRun(runId, (s) => restore(s, Date.now(), document.visibilityState === "visible"));
-    const onVis = () => updateRun(runId, (s) => visibility(s, document.visibilityState === "visible", Date.now()));
+    const onVis = (e: Event) => {
+      // Locked with the side button, or switched away: nothing plays while the player walks.
+      if (e.type === "pagehide" || document.visibilityState === "hidden") narrator?.stopAll("hidden");
+      updateRun(runId, (s) => visibility(s, document.visibilityState === "visible", Date.now()));
+    };
     document.addEventListener("visibilitychange", onVis);
     window.addEventListener("pagehide", onVis);
     return () => {
       document.removeEventListener("visibilitychange", onVis);
       window.removeEventListener("pagehide", onVis);
     };
-  }, [runId]);
+  }, [runId, narrator]);
 
   const ambienceId = run?.start.ambienceClipId;
   const mock = run?.mock;
@@ -127,8 +135,42 @@ function Walk({ run, narrator }: { run: RunState; narrator: Narrator | null }) {
   const [finishing, setFinishing] = useState(false);
   const { photos, refresh } = useRunPhotos(run.runId);
 
+  // A new screen: move focus to its heading, so a screen reader hears what changed.
+  useEffect(() => {
+    document.querySelector<HTMLElement>("[data-phase-heading]")?.focus({ preventScroll: true });
+  }, [run.phase, run.stop.placeId]);
+
+  // Pocket mode is dark: the browser's bars follow it, and go back to paper after.
+  const pocketPhase = run.phase === "pocket";
+  useEffect(() => {
+    if (!pocketPhase) return;
+    const metas = [...document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')];
+    const before = metas.map((m) => m.content);
+    metas.forEach((m) => (m.content = POCKET_THEME));
+    let added: HTMLMetaElement | null = null;
+    if (metas.length === 0) {
+      added = document.createElement("meta");
+      added.name = "theme-color";
+      added.content = POCKET_THEME;
+      document.head.appendChild(added);
+    }
+    return () => {
+      metas.forEach((m, i) => (m.content = before[i]));
+      added?.remove();
+    };
+  }, [pocketPhase]);
+
   const set = (fn: (s: RunState) => RunState) => updateRun(run.runId, fn);
   const tap = () => narrator?.unlock();
+  /**
+   * The tap that opens the next screen starts its main line (iOS lets a tap start playback);
+   * `play` stops the line before, and the ambience carries on under a clue. With no clip for the
+   * next line, everything stops.
+   */
+  const advance = (stopTag: string, line: { clipId?: string } | null | undefined, opts: { withAmbience?: boolean; tag: string }) => {
+    if (line?.clipId && narrator) void narrator.play(line.clipId, opts);
+    else narrator?.stopAll(stopTag);
+  };
   const stop = run.stop;
   const desk = run.desk === true;
   const samples = desk ? deskSamplesFor(run.start.questId, stop.placeId) : [];
@@ -253,8 +295,8 @@ function Walk({ run, narrator }: { run: RunState; narrator: Narrator | null }) {
               icon={<ArrowRightIcon size={20} />}
               onClick={() => {
                 tap();
-                narrator?.stopAll("to-clue");
                 set(toClue);
+                advance("to-clue", stop.clue, { withAmbience: true, tag: "clue" });
               }}
             >
               To the first clue
@@ -263,7 +305,13 @@ function Walk({ run, narrator }: { run: RunState; narrator: Narrator | null }) {
         >
           <div className="pt-6">
             <Label>The case</Label>
-            <h1 className="narration mt-2 text-[36px] font-[560] leading-[1.08] tracking-[-0.01em]">{run.start.title}</h1>
+            <h1
+              className="narration mt-2 text-[36px] font-[560] leading-[1.08] tracking-[-0.01em] outline-none"
+              tabIndex={-1}
+              data-phase-heading=""
+            >
+              {run.start.title}
+            </h1>
             <div className="mt-5 border-l-[3px] border-ink pl-4">
               <Label className="mb-1">The question</Label>
               <p className="narration text-[21px] italic leading-[1.35]" data-testid="mystery">
@@ -273,6 +321,11 @@ function Walk({ run, narrator }: { run: RunState; narrator: Narrator | null }) {
           </div>
           <div className="mt-8">
             <Narration line={run.start.briefing} label="The narrator" withAmbience tag="briefing" testId="briefing" />
+            {run.start.voice ? null : (
+              <p className="label mt-3 pl-6" data-testid="voice-off">
+                Voice off · text only
+              </p>
+            )}
           </div>
           <SafetyNote />
         </Screen>
@@ -294,6 +347,9 @@ function Walk({ run, narrator }: { run: RunState; narrator: Narrator | null }) {
             )
           }
         >
+          <PhaseHeading>
+            Clue {stop.stop} of {stop.of}
+          </PhaseHeading>
           <Progress at={stop.stop} of={stop.of} />
           {desk ? <RouteSoFar run={run} /> : null}
           <div className="mt-8">
@@ -339,17 +395,22 @@ function Walk({ run, narrator }: { run: RunState; narrator: Narrator | null }) {
                 onClick={() => {
                   tap();
                   set((s) => toClue(replayed(s, Date.now())));
+                  advance("replay", stop.clue, { withAmbience: true, tag: "clue" });
                 }}
               >
-                Hear the clue again
+                {stop.clue.clipId ? "Hear the clue again" : "Read the clue again"}
               </SecondaryButton>
             </>
           }
         >
           <div className="my-auto py-10" data-testid="pocket">
-            <p className="narration text-[64px] font-[520] leading-[0.98] tracking-[-0.02em] text-pocket-ink">
+            <h1
+              className="narration text-[64px] font-[520] leading-[0.98] tracking-[-0.02em] text-pocket-ink outline-none"
+              tabIndex={-1}
+              data-phase-heading=""
+            >
               Lock your phone. Go.
-            </p>
+            </h1>
             <p className="mt-6 max-w-[300px] text-[17px] leading-relaxed text-pocket-muted">
               Nothing plays while you walk. Listen to the street.
             </p>
@@ -373,6 +434,7 @@ function Walk({ run, narrator }: { run: RunState; narrator: Narrator | null }) {
             )
           }
         >
+          <PhaseHeading>At the place: stop {stop.stop} of {stop.of}</PhaseHeading>
           {desk ? <RouteSoFar run={run} /> : null}
           <div className="mt-6">
             <Narration line={stop.look} label="At the place" tag="look" testId="look" />
@@ -417,7 +479,7 @@ function Walk({ run, narrator }: { run: RunState; narrator: Narrator | null }) {
             ) : null}
           </div>
           <div className="mt-10 text-center" aria-live="polite">
-            <Label>Gemma is looking</Label>
+            <Label as="h1">Gemma is looking</Label>
             <p className="narration mx-auto mt-3 max-w-[300px] text-[21px] leading-snug">
               Checking you are at the place, and reading the detail you chose.
             </p>
@@ -438,8 +500,9 @@ function Walk({ run, narrator }: { run: RunState; narrator: Narrator | null }) {
               icon={<ArrowRightIcon size={20} />}
               onClick={() => {
                 tap();
-                narrator?.stopAll("after-result");
                 set(afterResult);
+                if (r.next) advance("after-result", r.next.bridge.line, { tag: "bridge" });
+                else advance("after-result", r.end?.finale.line, { tag: "finale" });
               }}
             >
               {r.next ? (stop.isFork ? "Which way next?" : "On to the next stop") : "Hear how it ends"}
@@ -450,7 +513,12 @@ function Walk({ run, narrator }: { run: RunState; narrator: Narrator | null }) {
             <Label>
               Stop {stop.stop} · {r.status === "passed" ? "found" : "skipped"}
             </Label>
-            <h1 className="narration mt-2 pr-32 text-[34px] font-[560] leading-[1.08]" data-testid="place-name">
+            <h1
+              className="narration mt-2 pr-32 text-[34px] font-[560] leading-[1.08] outline-none"
+              data-testid="place-name"
+              tabIndex={-1}
+              data-phase-heading=""
+            >
               {r.name}
             </h1>
             <div className="absolute right-0 top-7">
@@ -461,21 +529,21 @@ function Walk({ run, narrator }: { run: RunState; narrator: Narrator | null }) {
           </div>
           {r.status === "skipped" ? (
             <p className="mt-3 text-[15px] leading-relaxed text-muted">
-              GPS never put you here, so the walk moves on. You still get the story.
+              This stop could not be confirmed, so the walk moves on. You still get the story.
             </p>
           ) : null}
           {url || r.verdict ? (
             <div className="mt-6 grid grid-cols-[112px_1fr] items-start gap-4">
               {url ? (
                 <div>
-                  <Snapshot src={url} rotate={-2.5} />
+                  <Snapshot src={url} rotate={-2.5} alt={`Your photo at ${r.name}`} />
                   {sample ? <SampleCredit sample={sample} className="mt-2" /> : null}
                 </div>
               ) : (
                 <span />
               )}
               <div data-testid="observed">
-                <Label className="mb-1.5">What Gemma saw</Label>
+                <Label className="mb-1.5">{r.verdict ? "What Gemma saw" : "The photo check"}</Label>
                 {r.verdict ? (
                   <>
                     <p className="narration text-[19px] italic leading-snug">{r.verdict.observed}</p>
@@ -510,8 +578,8 @@ function Walk({ run, narrator }: { run: RunState; narrator: Narrator | null }) {
               icon={<ArrowRightIcon size={20} />}
               onClick={() => {
                 tap();
-                narrator?.stopAll("to-clue");
                 set(toClue);
+                advance("to-clue", next.stop.clue, { withAmbience: true, tag: "clue" });
               }}
             >
               To clue {next.stop.stop}
@@ -520,7 +588,7 @@ function Walk({ run, narrator }: { run: RunState; narrator: Narrator | null }) {
         >
           {desk ? <RouteSoFar run={run} /> : null}
           <div className="pt-6">
-            <Label>{atFork ? "The fork" : "The way on"}</Label>
+            <Label as="h1">{atFork ? "The fork" : "The way on"}</Label>
             {atFork && r.verdict ? (
               <div className="mt-4 rounded-[12px] border border-rule bg-card p-4" data-testid="fork-choice">
                 <p className="label mb-1">You photographed{r.verdict.source === "stored" ? " · stored result" : ""}</p>
@@ -580,7 +648,7 @@ function Walk({ run, narrator }: { run: RunState; narrator: Narrator | null }) {
           }
         >
           <div className="pt-6" data-testid="too-far">
-            <Label>Not here yet</Label>
+            <Label as="h1">Not here yet</Label>
             <div className="mt-4 flex items-center gap-5">
               <span
                 className="flex h-[76px] w-[76px] shrink-0 items-center justify-center rounded-full border-[2.5px] border-ink"
@@ -627,7 +695,7 @@ function Walk({ run, narrator }: { run: RunState; narrator: Narrator | null }) {
           }
         >
           <div className="pt-6">
-            <Label>Try another photo</Label>
+            <Label as="h1">Try another photo</Label>
             <div className="mt-5 grid grid-cols-[112px_1fr] items-start gap-4">
               {url ? <Snapshot src={url} rotate={2} /> : <span />}
               <div>
@@ -661,6 +729,7 @@ function Walk({ run, narrator }: { run: RunState; narrator: Narrator | null }) {
           }
         >
           <div className="relative pt-6">
+            <PhaseHeading>The answer</PhaseHeading>
             <Label>The question</Label>
             <p className="narration mt-2 pr-4 text-[23px] italic leading-[1.3]">{end.caseFile.mystery.question}</p>
             <div className="relative mt-9 rounded-[12px] border-[1.5px] border-ink bg-card p-5 pt-6">
@@ -698,7 +767,7 @@ function SafetyNote() {
 
 function Progress({ at, of }: { at: number; of: number }) {
   return (
-    <div className="mt-6 flex items-center gap-2" aria-label={`Stop ${at} of ${of}`}>
+    <div className="mt-6 flex items-center gap-2" role="img" aria-label={`Stop ${at} of ${of}`}>
       {Array.from({ length: of }, (_, i) => (
         <span
           key={i}

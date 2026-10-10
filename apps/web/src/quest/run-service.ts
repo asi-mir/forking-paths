@@ -1,3 +1,4 @@
+import { budgetTake } from "@/lib/budget";
 import { ollamaHeaders, ollamaRoot, resolveModelConfig } from "@/lib/model";
 import { getStore, type Store } from "@/lib/store";
 import { runAudio, speak, voiceQuest, type QuestVoice, type VoiceOptions } from "@/lib/voice";
@@ -9,6 +10,7 @@ import {
   finishResponse,
   finishRun,
   ReaderDownError,
+  readerCallsPerRun,
   replayResult,
   RunError,
   startRun,
@@ -40,6 +42,22 @@ export const READER_DEADLINE_MS = 40_000;
  */
 export const DESK_READER_DEADLINE_MS = 20_000;
 export const BRIDGE_DEADLINE_MS = 12_000;
+/**
+ * The bridge line is voiced inline, in the photo response. Past this, it is sent as text only,
+ * so a slow voice call cannot push the response past the phone's 60 s limit.
+ */
+export const BRIDGE_VOICE_DEADLINE_MS = 8_000;
+
+/** `speak`, or null (text only) once `ms` have passed. */
+export function withVoiceDeadline(speakFn: (text: string) => Promise<string | null>, ms = BRIDGE_VOICE_DEADLINE_MS) {
+  return (text: string): Promise<string | null> => {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const late = new Promise<null>((resolve) => {
+      timer = setTimeout(() => resolve(null), ms);
+    });
+    return Promise.race([speakFn(text).catch(() => null), late]).finally(() => clearTimeout(timer));
+  };
+}
 
 /** How long Ollama keeps the reader loaded after the warm-up: about one walk. */
 export const WARM_KEEP_ALIVE = "30m";
@@ -126,6 +144,9 @@ async function voiceFor(quest: Quest, opts: ServiceOptions): Promise<QuestVoice>
 export async function beginRun(questId: string, userAgent: string | undefined, opts: ServiceOptions = {}): Promise<StartRunResponse> {
   const store = opts.store ?? getStore();
   const quest = await loadQuest(questId, { store });
+  if (!(await budgetTake("runs", 1, { store })).ok) {
+    throw new RunError("Today's walks are used up. Try again tomorrow, or try it from your desk.", "over-cap", 429);
+  }
   if (!opts.deps && process.env.NODE_ENV !== "test") warmLocalReader(); // unit tests make no network calls
   const qv = await voiceFor(quest, { ...opts, store });
   const clips = Object.fromEntries(Object.entries(qv.clips).filter((e): e is [string, string] => typeof e[1] === "string"));
@@ -151,10 +172,13 @@ export async function photoStep(runId: string, given: PhotoStepInput, opts: Serv
     storedVerdictFor({ questId: run.questId, placeId: rest.placeId, sampleId, image: rest.image.data });
   const input: PhotoInput = { ...rest, storedVerdict };
   const readerMs = storedVerdict ? DESK_READER_DEADLINE_MS : READER_DEADLINE_MS;
+  // The reader's caps: a share per walk, then today's total across all walks.
+  const allowRead = async () =>
+    attempts.length < readerCallsPerRun(quest) && (await budgetTake("reader", 1, { store })).ok;
   const deps: RunDeps = {
-    check: (i, o) => checkPhoto(i, { ...o, signal: AbortSignal.timeout(readerMs) }),
+    check: (i, o) => checkPhoto(i, { ...o, allowRead, signal: AbortSignal.timeout(readerMs) }),
     choose: (i, o) => chooseNext(i, { ...o, signal: AbortSignal.timeout(BRIDGE_DEADLINE_MS) }),
-    speak: (text) => speak(text, { store, lang: quest.lang, ...opts.voice }),
+    speak: withVoiceDeadline((text) => speak(text, { store, lang: quest.lang, ...opts.voice })),
     now: () => new Date(),
     ...opts.deps,
   };

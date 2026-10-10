@@ -63,7 +63,7 @@ export function SamplePicker({
                   {/* eslint-disable-next-line @next/next/no-img-element -- a small static sample, shown as is */}
                   <img
                     src={sampleUrl(s)}
-                    alt={s.detail}
+                    alt=""
                     width={s.width}
                     height={s.height}
                     className={`w-full object-cover ${samples.length > 1 ? "aspect-square" : "aspect-[4/3]"}`}

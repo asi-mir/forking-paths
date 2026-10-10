@@ -8,6 +8,7 @@ import {
   PASS_CONFIDENCE,
   passRule,
   presence,
+  MAX_USABLE_ACCURACY_M,
   PRESENCE_RADIUS_M,
   retryMessage,
   shouldRead,
@@ -38,10 +39,17 @@ describe("presence", () => {
 
   it("widens the radius by the accuracy, capped at 50 m", () => {
     expect(presence(place, { ...north(90), accuracyM: 40 })).toMatchObject({ near: true, radiusM: 100 });
-    expect(presence(place, { ...north(115), accuracyM: 500 })).toMatchObject({
+    expect(presence(place, { ...north(115), accuracyM: 140 })).toMatchObject({
       near: false,
       radiusM: PRESENCE_RADIUS_M + MAX_ACCURACY_SLACK_M,
     });
+  });
+
+  it("does not use a coarse fix as GPS, and keeps its accuracy", () => {
+    expect(presence(place, { ...north(900), accuracyM: 2000 })).toEqual({ gps: false, coarseAccuracyM: 2000 });
+    expect(shouldRead(presence(place, { ...north(900), accuracyM: 2000 }))).toBe(true);
+    expect(passRule(presence(place, { ...north(900), accuracyM: 2000 }), null).reason).not.toBe("too-far");
+    expect(presence(place, { ...north(10), accuracyM: MAX_USABLE_ACCURACY_M })).toMatchObject({ gps: true, near: true });
   });
 
   it("is too far beyond the radius and points at the place", () => {

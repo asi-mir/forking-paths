@@ -97,13 +97,22 @@ test("audio: speech only after a tap, ambience only under the briefing and clues
   await expect(page.getByTestId("briefing-play")).toContainText("Stop");
   await shot(page, 25, "audio-briefing-listening");
 
-  // The clue: the narrator and the ambience again, from a tap.
+  // The clue: the tap that opens it starts the narrator and the ambience again.
   await page.getByTestId("to-clue").click();
   await expect(page.getByTestId("clue")).toBeVisible();
-  await expect.poll(() => playing(page)).toEqual([]);
   await linesHaveText(page);
-  await page.getByTestId("clue-play").click();
   await expect.poll(() => playing(page)).toEqual(expect.arrayContaining(["speech", "ambience"]));
+
+  // Locking the phone with the side button hides the page: the narrator and the ambience stop.
+  const hide = (hidden: boolean) =>
+    page.evaluate((h) => {
+      Object.defineProperty(document, "visibilityState", { configurable: true, get: () => (h ? "hidden" : "visible") });
+      Object.defineProperty(document, "hidden", { configurable: true, get: () => h });
+      document.dispatchEvent(new Event("visibilitychange"));
+    }, hidden);
+  await hide(true);
+  await expect.poll(() => playing(page)).toEqual([]);
+  await hide(false);
 
   // Pocket mode: everything stops at once, and stays silent while the phone is locked.
   await page.getByTestId("go").click();
@@ -133,7 +142,7 @@ test("audio: speech only after a tap, ambience only under the briefing and clues
 
   const all = await heard(page);
   const speech = all.filter((e) => e.kind === "speech");
-  expect(speech.length).toBe(3); // briefing, clue, reveal: each one tapped
+  expect(speech.length).toBe(3); // briefing, clue, reveal: each one from a tap
   for (const e of speech) expect(e.t - e.lastTap).toBeLessThan(2000);
   const ambience = all.filter((e) => e.kind === "ambience");
   expect(ambience.length).toBe(2);
