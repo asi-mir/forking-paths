@@ -1,0 +1,50 @@
+# Secrets — keep .env.example
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Personal agent settings. The shared .claude/settings.json is committed.
+.claude/settings.local.json
+.claude/logs/
+.claude/worktrees/
+CLAUDE.local.md
+
+
+# Database dumps
+*.sql
+*.sql.gz
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Node, build output, caches
+node_modules/
+npm-debug.log*
+pnpm-debug.log*
+**/dist/
+**/.cache/
+**/.next/
+**/out/
+**/.mastra/
+*.tsbuildinfo
+next-env.d.ts
+coverage/
+.vercel
+.turbo
+
+# Python (fine-tune / eval scripts)
+__pycache__/
+*.py[cod]
+.venv/
+.ipynb_checkpoints/
+
+# Local data and large artifacts (keep small samples in git)
+playtest/photos/
+*.mp4
+*.mov
+eval/runs/

@@ -1,0 +1,53 @@
+{
+  "name": "web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check": "pnpm typecheck && pnpm lint && pnpm test",
+    "mastra:dev": "mastra dev"
+  },
+  "dependencies": {
+    "@ai-sdk/google": "^4.0.92",
+    "@ai-sdk/openai-compatible": "^3.0.66",
+    "@elevenlabs/elevenlabs-js": "^2.71.0",
+    "@mastra/core": "^1.75.0",
+    "@mastra/memory": "^1.36.0",
+    "@mastra/mongodb": "^1.22.0",
+    "@mastra/observability": "^1.18.4",
+    "@sentry/nextjs": "^11.5.0",
+    "ai": "^7.0.133",
+    "mongodb": "^7.7.0",
+    "next": "16.4.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "serpapi": "^2.2.1",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@tailwindcss/turbopack": "^4",
+    "@types/node": "^22.20.5",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.0",
+    "mastra": "^1.33.0",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "vite-tsconfig-paths": "^6.1.1",
+    "vitest": "^5.0.3"
+  },
+  "packageManager": "pnpm@9.11.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "volta": {
+    "node": "22.22.3"
+  }
+}

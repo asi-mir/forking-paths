@@ -1,0 +1,28 @@
+{
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "permissions": {
+    "allow": [
+      "Bash(pnpm install:*)",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm typecheck:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(pnpm build:*)",
+      "Bash(pnpm check:*)",
+      "Bash(pnpm --dir apps/web install:*)",
+      "Bash(pnpm --dir apps/web test:*)",
+      "Bash(pnpm --dir apps/web typecheck:*)",
+      "Bash(pnpm --dir apps/web lint:*)",
+      "Bash(pnpm --dir apps/web build:*)",
+      "Bash(pnpm --dir apps/web check:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git branch:*)",
+      "Bash(git worktree list:*)"
+    ]
+  }
+}
