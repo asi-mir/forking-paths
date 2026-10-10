@@ -2,6 +2,8 @@ import { defineConfig, devices } from "@playwright/test";
 
 // Browser checks run against a server you start yourself (no webServer here).
 // They use the system Chrome, headless, with a fresh temporary profile.
+// The play specs open /?mock=1: run them against `pnpm dev`, or against a production build
+// made with NEXT_PUBLIC_MOCK_API=1 (production ignores ?mock=1 otherwise).
 export default defineConfig({
   testDir: "e2e",
   reporter: "list",
