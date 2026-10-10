@@ -153,7 +153,18 @@ so the desk demo speaks on a fresh deployment with an empty database and no cred
 
 A walk is a plain run record (`src/quest/run.ts`, a small state machine) stored in the `runs` and
 `attempts` collections (or in memory without `MONGODB_URI`). The phone UI talks to these routes
-through the shapes in `src/quest/api.ts`:
+through the shapes in `src/quest/api.ts`.
+
+Each walk is also a paused Mastra workflow, `play-quest` (`src/mastra/workflows/play-quest.ts`,
+driven by `src/quest/walk.ts`). It waits at each stop while the player walks, and a photo resumes
+it. Its snapshot lives in Mastra's storage (MongoDB when `MONGODB_URI` is set), so a walk
+survives a server restart. The rules stay in `run.ts`: the workflow calls the same engine and
+follows its result. The photo never enters a snapshot: it waits in the server's memory, and the
+workflow is resumed with a key to it. When a walk has no paused workflow, the run record answers
+the photo on its own. To see a paused walk, run Studio against the same database
+(`PORT=4117 pnpm mastra:dev`) and open Workflows → play-quest.
+
+The routes:
 
 - `POST /api/runs` `{ questId }` starts a run and voices the quest's lines (text only when voice is
   off or over the daily cap). The demo quest `demo-karakoy` is loaded from its fixture when the

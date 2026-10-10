@@ -1,5 +1,5 @@
 import { parsePhotoForm, PHOTO_MAX_BYTES, sniffPhotoType } from "@/quest/api";
-import { photoStep } from "@/quest/run-service";
+import { walkPhoto } from "@/quest/walk";
 import { apiError, BodyTooLarge, errorResponse, json, readBody } from "@/quest/run-http";
 
 /** Room for the form's other fields and multipart boundaries next to the photo. */
@@ -7,7 +7,7 @@ const FORM_OVERHEAD_BYTES = 16 * 1024;
 
 /**
  * POST /api/runs/[runId]/photo (multipart: image, placeId, lat, lng, accuracy, sampleId):
- * checks the photo and moves the run on. The image stays in memory for the reader call and is
+ * resumes the paused walk: checks the photo and moves the run on. The image stays in memory for the reader call and is
  * dropped: it is never stored, logged or put in a trace.
  */
 export async function POST(request: Request, ctx: RouteContext<"/api/runs/[runId]/photo">): Promise<Response> {
@@ -38,7 +38,7 @@ export async function POST(request: Request, ctx: RouteContext<"/api/runs/[runId
   if (!mediaType) return apiError("The photo must be a JPEG, PNG or WebP image.", "bad-request", 415);
 
   try {
-    const result = await photoStep(runId, {
+    const result = await walkPhoto(runId, {
       placeId: fields.placeId,
       image: { data, mediaType },
       position:

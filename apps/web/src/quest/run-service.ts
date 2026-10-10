@@ -20,8 +20,8 @@ import type { Quest, RunVoice } from "./schema";
 /**
  * The play routes' engine: the plain run record (`run.ts`) over the store (MongoDB or memory),
  * the voice (ElevenLabs, budget-guarded) and the photo check (Gemma). Route handlers parse the
- * request, call one of these and send the result. Keep the shapes: a later engine (a paused
- * Mastra walk) can replace this module behind the same routes.
+ * request, call one of these and send the result. The start and photo routes go through the
+ * paused walk (`walk.ts`, the `play-quest` workflow), which calls `photoStep` for each photo.
  */
 
 /**
