@@ -2,7 +2,8 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createMemoryStore, setStore } from "@/lib/store";
-import { setVoiceClient } from "@/lib/voice";
+import { clipIdFor, questLines, setVoiceClient, soundClipId, SOUNDS } from "@/lib/voice";
+import { readStaticManifest } from "@/lib/voice-static";
 import type { ReadResult } from "@/mastra/agents/reader";
 import type { ModelCallMeta } from "@/lib/json";
 import { PhotoResultSchema, QuestLineResponseSchema, QuestViewSchema, StartRunResponseSchema } from "./api";
@@ -14,6 +15,12 @@ import { pickNext } from "./fork";
 import { lineText, questView } from "./quest-view";
 import { placeById } from "./routes";
 import type { Verdict } from "./schema";
+
+// The committed desk-demo clips in public/audio stay out of these checks: voice is off here.
+vi.mock("@/lib/voice-static", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/voice-static")>()),
+  STATIC_AUDIO_DIR: null,
+}));
 
 // The routes run the real photo check and fork rule; only Gemma is replaced (no network).
 let nextRead: Verdict | Error = new Error("429 Too Many Requests");
@@ -171,5 +178,22 @@ describe("the desk preview of a quest", () => {
     expect(body).toMatchObject({ voice: "off", line: { text: expect.stringContaining("1732") } });
     expect(body.line.clipId).toBeUndefined();
     expect((await line("P1.nope")).status).toBe(404);
+  });
+});
+
+describe("the desk demo's committed voice (public/audio)", () => {
+  const dir = join(process.cwd(), "public", "audio");
+  const manifest = readStaticManifest(dir);
+
+  it.skipIf(!manifest?.voiceId)("has a clip for every line of the demo quest and for the three sounds", () => {
+    const { voiceId, modelId, clips } = manifest!;
+    const ids = [
+      ...questLines(quest).map((l) => clipIdFor(l.text, voiceId!, modelId!)),
+      ...Object.values(SOUNDS).map((spec) => soundClipId(spec)),
+    ];
+    for (const id of ids) {
+      expect(clips[id], id).toBeDefined();
+      expect(existsSync(join(dir, `${id}.mp3`)), id).toBe(true);
+    }
   });
 });

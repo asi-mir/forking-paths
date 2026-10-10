@@ -2,11 +2,15 @@
  * Designs the narrator's voice with ElevenLabs Voice Design, once.
  *
  *   pnpm exec tsx scripts/design-voice.ts [--pick <n>] [--seed <n>] [--out <dir>] [--write-env] [--force] [--dry-run]
+ *   pnpm exec tsx scripts/design-voice.ts --previews-only [--seed <n>] [--out <dir>]
+ *   pnpm exec tsx scripts/design-voice.ts --generated-id <id> [--write-env] [--force]
  *
  * 1. `textToVoice.design` makes a few previews from the description in
  *    `src/mastra/agents/narrator-style.md`; they are saved as `preview-<n>.mp3` in `--out`
- *    (default: a folder in the system temp directory).
+ *    (default: a folder in the system temp directory), and each preview's id is printed.
+ *    `--previews-only` stops here, so the previews can be heard before one is chosen.
  * 2. Preview `--pick` (1-based, default 1) becomes a saved voice (`textToVoice.create`).
+ *    `--generated-id` saves a preview from an earlier `--previews-only` run instead (no new previews).
  * 3. The voice id is printed. `--write-env` replaces only the ELEVENLABS_VOICE_ID line in
  *    `.env.local`.
  *
@@ -39,6 +43,16 @@ import {
 /** Premade voices that suit the narrator, best first (used only when Voice Design is refused). */
 const PREMADE_PREFERENCE = ["George", "Bill", "Brian", "Daniel", "Roger"];
 
+/**
+ * ElevenLabs' default voice ids, for a key that may not list voices (no `voices_read`
+ * permission). The first text-to-speech call checks that the id still works.
+ */
+const KNOWN_PREMADE = [
+  { voiceId: "JBFqnCBsd6RMkjVDRZzb", name: "George", labels: { gender: "male", accent: "british" } },
+  { voiceId: "nPczCjzI2devNBz1zQrb", name: "Brian", labels: { gender: "male", accent: "american" } },
+  { voiceId: "onwK4e9ZLuTAKqWW03F9", name: "Daniel", labels: { gender: "male", accent: "british" } },
+];
+
 type Preview = { generatedVoiceId: string; audioBase64: string; durationSecs: number };
 type Designer = {
   design(seed?: number): Promise<Preview[]>;
@@ -70,8 +84,14 @@ function sdkDesigner(): Designer | null {
       return voice.voiceId;
     },
     async premade() {
-      const res = await client.voices.search({ category: "premade", pageSize: 100 });
-      return res.voices.map((v) => ({ voiceId: v.voiceId, name: v.name ?? "", labels: v.labels ?? {} }));
+      try {
+        const res = await client.voices.search({ category: "premade", pageSize: 100 });
+        return res.voices.map((v) => ({ voiceId: v.voiceId, name: v.name ?? "", labels: v.labels ?? {} }));
+      } catch (err) {
+        if (!notOnPlan(err)) throw err;
+        console.log(`cannot list voices (${describeError(err)}): using ElevenLabs' default voice ids`);
+        return KNOWN_PREMADE;
+      }
     },
   };
 }
@@ -121,14 +141,23 @@ run(async () => {
   let voiceId: string;
   let kind: "designed" | "premade";
 
-  try {
+  const generatedId = option("generated-id");
+  if (generatedId) {
+    voiceId = await designer.create(generatedId);
+    kind = "designed";
+    console.log(`saved preview ${generatedId} as "${NARRATOR_VOICE_NAME}"`);
+  } else try {
     const previews = await designer.design(seedRaw ? Number(seedRaw) : undefined);
     if (previews.length === 0) throw new Error("Voice Design returned no previews");
     previews.forEach((p, i) => {
       const mp3 = Buffer.from(p.audioBase64, "base64");
       writeFileSync(join(dir, `preview-${i + 1}.mp3`), mp3);
-      console.log(`preview ${i + 1}: ${p.durationSecs.toFixed(1)} s, ${kb(mp3.byteLength)}`);
+      console.log(`preview ${i + 1}: ${p.durationSecs.toFixed(1)} s, ${kb(mp3.byteLength)}, id ${p.generatedVoiceId}`);
     });
+    if (flag("previews-only")) {
+      console.log(`previews saved in ${dir}; save one with --generated-id <id>`);
+      return;
+    }
     const chosen = previews[Math.min(pick, previews.length) - 1];
     console.log(`previews saved in ${dir}; using preview ${Math.min(pick, previews.length)}`);
     voiceId = await designer.create(chosen.generatedVoiceId);

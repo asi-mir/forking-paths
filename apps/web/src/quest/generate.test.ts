@@ -8,7 +8,7 @@ import generatedDraft from "./__fixtures__/karakoy-generated-draft.json";
 import { WRITER_GOOGLE_TIMEOUT_MS } from "@/mastra/agents/writer";
 import { TIMEOUT_MS } from "@/play/client";
 import { QUEST_CLIENT_TIMEOUT_MS, QUEST_DEADLINE_MS } from "./api";
-import { GenerateError, generateQuestDirect, MIN_REPAIR_MS, setGenerateDeps } from "./generate";
+import { GenerateError, generateQuestDirect, MIN_REPAIR_MS, rateLimitWaitMs, setGenerateDeps } from "./generate";
 import { citationErrors } from "@/lib/store";
 
 /**
@@ -142,6 +142,47 @@ describe("generate-quest steps", () => {
     expect(out.errors.join("\n")).toMatch(/F999/);
     expect(out.errors.at(-1)).toMatch(/^No repair: \d+ s of the time limit were left\.$/);
     expect(await store.questsNear(KARAKOY.lat, KARAKOY.lng, 1, { status: "any" })).toEqual([]);
+  });
+
+  it("waits once for a rate-limited writer call when the deadline leaves room, then writes", async () => {
+    const quota = Object.assign(new Error("You exceeded your current quota. Please retry in 0.01s."), { statusCode: 429 });
+    const store = createMemoryStore();
+    const { deps } = testDeps({ store });
+    let calls = 0;
+    setGenerateDeps({
+      research: (input) => research(input, deps),
+      write: async () => {
+        calls++;
+        if (calls === 1) throw quota;
+        return call(draft());
+      },
+      store: () => store,
+    });
+    const out = await generateQuestDirect(INPUT);
+    expect(out.status).toBe("ready");
+    expect(calls).toBe(2);
+  });
+
+  it("does not wait for a rate limit that would leave too little of the deadline", async () => {
+    const store = createMemoryStore();
+    const { deps } = testDeps({ store });
+    let calls = 0;
+    setGenerateDeps({
+      research: (input) => research(input, deps),
+      write: async () => {
+        calls++;
+        throw Object.assign(new Error("You exceeded your current quota. Please retry in 50s."), { statusCode: 429 });
+      },
+      store: () => store,
+    });
+    await expect(generateQuestDirect({ ...INPUT, deadlineMs: 90_000 })).rejects.toMatchObject({ code: "writer-failed" });
+    expect(calls).toBe(1);
+  });
+
+  it("reads the wait from a rate-limit message; other errors are not rate limits", () => {
+    expect(rateLimitWaitMs(new Error("You exceeded your current quota ... Please retry in 46.10596699s."))).toBe(47_106);
+    expect(rateLimitWaitMs(Object.assign(new Error("Too many requests"), { statusCode: 429 }))).toBe(30_000);
+    expect(rateLimitWaitMs(new Error("Internal error encountered."))).toBeNull();
   });
 
   it("wraps a writer failure as a GenerateError", async () => {

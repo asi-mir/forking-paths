@@ -34,7 +34,9 @@ run(async () => {
 
   const files: string[] = [];
   for (const [i, line] of SAMPLE_LINES.entries()) {
+    const started = performance.now();
     const res = await speakDetailed(line, opts);
+    const ms = Math.round(performance.now() - started);
     if (!res.clipId) {
       if (res.reason === "no-key") skip("ELEVENLABS_API_KEY", "nothing voiced");
       throw new Error(`line ${i + 1} was not voiced (${res.reason})`);
@@ -43,7 +45,7 @@ run(async () => {
     const file = join(dir, `sample-${i + 1}.mp3`);
     writeFileSync(file, mp3);
     files.push(file);
-    console.log(`line ${i + 1}: ${res.charsSpent ? `voiced (${res.charsSpent} characters)` : "cached"}, ${kb(mp3.byteLength)}`);
+    console.log(`line ${i + 1}: ${res.charsSpent ? `voiced (${res.charsSpent} characters, ${ms} ms)` : "cached"}, ${kb(mp3.byteLength)}`);
   }
 
   if (DRY_RUN) await makeSound("ambience", opts);

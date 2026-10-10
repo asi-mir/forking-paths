@@ -168,6 +168,24 @@ describe("serpapiSearch", () => {
     expect(s.lookups[0].outcome).toBe("failed");
   });
 
+  it("counts a timed-out search toward the cap and the daily budget, and does not cache it", async () => {
+    // A live Karaköy run on 2026-10-10 had one search time out; SerpApi still counted it.
+    const { deps } = testDeps({
+      getJson: async () => {
+        throw new Error("The request was timed out");
+      },
+    });
+    const s = newSerpapiSession(1);
+    expect(await serpapiSearch(s, deps, mapsReq())).toBeNull();
+    expect(s).toMatchObject({ made: 1 });
+    expect(s.lookups[0]).toMatchObject({ outcome: "failed", reason: "The request was timed out" });
+    expect((await budgetStatus("serpapi", { store: deps.store, env: deps.env, now: deps.now })).used).toBe(1);
+    // The cap is used up; a retry in the same quest is skipped, not paid for again.
+    expect(await serpapiSearch(s, deps, mapsReq("fountain"))).toBeNull();
+    expect(s.lookups[1]).toMatchObject({ outcome: "skipped" });
+    expect(s.made).toBe(1);
+  });
+
   it("treats 'no results' as an empty answer, cached", async () => {
     const { deps } = testDeps({ getJson: async () => ({ error: "Google hasn't returned any results for this query." }) });
     const s = newSerpapiSession();

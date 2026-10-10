@@ -2,6 +2,7 @@ import { createMemoryStore } from "@/lib/store/memory";
 import type { ResearchDeps, SerpapiGetJson } from "../types";
 import mapsFountain from "./karakoy-serpapi-maps-fountain-monument.json";
 import mapsLandmark from "./karakoy-serpapi-maps-historical-landmark.json";
+import mapsLandmarkEvening from "./karakoy-evening-serpapi-maps-historical-landmark.json";
 import searchArap from "./karakoy-serpapi-search-arap-mosque-istanbul-history.json";
 import searchBereketzade from "./karakoy-serpapi-search-bereketzade-ali-efendi-mosque-istanbul-history.json";
 import searchPeterPaul from "./karakoy-serpapi-search-church-of-saints-peter-and-paul-istanbul-history.json";
@@ -17,6 +18,9 @@ import wikiKarakoy from "./wikipedia-karakoy-en.json";
  * --record` on 2026-10-10: SerpApi responses slimmed to the fields the research step reads (no
  * request echo, no key), and one Wikipedia GeoSearch. One review-site result was removed from the
  * Kamondo Stairs recording by hand (the parser skips review sites anyway). Tests never use the network.
+ *
+ * `mapsLandmarkEvening` is the same Maps search recorded again at 22:40 Istanbul time on Saturday
+ * 2026-10-10 (Galata Tower closed by then). It is used only by the opening-hours tests.
  */
 
 export const KARAKOY = { lat: 41.0247, lng: 28.9744 };
@@ -39,6 +43,7 @@ const SERPAPI: Recorded[] = [
 export const fixtures = {
   mapsFountain: () => structuredClone(mapsFountain.payload),
   mapsLandmark: () => structuredClone(mapsLandmark.payload),
+  mapsLandmarkEvening: () => structuredClone(mapsLandmarkEvening.payload),
   search: (query: string) => structuredClone(SERPAPI.find((r) => r.query === query)?.payload ?? null),
   wikipedia: () => structuredClone(wikiKarakoy.payload),
 };

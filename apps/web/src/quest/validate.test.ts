@@ -254,4 +254,14 @@ describe("compassWords", () => {
     expect(compassWords("Pass the northern pier sign.", ["Northern Pier"])).toEqual([]);
     expect(compassWords("Kuzey Kapı'ya yürüyün.")).toEqual([]);
   });
+
+  it("skips numbered street names, not directions next to them", () => {
+    expect(compassWords("Look for the brownstone at 28 East 20th Street.")).toEqual([]);
+    expect(compassWords("Walk to West 4th St and the arch.")).toEqual([]);
+    expect(compassWords("Head east 20 steps to the corner.")).toEqual(["east"]);
+    expect(compassWords("Walk east 2 blocks.")).toEqual(["east"]);
+    expect(compassWords("A replica of a home on East twentieth street.")).toEqual([]);
+    expect(compassWords("The townhouse between Broadway and Park Avenue South.")).toEqual([]);
+    expect(compassWords("Walk along Park Avenue, then south.")).toEqual(["south"]);
+  });
 });

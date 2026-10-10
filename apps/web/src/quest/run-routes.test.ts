@@ -10,6 +10,12 @@ import { placeById } from "./routes";
 import { beginRun, finishWalk, loadQuest, photoStep, warmLocalReader, withVoiceDeadline } from "./run-service";
 import type { Verdict } from "./schema";
 
+// The committed desk-demo clips in public/audio stay out of these checks: voice is off here.
+vi.mock("@/lib/voice-static", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/voice-static")>()),
+  STATIC_AUDIO_DIR: null,
+}));
+
 // The routes call the real photo check and fork rule; only Gemma is replaced (no network).
 const reads: ReaderInput[] = [];
 let nextVerdict: Verdict | Error = { plausible: true, confidence: 0.9, observed: "bronze spout over a stone basin", cue: "water" };

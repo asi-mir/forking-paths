@@ -52,6 +52,25 @@ describe("writerPrompt", () => {
     expect(prompt).toContain("Write every spoken line in English.");
   });
 
+  it("names the answer place's facts under each route option, for the mystery to cite", () => {
+    const { fx, options, prompt } = promptFor();
+    const o = options[0];
+    const ids = fx.facts.filter((f) => f.placeId === o.answer).map((f) => f.id);
+    expect(ids.length).toBeGreaterThan(0);
+    expect(prompt).toContain(`${o.answer}: the answer place, no links; the mystery cites one of its facts (${ids.join(", ")})`);
+    expect(prompt).toContain("The start never links straight to the answer place");
+  });
+
+  it("names the compass words a place's facts use, so clues do not copy them", () => {
+    const fx = threeStop();
+    const options = routeOptions(fx.candidates, fx.opts.center, 15);
+    const place = options[0].start;
+    const facts = fx.facts.map((f) => (f.placeId === place ? { ...f, text: `${f.text} It stands in the northwest corner.` } : f));
+    const prompt = writerPrompt({ center: fx.opts.center, minutes: 15, lang: "en", candidates: fx.candidates, facts, options });
+    expect(prompt).toContain('These facts use the compass word "northwest": cite them, but in clues, hints and link reasons name a landmark instead.');
+    expect(promptFor().prompt).not.toContain("These facts use the compass word");
+  });
+
   it("asks for Turkish lines with English keys and cues", () => {
     expect(promptFor(15, "tr").prompt).toContain("in Turkish. Keep JSON keys, IDs and cues in English.");
   });

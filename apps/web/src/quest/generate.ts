@@ -226,14 +226,40 @@ function logCall(c: WriterCall): WriterCallLog {
   };
 }
 
+/**
+ * How long a rate-limited writer call asks us to wait, in ms, or null when the error is not a
+ * rate limit. The AI Studio free tier counts input tokens per minute (16,000 for
+ * gemma-4-31b; one writer prompt is ~5,500), and its 429 says "Please retry in 46.1s." in the
+ * body, not in a retry-after header, so the SDK's own quick retries hit the same limit.
+ */
+export function rateLimitWaitMs(error: unknown): number | null {
+  const text = error instanceof Error ? error.message : String(error);
+  const status = (error as { statusCode?: unknown } | null)?.statusCode;
+  if (status !== 429 && !/exceeded your current quota|RESOURCE_EXHAUSTED/i.test(text)) return null;
+  const s = /retry in ([\d.]+)\s*s/i.exec(text)?.[1];
+  return s ? Math.ceil(Number(s) * 1000) + 1_000 : 30_000;
+}
+
+/** A rate-limited writer call is tried once more only when this much of the deadline is left after the wait. */
+export const MIN_RATE_LIMIT_RETRY_MS = 60_000;
+
+const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+
 async function write(prompt: string, deadlineAt: number): Promise<WriterCall> {
-  const maxMs = deadlineAt - Date.now();
-  if (maxMs <= 0) throw new GenerateError("The quest writer failed: no time was left for it.", "writer-failed");
-  try {
-    return await deps().write(prompt, { maxMs });
-  } catch (error) {
-    const reason = error instanceof Error ? error.message : String(error);
-    throw new GenerateError(`The quest writer failed: ${reason}`, "writer-failed");
+  for (let attempt = 1; ; attempt++) {
+    const maxMs = deadlineAt - Date.now();
+    if (maxMs <= 0) throw new GenerateError("The quest writer failed: no time was left for it.", "writer-failed");
+    try {
+      return await deps().write(prompt, { maxMs });
+    } catch (error) {
+      const waitMs = rateLimitWaitMs(error);
+      if (attempt === 1 && waitMs !== null && deadlineAt - Date.now() - waitMs >= MIN_RATE_LIMIT_RETRY_MS) {
+        await sleep(waitMs);
+        continue;
+      }
+      const reason = error instanceof Error ? error.message : String(error);
+      throw new GenerateError(`The quest writer failed: ${reason}`, "writer-failed");
+    }
   }
 }
 

@@ -198,8 +198,9 @@ Start with [`AGENTS.md`](AGENTS.md): commands, hard rules and how to work.
   facts may be shortened or translated (the demo case translates Turkish pages into English).
   Each fact links to its page, and the app shows the licence under every fact list. Places and
   facts can also come from Google Maps and Google Search through SerpApi.
-- **Voice and sound:** the narrator voice and the sound effects (the ambience and two short
-  stingers) are made with ElevenLabs.
+- **Voice and sound:** the narrator (the ElevenLabs default voice "George", model `eleven_v4`)
+  and the sound effects (the ambience and two short stingers) are made with
+  [ElevenLabs](https://elevenlabs.io). The desk demo's clips are in `apps/web/public/audio/`.
 - **Code:** [Next.js](https://nextjs.org) (MIT), [Mastra](https://mastra.ai) (Apache 2.0), the
   AI SDK (Apache 2.0), the MongoDB Node.js driver (Apache 2.0) and the Sentry SDK (MIT).
 - **Fonts:** Geist, Fraunces and IBM Plex Mono (SIL Open Font License), served by Google Fonts

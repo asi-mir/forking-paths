@@ -77,6 +77,32 @@ describe("Google Maps places (recorded Karaköy responses)", () => {
   });
 });
 
+describe("Google Maps places (same search recorded at 22:40, Saturday evening)", () => {
+  const night = { start: new Date("2026-10-10T19:40:00Z"), minutes: 25, timeZone: "Europe/Istanbul" };
+  const evening = parseMapsPlaces(fixtures.mapsLandmarkEvening(), { center: KARAKOY, radiusM: 900, query: "historical landmark", play: night });
+
+  it("reads Galata Tower as closed after 10 PM, but keeps it: it is seen from the street, not entered", () => {
+    const tower = evening.places.find((p) => p.name === "Galata Tower")!;
+    expect(tower).toMatchObject({ gated: false, openNow: false, openState: "Closed · Opens 8:30 AM Sun" });
+    expect(evening.skippedClosed).toEqual([]);
+  });
+
+  it("keeps places that are open all night as open", () => {
+    const stairs = evening.places.find((p) => p.name === "Kamondo Stairs")!;
+    expect(stairs.openNow).toBe(true);
+  });
+
+  it("finds the same landmarks as the afternoon recording, within the radius", () => {
+    const day = parseMapsPlaces(fixtures.mapsLandmark(), { center: KARAKOY, radiusM: 900, query: "historical landmark", play });
+    const both = evening.places.filter((p) => day.places.some((d) => d.key === p.key));
+    expect(both.length).toBeGreaterThanOrEqual(10);
+    for (const name of ["Galata Tower", "Kamondo Stairs", "Galata Walls"]) {
+      expect(both.map((p) => p.name)).toContain(name);
+    }
+    for (const p of evening.places) expect(p.distanceM).toBeLessThanOrEqual(900);
+  });
+});
+
 describe("Wikipedia GeoSearch (recorded Karaköy response)", () => {
   const query = "en.wikipedia.org pages within 900 m of 41.025,28.974";
   const r = parseWikipedia(fixtures.wikipedia(), { center: KARAKOY, radiusM: 900, lang: "en", query });

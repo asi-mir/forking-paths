@@ -247,7 +247,9 @@ const COMPASS_TR =
 /**
  * Compass words in a line ("north", "south-east", "westward"). Clues use landmarks instead.
  * Place names are not directions: the given names are removed first ("Northern Pier"), and a
- * capitalised compass word right before another capitalised word ("West Gate") is skipped.
+ * capitalised compass word right before another capitalised word ("West Gate") is skipped, and
+ * so is one in a street name: before a numbered street ("East 20th Street") or after a road name
+ * ("Park Avenue South").
  */
 export function compassWords(text: string, placeNames: string[] = []): string[] {
   let t = text;
@@ -259,11 +261,19 @@ export function compassWords(text: string, placeNames: string[] = []): string[] 
     for (const m of t.matchAll(re)) {
       const rest = t.slice(m.index + m[0].length);
       if (/^\p{Lu}/u.test(m[0]) && /^[\s-]+\p{Lu}/u.test(rest)) continue;
+      if (/^\p{Lu}/u.test(m[0]) && STREET_AFTER.test(rest)) continue;
+      if (/^\p{Lu}/u.test(m[0]) && STREET_BEFORE.test(t.slice(0, m.index))) continue;
       found.push(m[0]);
     }
   }
   return found;
 }
+
+/** "East 20th Street", "West twentieth street": a numbered street after a capitalised compass word. */
+const STREET_AFTER =
+  /^\s+(?:\d+(?:st|nd|rd|th)?|[a-z]+(?:st|nd|rd|th))\s+(?:street|st|avenue|ave|road|rd)\b/iu;
+/** "Park Avenue South", "Temple Street West": a capitalised compass word right after a road name. */
+const STREET_BEFORE = /\p{Lu}[\p{L}'’-]*\s+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Square|Drive)\s+$/u;
 
 const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
