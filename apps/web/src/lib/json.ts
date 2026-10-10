@@ -54,6 +54,11 @@ export interface GenerateJsonOptions {
   model?: LanguageModel;
   /** Test seam for the 429/503 backoff. */
   sleep?: (ms: number) => Promise<void>;
+  /**
+   * AI SDK telemetry for the call (see `aiTelemetry` in `trace.ts`). A call that carries a photo
+   * passes `recordInputs: false` and `recordOutputs: false`.
+   */
+  telemetry?: { functionId?: string; recordInputs?: boolean; recordOutputs?: boolean };
 }
 
 /** The model answered, but never with JSON that matches the schema (after the repair attempt). */
@@ -256,6 +261,7 @@ export async function generateJson<T>(
           temperature: options.temperature,
           maxRetries: 0,
           abortSignal: signal,
+          ...(options.telemetry ? { telemetry: options.telemetry } : {}),
         });
         addUsage(meta, result.usage);
         return { text: result.text, output: result.output as T };

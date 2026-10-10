@@ -1,0 +1,526 @@
+{
+  "about": "Labelled street-detail photos from Wikimedia Commons for the photo reader eval. Each entry names its file page, author and licence. No people in any photo. Fetch with: pnpm eval:photos:fetch",
+  "photos": [
+    {
+      "id": "inscription-fountain-beyoglu",
+      "title": "File:Inscription of Tersane Emini Hacı Ahmet Ağa Fountain, Beyoğlu, İstanbul 2024.jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:Inscription_of_Tersane_Emini_Hac%C4%B1_Ahmet_A%C4%9Fa_Fountain,_Beyo%C4%9Flu,_%C4%B0stanbul_2024.jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/8/8c/Inscription_of_Tersane_Emini_Hac%C4%B1_Ahmet_A%C4%9Fa_Fountain%2C_Beyo%C4%9Flu%2C_%C4%B0stanbul_2024.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8c/Inscription_of_Tersane_Emini_Hac%C4%B1_Ahmet_A%C4%9Fa_Fountain%2C_Beyo%C4%9Flu%2C_%C4%B0stanbul_2024.jpg/1280px-Inscription_of_Tersane_Emini_Hac%C4%B1_Ahmet_A%C4%9Fa_Fountain%2C_Beyo%C4%9Flu%2C_%C4%B0stanbul_2024.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "author": "Karakalem",
+      "licence": "CC BY 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by/4.0",
+      "placeName": "Tersane Emini Hacı Ahmet Ağa Fountain",
+      "offeredCues": [
+        "writing",
+        "door-window-arch"
+      ],
+      "label": {
+        "cue": "writing",
+        "plausible": true
+      },
+      "note": "Carved inscription panel above a pointed arch."
+    },
+    {
+      "id": "plaque-german-fountain",
+      "title": "File:Istanbul - German Fountain - plaque - P1030872.JPG",
+      "filePage": "https://commons.wikimedia.org/wiki/File:Istanbul_-_German_Fountain_-_plaque_-_P1030872.JPG",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/4/47/Istanbul_-_German_Fountain_-_plaque_-_P1030872.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/47/Istanbul_-_German_Fountain_-_plaque_-_P1030872.JPG/1280px-Istanbul_-_German_Fountain_-_plaque_-_P1030872.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "author": "User:Vmenkov",
+      "licence": "CC BY-SA 3.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "placeName": "German Fountain",
+      "offeredCues": [
+        "writing",
+        "water"
+      ],
+      "label": {
+        "cue": "writing",
+        "plausible": true
+      },
+      "note": "Bronze plaque with raised lettering on marble."
+    },
+    {
+      "id": "inscription-erenkoy-fountain",
+      "title": "File:Erenköy Station Fountain-inscription.jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:Erenk%C3%B6y_Station_Fountain-inscription.jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/b/b4/Erenk%C3%B6y_Station_Fountain-inscription.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b4/Erenk%C3%B6y_Station_Fountain-inscription.jpg/1280px-Erenk%C3%B6y_Station_Fountain-inscription.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "author": "Ali Osman Dilekoğlu",
+      "licence": "CC BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "placeName": "Erenköy Station Fountain",
+      "offeredCues": [
+        "writing",
+        "plant-or-tree"
+      ],
+      "label": {
+        "cue": "writing",
+        "plausible": true
+      },
+      "note": "Gilded inscription panels under a carved crest; trees behind."
+    },
+    {
+      "id": "datestone-cadmus-house",
+      "title": "File:Cadmus House Datestone.jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:Cadmus_House_Datestone.jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/5/58/Cadmus_House_Datestone.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/58/Cadmus_House_Datestone.jpg/1280px-Cadmus_House_Datestone.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "author": "Cjschopfer",
+      "licence": "CC BY-SA 3.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "placeName": "Cadmus House",
+      "offeredCues": [
+        "date-or-number",
+        "material"
+      ],
+      "label": {
+        "cue": "date-or-number",
+        "plausible": true
+      },
+      "note": "A brick datestone with carved initials and a year."
+    },
+    {
+      "id": "foundation-stone-kings-lynn",
+      "title": "File:Town Hall, Queen Street, King's Lynn - foundation stone (4622066715).jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:Town_Hall,_Queen_Street,_King%27s_Lynn_-_foundation_stone_(4622066715).jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/b/b9/Town_Hall%2C_Queen_Street%2C_King%27s_Lynn_-_foundation_stone_%284622066715%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b9/Town_Hall%2C_Queen_Street%2C_King%27s_Lynn_-_foundation_stone_%284622066715%29.jpg/1280px-Town_Hall%2C_Queen_Street%2C_King%27s_Lynn_-_foundation_stone_%284622066715%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "author": "Elliott Brown from Birmingham, United Kingdom",
+      "licence": "CC BY 2.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by/2.0",
+      "placeName": "King's Lynn Town Hall",
+      "offeredCues": [
+        "date-or-number",
+        "door-window-arch"
+      ],
+      "label": {
+        "cue": "date-or-number",
+        "plausible": true
+      },
+      "note": "Foundation stone with a carved date (also lettering)."
+    },
+    {
+      "id": "lion-head-tap",
+      "title": "File:Lion Head water tap 01.jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:Lion_Head_water_tap_01.jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/b/b3/Lion_Head_water_tap_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://upload.wikimedia.org/wikipedia/commons/b/b3/Lion_Head_water_tap_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "author": "Aimaimyi",
+      "licence": "CC BY-SA 3.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "placeName": "the street fountain",
+      "offeredCues": [
+        "water",
+        "symbol-or-emblem"
+      ],
+      "label": {
+        "cue": "water",
+        "plausible": true
+      },
+      "note": "Cast-iron column with a lion-head spout over a basin."
+    },
+    {
+      "id": "lion-head-spout-stoke-abbott",
+      "title": "File:Lion's head water spout and drinking cup, Stoke Abbott - geograph.org.uk - 5070728.jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:Lion%27s_head_water_spout_and_drinking_cup,_Stoke_Abbott_-_geograph.org.uk_-_5070728.jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/c/c0/Lion%27s_head_water_spout_and_drinking_cup%2C_Stoke_Abbott_-_geograph.org.uk_-_5070728.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://upload.wikimedia.org/wikipedia/commons/c/c0/Lion%27s_head_water_spout_and_drinking_cup%2C_Stoke_Abbott_-_geograph.org.uk_-_5070728.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "author": "Becky Williamson",
+      "licence": "CC BY-SA 2.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+      "placeName": "the village spout",
+      "offeredCues": [
+        "water",
+        "writing"
+      ],
+      "label": {
+        "cue": "water",
+        "plausible": true
+      },
+      "note": "Water running from a carved lion head in a mossy wall."
+    },
+    {
+      "id": "brass-tap-anciles",
+      "title": "File:Benasque - Anciles - Grifo 01.jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:Benasque_-_Anciles_-_Grifo_01.jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/d/d6/Benasque_-_Anciles_-_Grifo_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d6/Benasque_-_Anciles_-_Grifo_01.jpg/1280px-Benasque_-_Anciles_-_Grifo_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "author": "Basotxerri",
+      "licence": "CC BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "placeName": "the village fountain",
+      "offeredCues": [
+        "water",
+        "door-window-arch"
+      ],
+      "label": {
+        "cue": "water",
+        "plausible": true
+      },
+      "note": "A brass tap shaped like a fish on a stone wall."
+    },
+    {
+      "id": "old-spring-istanbul",
+      "title": "File:Istanbul old spring.jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:Istanbul_old_spring.jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/0/0e/Istanbul_old_spring.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0e/Istanbul_old_spring.jpg/1280px-Istanbul_old_spring.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "author": "Reise Reise",
+      "licence": "CC BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "placeName": "the old street fountain",
+      "offeredCues": [
+        "water",
+        "writing"
+      ],
+      "label": {
+        "cue": "water",
+        "plausible": true
+      },
+      "note": "An Ottoman fountain house with a niche; no running water visible."
+    },
+    {
+      "id": "fountain-galata-mevlevi",
+      "title": "File:Galata Mevlevihane Çeşme ve Sebili in October 2025.jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:Galata_Mevlevihane_%C3%87e%C5%9Fme_ve_Sebili_in_October_2025.jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/9/93/Galata_Mevlevihane_%C3%87e%C5%9Fme_ve_Sebili_in_October_2025.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/93/Galata_Mevlevihane_%C3%87e%C5%9Fme_ve_Sebili_in_October_2025.jpg/1280px-Galata_Mevlevihane_%C3%87e%C5%9Fme_ve_Sebili_in_October_2025.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "author": "Kurmanbek",
+      "licence": "CC BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "placeName": "Galata Mevlevi Lodge fountain",
+      "offeredCues": [
+        "water",
+        "writing",
+        "door-window-arch"
+      ],
+      "label": {
+        "cue": "water",
+        "plausible": true
+      },
+      "note": "Marble wall fountain with a basin beside a grilled window: a three-way fork."
+    },
+    {
+      "id": "tughra-medallion",
+      "title": "File:Tughra and Medaillon.jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:Tughra_and_Medaillon.jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/3/3f/Tughra_and_Medaillon.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://upload.wikimedia.org/wikipedia/commons/3/3f/Tughra_and_Medaillon.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "author": "Uğur Başak (User:Ugur Basak)",
+      "licence": "Public domain",
+      "licenceUrl": null,
+      "placeName": "the fountain",
+      "offeredCues": [
+        "symbol-or-emblem",
+        "water"
+      ],
+      "label": {
+        "cue": "symbol-or-emblem",
+        "plausible": true
+      },
+      "note": "A tughra and a monogram in round medallions (the setting may be indoors)."
+    },
+    {
+      "id": "stemma-venice",
+      "title": "File:Palazzo Contarini dal Zaffo (Venice) - Facade - Stemma.jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:Palazzo_Contarini_dal_Zaffo_(Venice)_-_Facade_-_Stemma.jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/0/08/Palazzo_Contarini_dal_Zaffo_%28Venice%29_-_Facade_-_Stemma.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/08/Palazzo_Contarini_dal_Zaffo_%28Venice%29_-_Facade_-_Stemma.jpg/1280px-Palazzo_Contarini_dal_Zaffo_%28Venice%29_-_Facade_-_Stemma.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "author": "Didier Descouens",
+      "licence": "CC BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "placeName": "Palazzo Contarini dal Zaffo",
+      "offeredCues": [
+        "symbol-or-emblem",
+        "door-window-arch"
+      ],
+      "label": {
+        "cue": "symbol-or-emblem",
+        "plausible": true
+      },
+      "note": "A carved coat of arms on a marble facade."
+    },
+    {
+      "id": "coat-of-arms-herborn",
+      "title": "File:VdM Coat of Arms - Herborn Town Hall.jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:VdM_Coat_of_Arms_-_Herborn_Town_Hall.jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/3/3a/VdM_Coat_of_Arms_-_Herborn_Town_Hall.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3a/VdM_Coat_of_Arms_-_Herborn_Town_Hall.jpg/1280px-VdM_Coat_of_Arms_-_Herborn_Town_Hall.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "author": "Clar67",
+      "licence": "CC BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "placeName": "Herborn Town Hall",
+      "offeredCues": [
+        "symbol-or-emblem",
+        "animal-or-figure"
+      ],
+      "label": {
+        "cue": "symbol-or-emblem",
+        "plausible": true
+      },
+      "note": "A painted coat of arms with an eagle crest: the figure is a distractor."
+    },
+    {
+      "id": "stone-lion-relief",
+      "title": "File:Stone Lion Carving.jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:Stone_Lion_Carving.jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/b/b4/Stone_Lion_Carving.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://upload.wikimedia.org/wikipedia/commons/b/b4/Stone_Lion_Carving.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "author": "James from Boulder, USA",
+      "licence": "CC BY 2.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by/2.0",
+      "placeName": "the old stone wall",
+      "offeredCues": [
+        "animal-or-figure",
+        "writing"
+      ],
+      "label": {
+        "cue": "animal-or-figure",
+        "plausible": true
+      },
+      "note": "A carved lion beside a crest, lettering below."
+    },
+    {
+      "id": "lion-carving-glengarnock",
+      "title": "File:Carving of a lion, Glengarnock, North Ayrshire.jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:Carving_of_a_lion,_Glengarnock,_North_Ayrshire.jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/0/05/Carving_of_a_lion%2C_Glengarnock%2C_North_Ayrshire.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/05/Carving_of_a_lion%2C_Glengarnock%2C_North_Ayrshire.jpg/1280px-Carving_of_a_lion%2C_Glengarnock%2C_North_Ayrshire.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "author": "Rosser1954",
+      "licence": "CC BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "placeName": "Glengarnock",
+      "offeredCues": [
+        "animal-or-figure",
+        "material"
+      ],
+      "label": {
+        "cue": "animal-or-figure",
+        "plausible": true
+      },
+      "note": "A small carved lion head in a niche of a sandstone block."
+    },
+    {
+      "id": "plane-tree-phillimore",
+      "title": "File:Phillimore Street Plane Tree.jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:Phillimore_Street_Plane_Tree.jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/7/7f/Phillimore_Street_Plane_Tree.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7f/Phillimore_Street_Plane_Tree.jpg/1280px-Phillimore_Street_Plane_Tree.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "author": "Sam Wilson  (taken with LG G6)",
+      "licence": "CC BY-SA 1.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/1.0",
+      "placeName": "Phillimore Street",
+      "offeredCues": [
+        "plant-or-tree",
+        "door-window-arch"
+      ],
+      "label": {
+        "cue": "plant-or-tree",
+        "plausible": true
+      },
+      "note": "A plane tree trunk in front of arched doors."
+    },
+    {
+      "id": "old-plane-tree",
+      "title": "File:Old plane tree.jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:Old_plane_tree.jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/f/fd/Old_plane_tree.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fd/Old_plane_tree.jpg/1280px-Old_plane_tree.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "author": "Lernain Bro",
+      "licence": "CC BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "placeName": "the old plane tree",
+      "offeredCues": [
+        "plant-or-tree",
+        "water"
+      ],
+      "label": {
+        "cue": "plant-or-tree",
+        "plausible": true
+      },
+      "note": "Looking up a huge hollow plane tree trunk."
+    },
+    {
+      "id": "wooden-door-istanbul",
+      "title": "File:20131205 Istanbul 140.jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:20131205_Istanbul_140.jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/c/c8/20131205_Istanbul_140.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c8/20131205_Istanbul_140.jpg/1280px-20131205_Istanbul_140.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "author": "Mark Ahsmann",
+      "licence": "CC BY-SA 3.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "placeName": "the old house",
+      "offeredCues": [
+        "door-window-arch",
+        "writing"
+      ],
+      "label": {
+        "cue": "door-window-arch",
+        "plausible": true
+      },
+      "note": "A studded wooden double door with a small sign on it."
+    },
+    {
+      "id": "arched-door-istanbul",
+      "title": "File:Istanbul (15871196986).jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:Istanbul_(15871196986).jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/9/90/Istanbul_%2815871196986%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/90/Istanbul_%2815871196986%29.jpg/1280px-Istanbul_%2815871196986%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "author": "Karsten Wentink from Leiden, The Netherlands",
+      "licence": "CC BY-SA 2.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+      "placeName": "the old house",
+      "offeredCues": [
+        "door-window-arch",
+        "plant-or-tree"
+      ],
+      "label": {
+        "cue": "door-window-arch",
+        "plausible": true
+      },
+      "note": "A wooden door under a brick arch with a lattice window."
+    },
+    {
+      "id": "iznik-tiles-rustem-pasha",
+      "title": "File:Rüstem Pasha mosque tiles 1270.jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:R%C3%BCstem_Pasha_mosque_tiles_1270.jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/b/bb/R%C3%BCstem_Pasha_mosque_tiles_1270.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bb/R%C3%BCstem_Pasha_mosque_tiles_1270.jpg/1280px-R%C3%BCstem_Pasha_mosque_tiles_1270.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "author": "Dosseman",
+      "licence": "CC BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "placeName": "Rüstem Pasha Mosque",
+      "offeredCues": [
+        "material",
+        "writing"
+      ],
+      "label": {
+        "cue": "material",
+        "plausible": true
+      },
+      "note": "Blue and white Iznik tiles (possibly from inside the mosque or its porch)."
+    },
+    {
+      "id": "old-plane-tree-no-cue",
+      "title": "File:Old plane tree.jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:Old_plane_tree.jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/f/fd/Old_plane_tree.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fd/Old_plane_tree.jpg/1280px-Old_plane_tree.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "author": "Lernain Bro",
+      "licence": "CC BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "placeName": "the old plane tree",
+      "offeredCues": [
+        "writing",
+        "water"
+      ],
+      "label": {
+        "cue": null,
+        "plausible": true
+      },
+      "note": "The plane tree again, at a fork whose cues are writing and water: no offered cue fits, so the meaning pick decides."
+    },
+    {
+      "id": "arched-door-no-cue",
+      "title": "File:Istanbul (15871196986).jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:Istanbul_(15871196986).jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/9/90/Istanbul_%2815871196986%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/90/Istanbul_%2815871196986%29.jpg/1280px-Istanbul_%2815871196986%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "author": "Karsten Wentink from Leiden, The Netherlands",
+      "licence": "CC BY-SA 2.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+      "placeName": "the old house",
+      "offeredCues": [
+        "water",
+        "animal-or-figure"
+      ],
+      "label": {
+        "cue": null,
+        "plausible": true
+      },
+      "note": "The arched door again, at a fork whose cues are water and a figure: no offered cue fits."
+    },
+    {
+      "id": "iznik-tiles-no-cue",
+      "title": "File:Rüstem Pasha mosque tiles 1270.jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:R%C3%BCstem_Pasha_mosque_tiles_1270.jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/b/bb/R%C3%BCstem_Pasha_mosque_tiles_1270.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bb/R%C3%BCstem_Pasha_mosque_tiles_1270.jpg/1280px-R%C3%BCstem_Pasha_mosque_tiles_1270.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "author": "Dosseman",
+      "licence": "CC BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "placeName": "Rüstem Pasha Mosque",
+      "offeredCues": [
+        "water",
+        "animal-or-figure"
+      ],
+      "label": {
+        "cue": null,
+        "plausible": true
+      },
+      "note": "The Iznik tiles again, at a fork whose cues are water and a figure: no offered cue fits."
+    },
+    {
+      "id": "negative-living-room",
+      "title": "File:Cozy living room setting with a yellow sofa and a coffee table adorned with cups and a flower pot.jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:Cozy_living_room_setting_with_a_yellow_sofa_and_a_coffee_table_adorned_with_cups_and_a_flower_pot.jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/f/fa/Cozy_living_room_setting_with_a_yellow_sofa_and_a_coffee_table_adorned_with_cups_and_a_flower_pot.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fa/Cozy_living_room_setting_with_a_yellow_sofa_and_a_coffee_table_adorned_with_cups_and_a_flower_pot.jpg/1280px-Cozy_living_room_setting_with_a_yellow_sofa_and_a_coffee_table_adorned_with_cups_and_a_flower_pot.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "author": "Shixart1985",
+      "licence": "CC BY 2.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by/2.0",
+      "placeName": "Bereketzade Fountain",
+      "offeredCues": [
+        "writing",
+        "water"
+      ],
+      "label": {
+        "cue": null,
+        "plausible": false
+      },
+      "note": "A living room with a sofa: indoors at home."
+    },
+    {
+      "id": "negative-code-screen",
+      "title": "File:Code on computer monitor (Unsplash).jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:Code_on_computer_monitor_(Unsplash).jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/7/7f/Code_on_computer_monitor_%28Unsplash%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7f/Code_on_computer_monitor_%28Unsplash%29.jpg/1280px-Code_on_computer_monitor_%28Unsplash%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "author": "Markus Spiske markusspiske",
+      "licence": "CC0",
+      "licenceUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "placeName": "Bereketzade Fountain",
+      "offeredCues": [
+        "writing",
+        "water"
+      ],
+      "label": {
+        "cue": null,
+        "plausible": false
+      },
+      "note": "Code on a computer screen."
+    },
+    {
+      "id": "negative-monitor-at-home",
+      "title": "File:Computer Screen Monitor.jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:Computer_Screen_Monitor.jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/7/77/Computer_Screen_Monitor.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/77/Computer_Screen_Monitor.jpg/1280px-Computer_Screen_Monitor.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "author": "U3211603",
+      "licence": "CC BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "placeName": "Bereketzade Fountain",
+      "offeredCues": [
+        "writing",
+        "water"
+      ],
+      "label": {
+        "cue": null,
+        "plausible": false
+      },
+      "note": "A computer monitor on a desk at home."
+    }
+  ]
+}

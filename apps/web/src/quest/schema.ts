@@ -207,6 +207,15 @@ export const VerdictSchema = z.object({
 });
 export type Verdict = z.infer<typeof VerdictSchema>;
 
+/** Said instead of an `observed` line that describes people (or is empty): names nothing. */
+export const OBSERVED_FALLBACK = "a detail of the place";
+
+/** The reader's `observed` line, or null when it names nothing usable (missing or the fallback). */
+export function usableObserved(observed: string | null | undefined): string | null {
+  const t = observed?.trim();
+  return t && t !== OBSERVED_FALLBACK ? t : null;
+}
+
 // ---------------------------------------------------------------------------
 // Runs
 
