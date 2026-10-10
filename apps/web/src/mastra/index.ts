@@ -2,6 +2,7 @@ import { Mastra } from "@mastra/core/mastra";
 import { MongoDBStore } from "@mastra/mongodb";
 import { MastraStorageExporter, Observability } from "@mastra/observability";
 import { APP_SLUG } from "../lib/app";
+import { imageFilter } from "./image-filter";
 
 const uri = process.env.MONGODB_URI;
 
@@ -18,7 +19,13 @@ export const mastra = new Mastra({
     : undefined,
   observability: new Observability({
     configs: {
-      default: { serviceName: APP_SLUG, exporters: [new MastraStorageExporter()] },
+      default: {
+        serviceName: APP_SLUG,
+        exporters: [new MastraStorageExporter()],
+        // Photos never reach stored spans or Sentry. Sentry's built-in Mastra integration adds
+        // its exporter to this instance at startup (see sentry.server.config.ts).
+        spanOutputProcessors: [imageFilter],
+      },
     },
   }),
 });
