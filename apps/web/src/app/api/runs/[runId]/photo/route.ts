@@ -45,6 +45,7 @@ export async function POST(request: Request, ctx: RouteContext<"/api/runs/[runId
         fields.lat !== undefined && fields.lng !== undefined
           ? { lat: fields.lat, lng: fields.lng, ...(fields.accuracy !== undefined ? { accuracyM: fields.accuracy } : {}) }
           : null,
+      sampleId: fields.sampleId ?? null,
     });
     return json(result);
   } catch (error) {

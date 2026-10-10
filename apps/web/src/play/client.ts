@@ -9,6 +9,10 @@ import {
   type FinishResponse,
   FinishResponseSchema,
   type PhotoFields,
+  type QuestLineResponse,
+  QuestLineResponseSchema,
+  type QuestView,
+  QuestViewSchema,
   type PhotoResult,
   PhotoResultSchema,
   QUEST_CLIENT_TIMEOUT_MS,
@@ -43,6 +47,8 @@ export class ApiFailure extends Error {
 }
 
 export const TIMEOUT_MS = {
+  view: 20_000, // a saved quest for the desk preview
+  line: 45_000, // one line, voiced on request
   quest: QUEST_CLIENT_TIMEOUT_MS, // a new quest: the server's deadline (research, writer, one repair) + margin
   run: 90_000, // a run start voices the quest's lines
   photo: 60_000, // the photo check (Gemma vision)
@@ -103,6 +109,14 @@ export const httpApi: PlayApi = {
   },
   finish: (runId, req) => call(API.finish(runId), json(req), FinishResponseSchema, TIMEOUT_MS.finish),
 };
+
+/** The desk preview of a saved quest: GET /api/quests/[questId]. */
+export const fetchQuestView = (questId: string): Promise<QuestView> =>
+  call(API.quest(questId), { method: "GET" }, QuestViewSchema, TIMEOUT_MS.view);
+
+/** One line of a quest, voiced on request when the voice budget allows (text only otherwise). */
+export const fetchQuestLine = (questId: string, key: string): Promise<QuestLineResponse> =>
+  call(API.questLine(questId), json({ key }), QuestLineResponseSchema, TIMEOUT_MS.line);
 
 /** Mock run IDs start with this, so /play and /end pick the mock adapter after a reload. */
 export const MOCK_RUN_PREFIX = "mock-";

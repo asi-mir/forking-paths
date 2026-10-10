@@ -3,6 +3,7 @@ import { getStore, type Store } from "@/lib/store";
 import { runAudio, speak, voiceQuest, type QuestVoice, type VoiceOptions } from "@/lib/voice";
 import type { FinishResponse, PhotoResult, Receipt, StartRunResponse } from "./api";
 import { DEMO_QUEST_ID, demoQuest } from "./demo";
+import { storedVerdictFor } from "./demo-stored";
 import { checkPhoto, chooseNext } from "./photo-check";
 import {
   finishResponse,
@@ -32,6 +33,12 @@ import type { Quest, RunVoice } from "./schema";
  * reason.
  */
 export const READER_DEADLINE_MS = 40_000;
+/**
+ * A desk-demo sample photo has a stored result, so the live reader gets less time before the
+ * stored result is used (labelled "stored result" on screen): a busy model should not keep a
+ * visitor waiting for 40 s.
+ */
+export const DESK_READER_DEADLINE_MS = 20_000;
 export const BRIDGE_DEADLINE_MS = 12_000;
 
 /** How long Ollama keeps the reader loaded after the warm-up: about one walk. */
@@ -127,15 +134,25 @@ export async function beginRun(questId: string, userAgent: string | undefined, o
   return startRun(quest, run, runAudio(qv));
 }
 
+/** The photo route's input: a desk-demo sample photo also sends its `sampleId`. */
+export type PhotoStepInput = PhotoInput & { sampleId?: string | null };
+
 /** POST /api/runs/[runId]/photo: checks one photo and moves the run on. The image is never stored. */
-export async function photoStep(runId: string, input: PhotoInput, opts: ServiceOptions = {}): Promise<PhotoResult> {
+export async function photoStep(runId: string, given: PhotoStepInput, opts: ServiceOptions = {}): Promise<PhotoResult> {
   const store = opts.store ?? getStore();
   const run = await store.getRun(runId);
   if (!run) throw new RunError("This walk was not found. Start a new one.", "not-found", 404);
   const quest = await loadQuest(run.questId, { store });
   const attempts = await store.attemptsFor(runId);
+  // A desk-demo sample photo (the exact file, at its own stop) carries its stored result.
+  const { sampleId, ...rest } = given;
+  const storedVerdict =
+    rest.storedVerdict ??
+    storedVerdictFor({ questId: run.questId, placeId: rest.placeId, sampleId, image: rest.image.data });
+  const input: PhotoInput = { ...rest, storedVerdict };
+  const readerMs = storedVerdict ? DESK_READER_DEADLINE_MS : READER_DEADLINE_MS;
   const deps: RunDeps = {
-    check: (i, o) => checkPhoto(i, { ...o, signal: AbortSignal.timeout(READER_DEADLINE_MS) }),
+    check: (i, o) => checkPhoto(i, { ...o, signal: AbortSignal.timeout(readerMs) }),
     choose: (i, o) => chooseNext(i, { ...o, signal: AbortSignal.timeout(BRIDGE_DEADLINE_MS) }),
     speak: (text) => speak(text, { store, lang: quest.lang, ...opts.voice }),
     now: () => new Date(),

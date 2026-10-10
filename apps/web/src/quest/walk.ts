@@ -2,8 +2,7 @@ import { mastra } from "@/mastra";
 import { parkPhoto, unparkPhoto, WALK_STEP_ID } from "@/mastra/workflows/play-quest";
 import { getStore } from "@/lib/store";
 import type { PhotoResult, StartRunResponse } from "./api";
-import type { PhotoInput } from "./run";
-import { beginRun, loadQuest, photoStep, type ServiceOptions } from "./run-service";
+import { beginRun, loadQuest, photoStep, type PhotoStepInput, type ServiceOptions } from "./run-service";
 
 /**
  * The play routes over the paused walk. `POST /api/runs` stores the run (T22's plain record,
@@ -51,7 +50,7 @@ export async function startWalk(questId: string, userAgent: string | undefined, 
 }
 
 /** POST /api/runs/[runId]/photo: resumes the paused walk with the photo (in memory only). */
-export function walkPhoto(runId: string, input: PhotoInput, opts: ServiceOptions = {}): Promise<PhotoResult> {
+export function walkPhoto(runId: string, input: PhotoStepInput, opts: ServiceOptions = {}): Promise<PhotoResult> {
   return oneAtATime(runId, async () => {
     const store = opts.store ?? getStore();
     const run = await store.getRun(runId);

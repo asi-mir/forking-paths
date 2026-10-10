@@ -22,12 +22,15 @@ import {
   replayed,
   restore,
   type RunState,
+  sampleSent,
   toClue,
   toPocket,
   visibility,
   withFinish,
 } from "@/play/run-state";
 import { readRun, updateRun, useRun } from "@/play/run-store";
+import { deskSamplesFor, type DemoSample, sampleUrl } from "@/quest/demo-samples";
+import { RouteSoFar, SampleCredit, SamplePicker, sentSample, StoredNote, VerdictDetail } from "./desk";
 import { useRunPhotos } from "./use-run-photos";
 import { ArrowRightIcon, ArrowUpIcon, CameraIcon, ForkMark, LockIcon, ReplayIcon } from "./icons";
 import {
@@ -119,7 +122,7 @@ function Walk({ run, narrator }: { run: RunState; narrator: Narrator | null }) {
   const router = useRouter();
   const api = getApi(run.mock);
   const gps = useRef<Promise<GpsResult> | null>(null);
-  const [preview, setPreview] = useState<{ placeId: string; url: string; blob: Blob } | null>(null);
+  const [preview, setPreview] = useState<{ placeId: string; url: string; blob: Blob; sampleId: string | null } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [finishing, setFinishing] = useState(false);
   const { photos, refresh } = useRunPhotos(run.runId);
@@ -127,6 +130,8 @@ function Walk({ run, narrator }: { run: RunState; narrator: Narrator | null }) {
   const set = (fn: (s: RunState) => RunState) => updateRun(run.runId, fn);
   const tap = () => narrator?.unlock();
   const stop = run.stop;
+  const desk = run.desk === true;
+  const samples = desk ? deskSamplesFor(run.start.questId, stop.placeId) : [];
   const top = (right?: React.ReactNode, tone: "paper" | "pocket" = "paper") => (
     <TopBar tone={tone} left={caseNo(run.runId)} right={right ?? `Stop ${stop.stop} of ${stop.of}`} />
   );
@@ -140,18 +145,20 @@ function Walk({ run, narrator }: { run: RunState; narrator: Narrator | null }) {
   const imHere = () => {
     tap();
     narrator?.stopAll("arrive");
-    gps.current = readPosition(12_000); // once, now: pages get no GPS while locked
+    // Once, now: pages get no GPS while locked. The desk demo treats GPS as missing.
+    gps.current = desk ? Promise.resolve({ ok: false, reason: "unavailable" }) : readPosition(12_000);
     set((s) => arrive(s, Date.now()));
   };
 
-  const sendPhoto = async (blob: Blob) => {
+  const sendPhoto = async (blob: Blob, sampleId: string | null = null) => {
     setError(null);
-    set(checking);
+    set((s) => checking(desk ? sampleSent(s, stop.placeId, sampleId) : s));
     try {
-      const fix = await (gps.current ?? readPosition(8_000));
+      const fix: GpsResult = desk ? { ok: false, reason: "unavailable" } : await (gps.current ?? readPosition(8_000));
       const fields = {
         placeId: stop.placeId,
         ...(fix.ok ? { lat: fix.fix.lat, lng: fix.fix.lng, accuracy: fix.fix.accuracy } : {}),
+        ...(sampleId ? { sampleId } : {}),
       };
       const result = await api.sendPhoto(run.runId, blob, fields);
       set((s) => applyResult(s, result));
@@ -180,12 +187,33 @@ function Walk({ run, narrator }: { run: RunState; narrator: Narrator | null }) {
     try {
       const prepared = await preparePhoto(file);
       if (preview) URL.revokeObjectURL(preview.url);
-      setPreview({ placeId: stop.placeId, url: URL.createObjectURL(prepared.blob), blob: prepared.blob });
+      setPreview({ placeId: stop.placeId, url: URL.createObjectURL(prepared.blob), blob: prepared.blob, sampleId: null });
       await sendPhoto(prepared.blob);
     } catch {
       setError("This photo could not be read. Take another one.");
     }
   };
+
+  /** Desk demo: send a sample photo as it is (already ≤ 1024 px, no EXIF), with its id. */
+  const onSample = async (sample: DemoSample) => {
+    tap();
+    setError(null);
+    set((s) => cameraOpened(s, Date.now()));
+    try {
+      const res = await fetch(sampleUrl(sample));
+      if (!res.ok) throw new Error(String(res.status));
+      const blob = new Blob([await res.arrayBuffer()], { type: "image/jpeg" });
+      if (preview) URL.revokeObjectURL(preview.url);
+      setPreview({ placeId: stop.placeId, url: URL.createObjectURL(blob), blob, sampleId: sample.id });
+      await sendPhoto(blob, sample.id);
+    } catch {
+      setError("The sample photo could not be loaded. Try again.");
+    }
+  };
+
+  const picker = (
+    <SamplePicker samples={samples} fork={stop.isFork} disabled={run.phase === "checking"} onSample={onSample} onOwnPhoto={onPick} />
+  );
 
   const openCamera = () => {
     tap();
@@ -255,18 +283,33 @@ function Walk({ run, narrator }: { run: RunState; narrator: Narrator | null }) {
         <Screen
           top={top(stop.isFork ? `Stop ${stop.stop} of ${stop.of} · Fork` : undefined)}
           actions={
-            <PrimaryButton testId="go" icon={<LockIcon size={20} />} onClick={goPocket}>
-              Lock your phone. Go.
-            </PrimaryButton>
+            desk ? (
+              <PrimaryButton testId="desk-arrive" icon={<ArrowRightIcon size={20} />} onClick={imHere}>
+                Skip the walk: I&apos;m there
+              </PrimaryButton>
+            ) : (
+              <PrimaryButton testId="go" icon={<LockIcon size={20} />} onClick={goPocket}>
+                Lock your phone. Go.
+              </PrimaryButton>
+            )
           }
         >
           <Progress at={stop.stop} of={stop.of} />
+          {desk ? <RouteSoFar run={run} /> : null}
           <div className="mt-8">
             <Narration line={stop.clue} label={`Clue ${stop.stop}`} size="xl" withAmbience tag="clue" testId="clue" />
           </div>
           <p className="mt-auto pt-8 text-[15px] leading-relaxed text-muted">
-            Walk there with the phone in your pocket. When you can see it, unlock and tap{" "}
-            <span className="font-semibold text-ink">I&apos;m here</span>.
+            {desk ? (
+              <>
+                On the street you would lock your phone and walk there, with nothing playing. At a desk, skip ahead.
+              </>
+            ) : (
+              <>
+                Walk there with the phone in your pocket. When you can see it, unlock and tap{" "}
+                <span className="font-semibold text-ink">I&apos;m here</span>.
+              </>
+            )}
           </p>
         </Screen>
       );
@@ -323,11 +366,14 @@ function Walk({ run, narrator }: { run: RunState; narrator: Narrator | null }) {
         <Screen
           top={top(`Stop ${stop.stop} of ${stop.of} · At the place`)}
           actions={
-            <CameraButton testId="camera" onOpen={openCamera} onPick={onPick} icon={<CameraIcon size={22} />}>
-              {error && preview?.placeId === stop.placeId ? "Take another photo" : "Take the photo"}
-            </CameraButton>
+            desk ? undefined : (
+              <CameraButton testId="camera" onOpen={openCamera} onPick={onPick} icon={<CameraIcon size={22} />}>
+                {error && preview?.placeId === stop.placeId ? "Take another photo" : "Take the photo"}
+              </CameraButton>
+            )
           }
         >
+          {desk ? <RouteSoFar run={run} /> : null}
           <div className="mt-6">
             <Narration line={stop.look} label="At the place" tag="look" testId="look" />
           </div>
@@ -340,18 +386,20 @@ function Walk({ run, narrator }: { run: RunState; narrator: Narrator | null }) {
               </p>
             </div>
           ) : null}
-          <p className="mt-5 text-[14px] leading-relaxed text-muted">
-            One detail, close up. Keep people out of the frame, and stay on the pavement.
-          </p>
+          {desk ? null : (
+            <p className="mt-5 text-[14px] leading-relaxed text-muted">
+              One detail, close up. Keep people out of the frame, and stay on the pavement.
+            </p>
+          )}
           {error ? (
             <div className="mt-5 flex flex-col gap-3">
               <ErrorNote>{error}</ErrorNote>
               {preview?.placeId === stop.placeId ? (
-                <SecondaryButton onClick={() => void sendPhoto(preview.blob)}>Send the same photo again</SecondaryButton>
+                <SecondaryButton onClick={() => void sendPhoto(preview.blob, preview.sampleId)}>Send the same photo again</SecondaryButton>
               ) : null}
             </div>
           ) : null}
-          <GpsLine gps={gps} />
+          {desk ? picker : <GpsLine gps={gps} />}
         </Screen>
       );
 
@@ -380,6 +428,7 @@ function Walk({ run, narrator }: { run: RunState; narrator: Narrator | null }) {
     case "result": {
       const r = run.result!;
       const url = photoUrl(r.placeId);
+      const sample = desk ? sentSample(run, r.placeId) : null;
       return (
         <Screen
           top={top()}
@@ -401,7 +450,7 @@ function Walk({ run, narrator }: { run: RunState; narrator: Narrator | null }) {
             <Label>
               Stop {stop.stop} · {r.status === "passed" ? "found" : "skipped"}
             </Label>
-            <h1 className="narration mt-2 pr-24 text-[34px] font-[560] leading-[1.08]" data-testid="place-name">
+            <h1 className="narration mt-2 pr-32 text-[34px] font-[560] leading-[1.08]" data-testid="place-name">
               {r.name}
             </h1>
             <div className="absolute right-0 top-7">
@@ -417,13 +466,21 @@ function Walk({ run, narrator }: { run: RunState; narrator: Narrator | null }) {
           ) : null}
           {url || r.verdict ? (
             <div className="mt-6 grid grid-cols-[112px_1fr] items-start gap-4">
-              {url ? <Snapshot src={url} rotate={-2.5} /> : <span />}
+              {url ? (
+                <div>
+                  <Snapshot src={url} rotate={-2.5} />
+                  {sample ? <SampleCredit sample={sample} className="mt-2" /> : null}
+                </div>
+              ) : (
+                <span />
+              )}
               <div data-testid="observed">
                 <Label className="mb-1.5">What Gemma saw</Label>
                 {r.verdict ? (
                   <>
                     <p className="narration text-[19px] italic leading-snug">{r.verdict.observed}</p>
-                    {r.verdict.source === "stored" ? <p className="label mt-2">Stored result</p> : null}
+                    {desk ? <VerdictDetail verdict={r.verdict} fork={stop.isFork} /> : null}
+                    {r.verdict.source === "stored" ? desk ? <StoredNote /> : <p className="label mt-2">Stored result</p> : null}
                   </>
                 ) : (
                   <p className="text-[15px] leading-snug text-muted">
@@ -461,11 +518,12 @@ function Walk({ run, narrator }: { run: RunState; narrator: Narrator | null }) {
             </PrimaryButton>
           }
         >
+          {desk ? <RouteSoFar run={run} /> : null}
           <div className="pt-6">
             <Label>{atFork ? "The fork" : "The way on"}</Label>
             {atFork && r.verdict ? (
               <div className="mt-4 rounded-[12px] border border-rule bg-card p-4" data-testid="fork-choice">
-                <p className="label mb-1">You photographed</p>
+                <p className="label mb-1">You photographed{r.verdict.source === "stored" ? " · stored result" : ""}</p>
                 <p className="narration text-[20px] italic leading-snug">{r.verdict.observed}</p>
                 <div className="mt-4 flex items-center gap-3">
                   {r.verdict.cue ? (
@@ -556,9 +614,11 @@ function Walk({ run, narrator }: { run: RunState; narrator: Narrator | null }) {
         <Screen
           top={top()}
           actions={
-            <CameraButton testId="camera" onOpen={openCamera} onPick={onPick} icon={<CameraIcon size={22} />}>
-              Take another photo
-            </CameraButton>
+            desk ? undefined : (
+              <CameraButton testId="camera" onOpen={openCamera} onPick={onPick} icon={<CameraIcon size={22} />}>
+                Take another photo
+              </CameraButton>
+            )
           }
         >
           <div className="pt-6">
@@ -579,6 +639,7 @@ function Walk({ run, narrator }: { run: RunState; narrator: Narrator | null }) {
               <ErrorNote>{error}</ErrorNote>
             </div>
           ) : null}
+          {desk ? picker : null}
         </Screen>
       );
     }

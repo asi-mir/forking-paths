@@ -6,6 +6,7 @@ import type {
   StopPrompt,
 } from "@/quest/api";
 import { addChecker, type PhotoChecker } from "@/quest/checker";
+import type { Cue } from "@/quest/schema";
 import type { TimelineEvent } from "./receipt";
 
 /**
@@ -39,7 +40,11 @@ export type RunState = {
   phase: Phase;
   result: DoneResult | null; // the last passed or skipped stop
   miss: MissResult | null; // the last too-far or needs-retry answer
-  passed: Array<{ placeId: string; name: string; status: "passed" | "skipped" }>;
+  passed: Array<{ placeId: string; name: string; status: "passed" | "skipped"; cue?: Cue | null; next?: string | null }>;
+  /** The desk demo: no GPS, no walking; sample photos at each stop of the demo quest. */
+  desk?: boolean;
+  /** Desk demo: the sample photo sent at each stop (placeId → sample id), for its credit line. */
+  samples?: Record<string, string>;
   timeline: TimelineEvent[];
   /** Which Gemma read this walk's photos, and where (live checks only), for the receipt. */
   checkers?: PhotoChecker[];
@@ -48,8 +53,9 @@ export type RunState = {
   finishedAt: number | null;
 };
 
-export function newRun(start: StartRunResponse, mock: boolean, now: number): RunState {
+export function newRun(start: StartRunResponse, mock: boolean, now: number, opts: { desk?: boolean } = {}): RunState {
   return {
+    ...(opts.desk ? { desk: true, samples: {} } : {}),
     v: 1,
     runId: start.runId,
     mock,
@@ -114,7 +120,17 @@ export function applyResult(prev: RunState, r: PhotoResult): RunState {
     result: r,
     miss: null,
     end: r.end ?? s.end,
-    passed: [...s.passed.filter((p) => p.placeId !== r.placeId), { placeId: r.placeId, name: r.name, status: r.status }],
+    passed: [
+      ...s.passed.filter((p) => p.placeId !== r.placeId),
+      {
+        placeId: r.placeId,
+        name: r.name,
+        status: r.status,
+        // The cue that picked the way on, at a fork only.
+        cue: r.next && r.next.chosenBy !== "only-link" ? (r.verdict?.cue ?? null) : null,
+        next: r.next?.stop.placeId ?? null,
+      },
+    ],
   };
 }
 
@@ -123,6 +139,14 @@ export function afterResult(s: RunState): RunState {
   if (s.result?.next) return { ...s, phase: "bridge" };
   if (s.result?.end) return { ...s, phase: "finale" };
   return s;
+}
+
+/** Desk demo: remember which sample photo was sent at a stop (null: the visitor's own photo). */
+export function sampleSent(s: RunState, placeId: string, sampleId: string | null): RunState {
+  const samples = { ...(s.samples ?? {}) };
+  if (sampleId) samples[placeId] = sampleId;
+  else delete samples[placeId];
+  return { ...s, samples };
 }
 
 /** Back from a photo error: the camera again. */

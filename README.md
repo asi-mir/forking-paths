@@ -132,6 +132,17 @@ testers, and stop it after the walk. (`pnpm dev` works too once the tunnel's hos
 `allowedDevOrigins` in `next.config.ts`, but a production build is lighter on a laptop that is
 also running Gemma.)
 
+## Try it from your desk
+
+Open `/demo` to play the saved Karaköy case (below Galata Tower, Istanbul) without walking or
+sharing your location. Each stop offers sample photos, and the fork offers two that show
+different details, so you can take both ways and see the route change; you can also use your
+own photo. With no GPS, Gemma's check decides whether a photo was taken at the place. If the
+live model fails or is rate-limited, a sample photo uses its stored result, labelled as such
+(`pnpm exec tsx scripts/store-demo-verdicts.ts` reads each sample 10 times and stores it).
+`/demo/near` generates a quest near you, or in a city you pick, and shows every line, fork and
+fact with its link.
+
 ## For contributors and coding agents
 
 Start with [`AGENTS.md`](AGENTS.md): commands, hard rules and how to work.
@@ -140,6 +151,11 @@ Start with [`AGENTS.md`](AGENTS.md): commands, hard rules and how to work.
 
 Gemma 4 (Apache 2.0) by Google. Facts from Wikipedia (CC BY-SA). Built with Next.js, Mastra,
 ElevenLabs, SerpApi, MongoDB Atlas, Sentry and Render. Full credits will be listed here.
+
+Desk demo sample photos (Wikimedia Commons, CC BY-SA 4.0, cropped and resized; file pages in
+[`apps/web/public/demo/credits.json`](apps/web/public/demo/credits.json)): Francesco Bini (the
+Bereketzade Fountain's inscription and spout), Basak (the Bereketzade Mosque's minaret plaque),
+Ali Osman Dilekoğlu (the Hasan Ağa Fountain) and Another Believer (the Camondo Stairs).
 
 ## Commits after the deadline
 

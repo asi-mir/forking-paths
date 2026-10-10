@@ -2,8 +2,8 @@ import { createStep, createWorkflow } from "@mastra/core/workflows";
 import { z } from "zod";
 import { getStore } from "@/lib/store";
 import { CaseFileSchema, type PhotoResult } from "@/quest/api";
-import { caseFile, type PhotoInput } from "@/quest/run";
-import { loadQuest, photoStep, type ServiceOptions } from "@/quest/run-service";
+import { caseFile } from "@/quest/run";
+import { loadQuest, photoStep, type PhotoStepInput, type ServiceOptions } from "@/quest/run-service";
 import { LangSchema, PlaceIdSchema } from "@/quest/schema";
 
 /**
@@ -32,7 +32,7 @@ export const WALK_STEP_ID = "walk-stop";
 /** A photo waiting for its resume, and what the step made of it. */
 export type ParkedPhoto = {
   runId: string;
-  input: PhotoInput;
+  input: PhotoStepInput;
   /** The route's options (the store, voice and test seams), passed through to `photoStep`. */
   opts: ServiceOptions;
   /** Set by the step: the result for the phone, or the error to send. */

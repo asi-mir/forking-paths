@@ -24,6 +24,8 @@ export const API = {
   photo: (runId: string) => `/api/runs/${encodeURIComponent(runId)}/photo`,
   finish: (runId: string) => `/api/runs/${encodeURIComponent(runId)}/finish`,
   audio: (clipId: string) => `/api/audio/${encodeURIComponent(clipId)}`,
+  quest: (questId: string) => `/api/quests/${encodeURIComponent(questId)}`,
+  questLine: (questId: string) => `/api/quests/${encodeURIComponent(questId)}/line`,
 } as const;
 
 /**
@@ -123,6 +125,58 @@ export const CreateQuestResponseSchema = z.object({
   distanceM: z.number().nonnegative().optional(), // how far the reused or offered quest's centre is from the player
 });
 export type CreateQuestResponse = z.infer<typeof CreateQuestResponseSchema>;
+
+// ---------------------------------------------------------------------------
+// GET /api/quests/[questId] (the desk demo's look at a quest: every line, fork and fact)
+
+/** A line of the quest as the desk preview shows it, with the key to voice it on request. */
+export const QuestViewLineSchema = z.object({
+  key: z.string(), // send to POST /api/quests/[questId]/line to hear it
+  text: z.string(),
+  facts: z.array(FactIdSchema).optional(), // the facts it cites (reveals, links, finale, mystery)
+});
+export type QuestViewLine = z.infer<typeof QuestViewLineSchema>;
+
+export const QuestViewSchema = z.object({
+  questId: z.string(),
+  title: z.string(),
+  lang: LangSchema,
+  minutes: z.number(),
+  stopsPerRun: StopsPerRunSchema,
+  center: z.object({ lat: z.number(), lng: z.number() }), // rounded to ~100 m
+  demo: z.boolean(),
+  mystery: z.object({ question: z.string(), answer: z.string(), facts: z.array(FactIdSchema) }),
+  briefing: QuestViewLineSchema,
+  places: z.array(
+    z.object({
+      id: PlaceIdSchema,
+      name: z.string(),
+      role: z.enum(["start", "answer", "stop"]),
+      fork: z.boolean(),
+      clue: QuestViewLineSchema,
+      look: QuestViewLineSchema,
+      hint: QuestViewLineSchema,
+      reveal: QuestViewLineSchema,
+      links: z.array(
+        z.object({ to: PlaceIdSchema, toName: z.string(), cue: CueSchema.nullable(), reason: QuestViewLineSchema }),
+      ),
+    }),
+  ),
+  finale: QuestViewLineSchema,
+  facts: z.array(CitedFactSchema), // every fact, with source, query and link
+  writer: z.string().nullable(), // the model that wrote it, e.g. google/gemma-4-31b-it
+  editedByHand: z.array(z.string()), // hand edits to Gemma's draft (the demo quest lists them)
+});
+export type QuestView = z.infer<typeof QuestViewSchema>;
+
+/** POST /api/quests/[questId]/line { key }: one line, voiced on request when the voice budget allows. */
+export const QuestLineRequestSchema = z.object({ key: z.string().min(1).max(40) });
+export const QuestLineResponseSchema = z.object({
+  line: SpokenLineSchema, // clipId set when voiced (or already cached); text only otherwise
+  voice: z.enum(["on", "off"]),
+  reason: z.string().optional(), // why it is text only: a plain sentence
+});
+export type QuestLineResponse = z.infer<typeof QuestLineResponseSchema>;
 
 // ---------------------------------------------------------------------------
 // POST /api/runs

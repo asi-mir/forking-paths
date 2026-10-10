@@ -7,6 +7,7 @@ import { CUE_TAG, roadNotTakenLine } from "@/play/labels";
 import { deletePhotos } from "@/play/photo-store";
 import { summarize, toReceipt } from "@/play/receipt";
 import { useRun } from "@/play/run-store";
+import { SampleCredit, sentSample } from "./desk";
 import { ExternalIcon } from "./icons";
 import { ReceiptView } from "./receipt-view";
 import { RouteDiagram, lettersFor } from "./route-diagram";
@@ -54,7 +55,7 @@ export function CaseFileScreen({ runId }: { runId: string }) {
   const opened = new Date(run.createdAt);
 
   return (
-    <Screen actions={<HomeLink />}>
+    <Screen actions={run.desk ? <DeskAgainLink /> : <HomeLink />}>
       <article className="relative mt-5 rounded-[4px] border border-rule bg-card px-5 pb-8 pt-6 shadow-[0_2px_18px_rgb(28_26_23/0.12)]">
         {/* folder tab */}
         <span aria-hidden className="absolute -top-3.5 left-5 h-4 w-28 rounded-t-[6px] border border-b-0 border-rule bg-card" />
@@ -151,7 +152,12 @@ export function CaseFileScreen({ runId }: { runId: string }) {
                     key={p.placeId}
                     src={p.url}
                     rotate={i % 2 === 0 ? -2 : 1.5}
-                    caption={`${i + 1} · ${cf.route.find((r) => r.placeId === p.placeId)?.name ?? p.placeId}`}
+                    caption={
+                      <>
+                        {`${i + 1} · ${cf.route.find((r) => r.placeId === p.placeId)?.name ?? p.placeId}`}
+                        {sentSample(run, p.placeId) ? <SampleCredit sample={sentSample(run, p.placeId)!} className="mt-1" /> : null}
+                      </>
+                    }
                   />
                 ))}
               </div>
@@ -235,6 +241,24 @@ function FactLinks({ facts }: { facts: CitedFact[] }) {
         </li>
       ))}
     </ul>
+  );
+}
+
+/** Desk demo: play the case again and pick the other detail at the fork. */
+function DeskAgainLink() {
+  return (
+    <>
+      <Link
+        href="/demo"
+        data-testid="desk-again"
+        className="flex min-h-14 w-full items-center justify-center rounded-[10px] bg-stamp px-5 text-[17px] font-semibold text-stamp-ink"
+      >
+        Play again and pick the other detail
+      </Link>
+      <Link href="/demo/near" className="flex min-h-11 items-center justify-center text-[15px] font-medium text-link underline underline-offset-2">
+        Generate a quest near me
+      </Link>
+    </>
   );
 }
 

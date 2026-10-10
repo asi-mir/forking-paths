@@ -1,0 +1,103 @@
+{
+  "questId": "demo-karakoy",
+  "reader": "google/gemma-4-26b-a4b-it",
+  "at": "2026-10-10T17:23:36.427Z",
+  "samples": {
+    "p1-writing": {
+      "verdict": {
+        "plausible": true,
+        "confidence": 0.95,
+        "observed": "gold calligraphy inscribed on a rectangular stone plaque",
+        "cue": "writing"
+      },
+      "runs": 10,
+      "passed": 10,
+      "cues": {
+        "writing": 10
+      },
+      "next": {
+        "P2": 10
+      },
+      "errors": 0,
+      "latencyMs": {
+        "p50": 1724,
+        "p95": 2046
+      }
+    },
+    "p1-water": {
+      "verdict": {
+        "plausible": true,
+        "confidence": 0.95,
+        "observed": "a brass spout on a carved marble fountain wall",
+        "cue": "water"
+      },
+      "runs": 10,
+      "passed": 10,
+      "cues": {
+        "water": 10
+      },
+      "next": {
+        "P3": 10
+      },
+      "errors": 0,
+      "latencyMs": {
+        "p50": 1699,
+        "p95": 1793
+      }
+    },
+    "p2-plaque": {
+      "verdict": {
+        "plausible": true,
+        "confidence": 1,
+        "observed": "white marble information plaque mounted on a stone and brick wall",
+        "cue": null
+      },
+      "runs": 10,
+      "passed": 10,
+      "cues": {
+        "null": 10
+      },
+      "errors": 0,
+      "latencyMs": {
+        "p50": 1825,
+        "p95": 9314
+      }
+    },
+    "p3-inscription": {
+      "verdict": {
+        "plausible": true,
+        "confidence": 0.95,
+        "observed": "rectangular marble plaque with gold Arabic calligraphy on a stone wall",
+        "cue": null
+      },
+      "runs": 10,
+      "passed": 10,
+      "cues": {
+        "null": 10
+      },
+      "errors": 0,
+      "latencyMs": {
+        "p50": 1647,
+        "p95": 4655
+      }
+    },
+    "p4-stairs": {
+      "verdict": {
+        "plausible": true,
+        "confidence": 1,
+        "observed": "curved grey stone stairs with thick stone railings and a small plant",
+        "cue": null
+      },
+      "runs": 10,
+      "passed": 10,
+      "cues": {
+        "null": 10
+      },
+      "errors": 0,
+      "latencyMs": {
+        "p50": 1715,
+        "p95": 3486
+      }
+    }
+  }
+}
