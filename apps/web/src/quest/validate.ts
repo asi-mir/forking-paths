@@ -122,6 +122,12 @@ function asksForPhotoOfPeople(text: string): string | null {
 
 type BlockRule = { pattern: RegExp; why: string; fix: string };
 
+/**
+ * "onto the street" after a verb of facing describes a thing, not the player: "the face that
+ * looks onto the street", "a window opening onto the road". Those lines are not blocked.
+ */
+const FACES = String.raw`(?<!\b(?:looks?|looking|looked|faces?|facing|faced|opens?|opening|opened|gives?|giving|gave)\s+)`;
+
 /** The safety block list. English first; the Turkish entries are a starting set. */
 const SAFETY_RULES: BlockRule[] = [
   {
@@ -142,8 +148,10 @@ const SAFETY_RULES: BlockRule[] = [
     fix: "keep the player on the pavement",
   },
   {
-    pattern:
-      /\b(?:onto|into|middle\s+of)\s+(?:the\s+)?(?:road|carriageway|highway|motorway|tram\s*(?:line|tracks?)|railway|rail\s+tracks?)\b/i,
+    pattern: new RegExp(
+      String.raw`${FACES}\b(?:onto|into|middle\s+of)\s+(?:the\s+)?(?:road|carriageway|highway|motorway|tram\s*(?:line|tracks?)|railway|rail\s+tracks?)\b`,
+      "i",
+    ),
     why: "puts the player on a road or track",
     fix: "keep the player on the pavement",
   },
@@ -154,7 +162,11 @@ const SAFETY_RULES: BlockRule[] = [
     why: "puts the player on a road or track",
     fix: "keep the player on the pavement",
   },
-  { pattern: /\b(?:onto|into|middle\s+of)\s+(?:the\s+)?street\b/i, why: "puts the player on the street", fix: "keep the player on the pavement" },
+  {
+    pattern: new RegExp(String.raw`${FACES}\b(?:onto|into|middle\s+of)\s+(?:the\s+)?street\b`, "i"),
+    why: "puts the player on the street",
+    fix: "keep the player on the pavement",
+  },
   {
     pattern: /\b(?:off|from)\s+the\s+(?:pavement|kerb|curb|sidewalk)\b/i,
     why: "takes the player off the pavement",

@@ -193,6 +193,8 @@ describe("safetyIssues", () => {
     "Take a photo of him by the door.",
     "Photograph them by the fountain.",
     "Photograph the simit seller on the corner.",
+    "Step onto the street to see the arch.",
+    "Walk into the middle of the road.",
   ])("blocks %j", (line) => {
     expect(safetyIssues(line)).not.toEqual([]);
   });
@@ -207,6 +209,8 @@ describe("safetyIssues", () => {
     "Turn left at the traffic lights.",
     "The plaque is set in the road surface.",
     "Two arches stand here; photograph one of them.",
+    "This fountain has two faces. Find the one that looks onto the street.",
+    "A window opens onto the road above the arch.",
   ])("allows %j", (line) => {
     expect(safetyIssues(line)).toEqual([]);
   });

@@ -58,6 +58,20 @@ pnpm exec tsx scripts/model-smoke.ts --provider ollama   # or google, or all
 
 A provider that is not configured is skipped.
 
+## The demo quest
+
+`src/quest/__fixtures__/karakoy.json` is the desk demo's quest: four places below Galata Tower in
+Karaköy, Istanbul, with facts from the Wikipedia pages they link to. Gemma drafted the text from
+those facts. Each fact was checked against the page it links to, and every hand edit to Gemma's
+draft is listed in `editedByHand`. Load it with `demoQuest()` from `src/quest/demo.ts` (it runs
+the validator). To draft the text again from the same facts and route:
+
+```bash
+pnpm exec tsx scripts/draft-demo-quest.ts --out /tmp/karakoy-draft.json
+```
+
+The draft is validated (one repair on failure) and saved to `--out`; the fixture is not changed.
+
 ## Where code goes
 
 Routes in `src/app`, pure game rules in `src/quest` (unit-tested), external services in
