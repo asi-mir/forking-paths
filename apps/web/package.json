@@ -11,6 +11,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "check": "pnpm typecheck && pnpm lint && pnpm test",
+    "db:check": "tsx scripts/db-check.ts",
     "mastra:dev": "mastra dev",
     "e2e": "playwright test"
   },

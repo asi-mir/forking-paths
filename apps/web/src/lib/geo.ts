@@ -73,3 +73,32 @@ export const MIN_PER_STOP = 2;
 export function walkMinutes(distance: number, stops: number): number {
   return distance / WALK_M_PER_MIN + MIN_PER_STOP * stops;
 }
+
+// ---------------------------------------------------------------------------
+// Storage helpers
+
+/** A GeoJSON point. GeoJSON order is [lng, lat], the reverse of LatLng. */
+export type GeoPoint = { type: "Point"; coordinates: [lng: number, lat: number] };
+
+/** LatLng → GeoJSON point ([lng, lat]). */
+export function toPoint(p: LatLng): GeoPoint {
+  return { type: "Point", coordinates: [p.lng, p.lat] };
+}
+
+/** GeoJSON point → LatLng. */
+export function fromPoint(p: GeoPoint): LatLng {
+  return { lat: p.coordinates[1], lng: p.coordinates[0] };
+}
+
+/** Decimal places kept by roundCenter: 0.001° is ~111 m of latitude, ~85 m of longitude at 40°. */
+export const CENTER_DECIMALS = 3;
+
+/**
+ * Rounds a point to ~100 m. Quest centres and cache keys use it, so a stored quest does not
+ * pin down where a player stood, and nearby requests share a cache entry.
+ */
+export function roundCenter(p: LatLng): LatLng {
+  const f = 10 ** CENTER_DECIMALS;
+  // `+ 0` turns -0 into 0, so keys never read "-0".
+  return { lat: Math.round(p.lat * f) / f + 0, lng: Math.round(p.lng * f) / f + 0 };
+}

@@ -25,6 +25,19 @@ Local database without Atlas:
 
 ```bash
 docker run -d --name forking-paths-mongo -p 27017:27017 mongo:8
+pnpm db:check     # connects, creates the indexes, starts Mastra's storage
+```
+
+With `MONGODB_URI` empty the app keeps quests, runs and caches in memory (lost on restart),
+so it runs with no database at all. Code reads and writes through the repositories in
+`src/lib/store` (`saveQuest`, `questsNear`, `startRun`, …), which pick MongoDB or memory.
+Paid calls go through `budgetTake` in `src/lib/budget.ts` (daily caps, UTC days).
+
+The MongoDB integration tests run only when `MONGODB_URI` is set; they use a database
+named `<MONGODB_DB>-itest` and drop it:
+
+```bash
+MONGODB_URI=mongodb://127.0.0.1:27017 pnpm test
 ```
 
 ## Gemma provider

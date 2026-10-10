@@ -2,20 +2,22 @@ import { Mastra } from "@mastra/core/mastra";
 import { MongoDBStore } from "@mastra/mongodb";
 import { MastraStorageExporter, Observability } from "@mastra/observability";
 import { APP_SLUG } from "../lib/app";
+import { dbName } from "../lib/db";
 import { imageFilter } from "./image-filter";
 
-const uri = process.env.MONGODB_URI;
+const uri = process.env.MONGODB_URI?.trim();
 
 /**
  * The one Mastra instance. Route handlers import it, and `pnpm mastra:dev` opens Studio on it.
  * Agents, tools and workflows are registered here.
  * Storage is required for suspended workflow runs; without MONGODB_URI it runs in memory.
+ * It shares the app's database (its collections are prefixed "mastra_"); `pnpm db:check` tests it.
  */
 export const mastra = new Mastra({
   agents: {},
   workflows: {},
   storage: uri
-    ? new MongoDBStore({ id: APP_SLUG, uri, dbName: process.env.MONGODB_DB ?? APP_SLUG })
+    ? new MongoDBStore({ id: APP_SLUG, uri, dbName: dbName() })
     : undefined,
   observability: new Observability({
     configs: {

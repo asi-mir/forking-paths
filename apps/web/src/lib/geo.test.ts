@@ -5,7 +5,10 @@ import {
   compass8,
   compassDirection,
   distanceM,
+  fromPoint,
   isNear,
+  roundCenter,
+  toPoint,
   walkMinutes,
 } from "./geo";
 
@@ -65,5 +68,21 @@ describe("walkMinutes", () => {
   it("adds 70 m/min walking and 2 min per stop", () => {
     expect(walkMinutes(700, 3)).toBe(16);
     expect(walkMinutes(0, 4)).toBe(8);
+  });
+});
+
+describe("storage helpers", () => {
+  it("writes GeoJSON points as [lng, lat] and reads them back", () => {
+    const p = { lat: 41.0256, lng: 28.9744 };
+    expect(toPoint(p)).toEqual({ type: "Point", coordinates: [28.9744, 41.0256] });
+    expect(fromPoint(toPoint(p))).toEqual(p);
+  });
+
+  it("rounds a centre to ~100 m", () => {
+    const p = { lat: 41.02549, lng: 28.97451 };
+    const r = roundCenter(p);
+    expect(r).toEqual({ lat: 41.025, lng: 28.975 });
+    expect(distanceM(p, r)).toBeLessThan(80);
+    expect(Object.is(roundCenter({ lat: -0.0001, lng: 0 }).lat, 0)).toBe(true);
   });
 });
