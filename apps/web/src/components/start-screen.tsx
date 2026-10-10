@@ -6,7 +6,9 @@ import { useEffect, useState } from "react";
 import { APP_NAME } from "@/lib/app";
 import { getApi } from "@/play/api-browser";
 import { preloadClips } from "@/play/audio";
+import { QUEST_DEADLINE_MS } from "@/quest/api";
 import { ApiFailure, mockRequested, savedQuestParam } from "@/play/client";
+import { distanceText } from "@/play/labels";
 import { type GpsFix, readPosition } from "@/play/photo";
 import { newRun } from "@/play/run-state";
 import { lastRunId, readRun, useHydrated, writeRun } from "@/play/run-store";
@@ -79,10 +81,16 @@ export function StartScreen() {
         say("Opening the saved case.");
       } else {
         say("Looking for places and facts near you…");
-        const made = await api.createQuest({ lat: center.lat, lng: center.lng, minutes, lang: "en" });
+        // A new case can take a few minutes to write: say so, so the wait does not look stuck.
+        const slow = window.setTimeout(() => say(`Gemma is still writing the case. This can take up to ${Math.round(QUEST_DEADLINE_MS / 60_000)} minutes.`, true), 45_000);
+        const made = await api
+          .createQuest({ lat: center.lat, lng: center.lng, minutes, lang: "en" })
+          .finally(() => window.clearTimeout(slow));
         say(
           made.overCap
-            ? "Today's limit for new cases is reached: here is the nearest saved case."
+            ? `Today's limit for new cases is reached: here is the nearest saved case${
+                made.distanceM !== undefined ? `, ${distanceText(made.distanceM)} away` : ""
+              }.`
             : made.reused
               ? "Found a case already written near here."
               : "The case is written.",

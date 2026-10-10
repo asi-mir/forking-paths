@@ -1,0 +1,50 @@
+{
+  "source": "serpapi-search",
+  "query": "Church of Saints Peter and Paul İstanbul history",
+  "payload": {
+    "organic_results": [
+      {
+        "position": 1,
+        "title": "Apostle Paul & The Seven Churches of Revelation in Turkey",
+        "link": "https://discoverycruisesandtravel.com/apostle-paul-the-seven-churches-of-revelation-in-turkey/",
+        "snippet": "Day 3: Tour of Istanbul: Spend an unforgettable day in Istanbul! First, we will visit St. Sophia—, the original structure was built by Constantine in 326 A.D. ...",
+        "source": "Discovery Cruises and Tours"
+      },
+      {
+        "position": 2,
+        "title": "St. Pierre and St. Paul Church is in Istanbul, Turkey.",
+        "link": "https://www.alamy.com/st-pierre-and-st-paul-church-is-in-istanbul-turkey-image503595266.html",
+        "snippet": "Download this stock image: St. Pierre and St. Paul Church is in Istanbul, Turkey. - 2M78MW6 from Alamy's library of millions of high resolution stock photos ...",
+        "source": "Alamy"
+      },
+      {
+        "position": 3,
+        "title": "Istanbul - How Christianity Became Christendom VIRTUAL ...",
+        "link": "https://www.facebook.com/museumbibletours/posts/istanbul-how-christianity-became-christendomvirtual-tour-istanbul-15-hours-istan/1277520954374052/",
+        "snippet": "St. Paul evangelized major Turkish cities: Ephesus, Antioch of Pisidia, Iconium, Tarsus, and more (Acts). • St. Peter writes to churches in ...",
+        "source": "Facebook · Museum Bible Tours"
+      },
+      {
+        "position": 4,
+        "title": "Church of SS Peter and Paul, Istanbul - Église catholique ...",
+        "link": "https://fr.aroundus.com/p/9642365-church-of-ss-peter-and-paul-istanbul",
+        "snippet": "La structure d'origine a été détruite plusieurs fois par des incendies jusqu'à ce que les frères Fossati la reconstruisent complètement entre 1841 et 1843.",
+        "source": "Around Us"
+      },
+      {
+        "position": 5,
+        "title": "St. Pierre and St. Paul Church is in Istanbul, Turkey.",
+        "link": "https://www.alamy.com/st-pierre-and-st-paul-church-is-in-istanbul-turkey-image503595284.html",
+        "snippet": "Download this stock image: St. Pierre and St. Paul Church is in Istanbul, Turkey. - 2M78MWT from Alamy's library of millions of high resolution stock photos ...",
+        "source": "Alamy"
+      },
+      {
+        "position": 6,
+        "title": "Churches in Turkey: Sign of the Cross - Property Expo Partners",
+        "link": "https://propertyexpopartners.com/churches-in-turkey-sign-of-the-cross/",
+        "snippet": "While it is no longer in use, its history shines through in its museum status. In 1932, possibly as a mark of respect, a statue of Saint Peter was placed on top ...",
+        "source": "propertyexpopartners.com"
+      }
+    ]
+  }
+}

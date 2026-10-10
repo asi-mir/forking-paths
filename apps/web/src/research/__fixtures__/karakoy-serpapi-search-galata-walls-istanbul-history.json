@@ -1,0 +1,50 @@
+{
+  "source": "serpapi-search",
+  "query": "Galata Walls İstanbul history",
+  "payload": {
+    "organic_results": [
+      {
+        "position": 1,
+        "title": "TIL Galata historically had walls similar to Theodosian ...",
+        "link": "https://www.reddit.com/r/europe/comments/mak4oz/til_galata_historically_had_walls_similar_to/",
+        "snippet": "Named \"Genoese Walls\" they were almost completely demolished by the Ottoman government in 1864 to make transportation in the city easier. Pics ...",
+        "source": "Reddit · r/europe"
+      },
+      {
+        "position": 2,
+        "title": "History of Galata Tower — Byzantine to Ottoman Era",
+        "link": "https://galatatower.com/en/history",
+        "snippet": "The history of Galata Tower across 1500 years — from a Byzantine lighthouse to the 1348 Genoese tower, its Ottoman era and the 2020 ...",
+        "source": "galatatower.com"
+      },
+      {
+        "position": 3,
+        "title": "The Development of the Genoese Colony of Pera and ...",
+        "link": "https://www.academia.edu/144328568/The_Development_of_the_Genoese_Colony_of_Pera_and_the_Galata_Walls_A_Reassessment_through_Primary_Sources_and_Urban_Traces",
+        "snippet": "When the Genoese colonists possessed Galata after a concession from the Byzantine Empire, there was already a historical built environment. Although the suburb ...",
+        "source": "Academia.edu"
+      },
+      {
+        "position": 4,
+        "title": "Galata Tower Architecture | A Journey Through Istanbul's History",
+        "link": "https://www.galata-tower.com/architecture",
+        "snippet": "Constructed in 1348, Galata Tower architecture boasts a remarkable blend of Genoese and Byzantine architectural influences. With a rich history dating back to ...",
+        "source": "galata-tower.com"
+      },
+      {
+        "position": 5,
+        "title": "Galata neighborhood - All About Istanbul",
+        "link": "http://www.allaboutistanbul.com/galata.html",
+        "snippet": "Galata was surrounded by walls constructed by the Genoese until the 19th century. These walls started at Azapkapi near the Golden Horn.",
+        "source": "allaboutistanbul.com"
+      },
+      {
+        "position": 6,
+        "title": "GALATA WALLS OF OLD İSTANBUL",
+        "link": "http://culturecityistanbul.blogspot.com/2017/01/galata-walls-of-old-istanbul.html",
+        "snippet": "After the Ottoman conquest, the walls were maintained until the 1870s, when most were demolished to facilitate the expansion of the city. Today ...",
+        "source": "Blogger.com"
+      }
+    ]
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "source": "serpapi-search",
+  "query": "Matbah Emini Hasan Aga Fountain İstanbul history",
+  "payload": {
+    "organic_results": [
+      {
+        "position": 1,
+        "title": "Fontana Matbah Emini Hasan Ağa - Konuşan Miras",
+        "link": "https://www.konusanmiras.com/it/miras/istanbul/matbah-emini-hasan-aga-cesmesi--ke:6684",
+        "snippet": "Fontana Matbah Emini Hasan Ağa (İstanbul, Türkiye) sono stata costruita in pietra squadrata in stile classico nel XVII secolo. ülmecid nel 1851.",
+        "source": "konusanmiras.com"
+      },
+      {
+        "position": 2,
+        "title": "Database - MWNF - Sharing History - Museum With No Frontiers",
+        "link": "https://sharinghistory.museumwnf.org/database_item.php?id=monuments;AWE;tr;3;en",
+        "snippet": "Name of Monument: Mihrişah Sultan Fountain ; Location: Küçüksu, İstanbul, Türkiye ; Date of Monument: Hegira 1221 / AD 1806 ; Description: Westernisation brought ...",
+        "source": "Museum With No Frontiers"
+      },
+      {
+        "position": 3,
+        "title": "German Fountain in Istanbul Constructed as present from ...",
+        "link": "https://www.facebook.com/groups/652503992109035/posts/686300698729364/",
+        "snippet": "The German Fountain, was constructed to commemorate the second anniversary of German Emperor Wilhelm II's visit to Istanbul in 1898.",
+        "source": "Facebook · Traces of Art, Architecture, places & Archaeology"
+      },
+      {
+        "position": 4,
+        "title": "10 Fascinating Objects at the MSA Museum",
+        "link": "https://artsandculture.google.com/story/10-fascinating-objects-at-the-msa-museum-msa-the-culinary-arts-academy-of-i%CC%87stanbul/7AXh3eWzMpc9DQ?hl=en",
+        "snippet": "The MSA Museum's collection includes more than 2.000 rare objects from the Ottoman times to the 20th century. Go back in time with MSA to learn more about ...",
+        "source": "Google Arts & Culture"
+      },
+      {
+        "position": 5,
+        "title": "Matbah Emini Hasan Ağa Çeşmesi, İstanbul - Konuşan Miras",
+        "link": "https://www.konusanmiras.com/miras/istanbul/matbah-emini-hasan-aga-cesmesi--ke:6684",
+        "snippet": "Himmet ve ihsanda suya ihtiyaçları olan dervişlerini memnuniyetle sevkediyordu. Hâsılı, bu çeşmeyi sevgili Sultan Abdülmecid'in merhametinin bir eseridir.",
+        "source": "konusanmiras.com"
+      },
+      {
+        "position": 6,
+        "title": "Which branch is this? With its 200-year-old historical venue ...",
+        "link": "https://www.facebook.com/hafizmustafa1864florya/videos/which-branch-is-thiswith-its-200-year-old-historical-venue-inherited-from-the-ot/487507830516379/",
+        "snippet": "With its 200-year-old historical venue inherited from the Ottoman Empire to the Republic of Türkiye, Istanbul's rich history.",
+        "source": "Facebook · Hafız Mustafa 1864 Online"
+      }
+    ]
+  }
+}

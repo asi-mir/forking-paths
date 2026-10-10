@@ -115,15 +115,19 @@ export function storeContract(name: string, make: MakeStore, reset: () => Promis
         expect(await store.questsNear(BASE.lat, BASE.lng, 1, { lang: "en", limit: 1 })).toHaveLength(1);
       });
 
-      it("reuses a quest within ~500 m, and offers the nearest one anywhere when over the cap", async () => {
+      it("reuses a quest within ~500 m, and offers the nearest one within ~3 km when over the cap", async () => {
+        await store.saveQuest(validQuest({ title: "other city", center: { lat: BASE.lat + 0.05, lng: BASE.lng } }));
+        expect(await nearestSavedQuest(BASE.lat, BASE.lng, { lang: "en", minutes: 15 }, { store })).toBeNull();
         await store.saveQuest(validQuest({ title: "far", center: { lat: BASE.lat + 0.02, lng: BASE.lng } }));
         expect(await findReusableQuest(BASE.lat, BASE.lng, { lang: "en", minutes: 15 }, { store })).toBeNull();
-        expect((await nearestSavedQuest(BASE.lat, BASE.lng, { lang: "en" }, { store }))?.quest.title).toBe("far");
+        expect((await nearestSavedQuest(BASE.lat, BASE.lng, { lang: "en", minutes: 15 }, { store }))?.quest.title).toBe("far");
+        // No 25-minute quest is saved: the nearest of the other length is offered.
+        expect((await nearestSavedQuest(BASE.lat, BASE.lng, { lang: "en", minutes: 25 }, { store }))?.quest.title).toBe("far");
 
         await store.saveQuest(validQuest({ title: "close", center: { lat: BASE.lat + 0.004, lng: BASE.lng } }));
         expect((await findReusableQuest(BASE.lat, BASE.lng, { lang: "en", minutes: 15 }, { store }))?.quest.title).toBe("close");
         expect(await findReusableQuest(BASE.lat, BASE.lng, { lang: "en", minutes: 25 }, { store })).toBeNull();
-        expect(await nearestSavedQuest(BASE.lat, BASE.lng, { lang: "tr" }, { store })).toBeNull();
+        expect(await nearestSavedQuest(BASE.lat, BASE.lng, { lang: "tr", minutes: 15 }, { store })).toBeNull();
       });
     });
 

@@ -1,0 +1,113 @@
+{
+  "title": "The Legacy of the Galata Colony",
+  "mystery": {
+    "question": "What is the story behind the building that now serves as the Jewish Museum of Turkey?",
+    "answer": "The building was a synagogue until 1985 and was repurposed in 2001 as a Jewish museum.",
+    "factIds": [
+      "F13"
+    ]
+  },
+  "briefing": "Old Galata has many secrets, and one of them is a building that changed its face over time. Walk from the stone tower to find out what happened to it.",
+  "places": [
+    {
+      "id": "P1",
+      "clue": "Walk to the base of the great stone tower overlooking the Bosphorus.",
+      "look": "Two things here tell a story: one is the writing on the stone, one is the way the tower is built. Photograph the one you trust.",
+      "hint": "Look for the Galata Tower.",
+      "reveal": {
+        "text": "Galata Tower, one of the major landmarks of modern Istanbul, was built in the mid-14th century when the Genoese had a colony at Galata.",
+        "factIds": [
+          "F3"
+        ]
+      },
+      "links": [
+        {
+          "to": "P2",
+          "cue": "writing",
+          "reason": "The writing tells of the Genoese who built this tower. Another place of faith nearby has a building that was rebuilt by the Fossati brothers. Walk past the tower toward the church.",
+          "factIds": [
+            "F2",
+            "F3"
+          ]
+        },
+        {
+          "to": "P7",
+          "cue": "material",
+          "reason": "The stone of this tower reminds us of the Genoese colony. Another place of worship nearby was established by the Italian Jewish community. Head toward the street of the synagogue.",
+          "factIds": [
+            "F3",
+            "F24"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P2",
+      "clue": "Follow the path past the tower to the Catholic church.",
+      "look": "Find a detail on the church that speaks of its reconstruction.",
+      "hint": "The church is a short walk from the tower.",
+      "reveal": {
+        "text": "The current building is a nineteenth-century reconstruction of the Fossati brothers.",
+        "factIds": [
+          "F6"
+        ]
+      },
+      "links": [
+        {
+          "to": "P3",
+          "cue": null,
+          "reason": "The Fossati brothers worked on many buildings here. Now, follow the lanes toward the museum that was once a synagogue.",
+          "factIds": [
+            "F6",
+            "F13"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P7",
+      "clue": "Walk from the tower toward the Italian Synagogue on the street of the synagogue.",
+      "look": "Find a detail on the synagogue that speaks of its Gothic Revival style.",
+      "hint": "The Italian Synagogue is just a short walk from the tower.",
+      "reveal": {
+        "text": "In 1931 the original building was demolished and a new Gothic Revival synagogue was built in its place.",
+        "factIds": [
+          "F25"
+        ]
+      },
+      "links": [
+        {
+          "to": "P3",
+          "cue": null,
+          "reason": "This synagogue was built by the Italian Jewish community. Another Jewish site nearby was repurposed as a museum. Walk toward the museum.",
+          "factIds": [
+            "F24",
+            "F13"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P3",
+      "clue": "Follow the lanes to the Jewish Museum of Turkey.",
+      "look": "Look at the building's facade and think of its old purpose.",
+      "hint": "The museum is located on Büyük Hendek Street.",
+      "reveal": {
+        "text": "The Zülfaris Synagogue, also known as the Kal Kadoş Galata Synagogue, is a former Jewish congregation and synagogue located at 39 Büyük Hendek Street.",
+        "factIds": [
+          "F12"
+        ]
+      },
+      "links": []
+    }
+  ],
+  "startPlaceId": "P1",
+  "answerPlaceId": "P3",
+  "finale": {
+    "text": "The building that now serves as the Jewish Museum of Turkey was once the Zülfaris Synagogue, also known as the Kal Kadoş Galata Synagogue. It was used as a synagogue until 1985 and was repurposed in 2001 as a Jewish museum.",
+    "factIds": [
+      "F12",
+      "F13"
+    ]
+  }
+}

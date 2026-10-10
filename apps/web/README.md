@@ -58,6 +58,52 @@ pnpm exec tsx scripts/model-smoke.ts --provider ollama   # or google, or all
 
 A provider that is not configured is skipped.
 
+## Research (places and cited facts)
+
+`src/research` → `research({ lat, lng, lang, minutes, timeZone })` finds candidate places and
+numbered facts near a point: SerpApi Google Maps (2 searches), Wikipedia GeoSearch (free), and
+SerpApi Google Search for 4 places. It makes at most 6 SerpApi searches per call, takes each
+from the daily `serpapi` budget, and caches every response for 7 days (a cached search is
+free). Every fact keeps its source, the query and the link. Without `SERPAPI_API_KEY` it
+runs on Wikipedia alone. The same functions are Mastra tools in `src/mastra/tools`
+(`placesNearby`, `placeFacts`, `wikiNearby`).
+
+```bash
+pnpm exec tsx scripts/research-smoke.ts                      # Karaköy, Istanbul
+pnpm exec tsx scripts/research-smoke.ts --no-spend           # cached SerpApi results only
+pnpm exec tsx scripts/research-smoke.ts --wikipedia-only --lat 48.8584 --lng 2.2945
+```
+
+Unit tests run on responses recorded for Karaköy (`src/research/__fixtures__`, no key in them).
+
+## Quest generation
+
+`POST /api/quests` `{ lat, lng, minutes: 15 | 25, lang, timeZone? }` → `{ questId, reused }`.
+It reuses a saved quest within ~500 m (same length and language). Otherwise, within today's
+cap (`BUDGET_QUESTS_PER_DAY`), it runs the Mastra workflow `generate-quest`
+(`src/mastra/workflows/generate-quest.ts`, logic in `src/quest/generate.ts`):
+
+1. **research**: `research()` on the centre rounded to ~100 m (at most 6 SerpApi searches), then
+   code lists route options that already fit the distance rules (`src/quest/plan.ts`).
+2. **write**: one call to the `writer` agent (`src/mastra/agents/writer.ts`, Gemma, thinking on),
+   with the facts, the route options, the cue list and the Karaköy quest as the one example.
+3. **validate**: `validateQuest`; on rejection, one repair call with the error list.
+4. **save**: the quest with `validation` (did the first draft pass, its errors, was it repaired),
+   `model`, `timings` and `serpapiSearches`.
+
+No voice here: a quest is voiced when a run starts. Over the cap the route makes no SerpApi or
+model call and offers the nearest saved quest (`overCap: true`, with `distanceM`). Errors come
+back as `{ error, code }`: `bad-request`, `few-places` (no route fits here), `writer-failed`,
+`invalid-quest` (failed the checks twice) or `over-cap`.
+
+```bash
+pnpm exec tsx scripts/generate-quest.ts --lat 41.0247 --lng 28.9744 --minutes 15 --out /tmp/run.json
+pnpm exec tsx scripts/generate-quest.ts --no-spend          # cached SerpApi results and Wikipedia only
+pnpm mastra:dev                                             # Studio shows the workflow and the writer agent
+```
+
+The script calls the workflow directly (no daily quest cap; the SerpApi budget still applies).
+
 ## The demo quest
 
 `src/quest/__fixtures__/karakoy.json` is the desk demo's quest: four places below Galata Tower in

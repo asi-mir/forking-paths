@@ -25,6 +25,16 @@ export const API = {
   audio: (clipId: string) => `/api/audio/${encodeURIComponent(clipId)}`,
 } as const;
 
+/**
+ * The server's total time for a new quest: research, the writer call and its one repair. Each
+ * writer call gets at most what is left; a repair starts only when enough is left (see
+ * `src/quest/generate.ts`). Measured on the free Google tier: research ≤ 32 s, one writer call
+ * 52–148 s.
+ */
+export const QUEST_DEADLINE_MS = 240_000;
+/** How long the phone waits for POST /api/quests: the server's deadline plus time to save and answer. */
+export const QUEST_CLIENT_TIMEOUT_MS = QUEST_DEADLINE_MS + 30_000;
+
 /** How many times a player may try again when GPS says they are too far, before the stop is skipped. */
 export const PHOTO_RETRIES = 2;
 /** The longest side of the photo the phone sends; it is re-encoded as JPEG, which drops EXIF. */
@@ -99,6 +109,9 @@ export const CreateQuestRequestSchema = z.object({
   lng: z.number().min(-180).max(180),
   minutes: z.union([z.literal(15), z.literal(25)]), // 15 = 3 stops, 25 = 4 stops
   lang: LangSchema.default("en"),
+  // The phone's IANA time zone (Intl.DateTimeFormat().resolvedOptions().timeZone): gated places
+  // such as courtyards are used only when open for the walk. Optional.
+  timeZone: z.string().max(64).optional(),
 });
 export type CreateQuestRequest = z.input<typeof CreateQuestRequestSchema>;
 
@@ -106,6 +119,7 @@ export const CreateQuestResponseSchema = z.object({
   questId: z.string(), // pass to POST /api/runs
   reused: z.boolean(), // true: a saved quest within ~500 m was reused (no new research)
   overCap: z.boolean().optional(), // true: today's quest cap was hit, so the nearest saved quest is offered
+  distanceM: z.number().nonnegative().optional(), // how far the reused or offered quest's centre is from the player
 });
 export type CreateQuestResponse = z.infer<typeof CreateQuestResponseSchema>;
 

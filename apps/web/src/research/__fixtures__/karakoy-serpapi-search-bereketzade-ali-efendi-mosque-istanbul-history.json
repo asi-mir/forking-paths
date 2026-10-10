@@ -1,0 +1,65 @@
+{
+  "source": "serpapi-search",
+  "query": "Bereketzade Ali Efendi Mosque İstanbul history",
+  "payload": {
+    "knowledge_graph": {
+      "title": "Bereketzade Ali Efendi Mosque",
+      "type": "Mosque in Istanbul, Türkiye",
+      "description": "Bereketzade Ali Efendi Mosque is a mosque in Istanbul, Turkey.",
+      "source": {
+        "name": "Wikipedia",
+        "link": "https://en.wikipedia.org/wiki/Bereketzade_Ali_Efendi_Mosque"
+      },
+      "knowledge_graph_search_link": "https://www.google.com/search?kgmid=/g/11cs5xdym7&hl=en-US&q=Bereketzade+Ali+Efendi+Mosque",
+      "attributes": {
+        "place_id": "ChIJAci-see5yhQRn87NZgln6dE",
+        "raw_hours": "Open 24 hours",
+        "people_also_search_for_stick": "H4sIAAAAAAAAAONgFuLVT9c3NEwuNq1Iqcw1V0LlagkGZ6aklidWFvulVpQEl6QWFC9ilXVKLUrNTi2pSkxJVXDMyVRwTUvNS8lU8M0vLixN3cHKCADsREjkVgAAAA"
+      }
+    },
+    "organic_results": [
+      {
+        "position": 1,
+        "title": "Bereketzade Ali Efendi Camii on Trip Moments",
+        "link": "https://my.trip.com/moments/poi-bereketzade-ali-efendi-camii-58350792/",
+        "snippet": "Address: Bereketzade, 34420 Beyoğlu/İstanbul, Türkiye. Opening times: BukaDibuka sepanjang tahun, 24/7",
+        "source": "Trip.com"
+      },
+      {
+        "position": 2,
+        "title": "Bereketzade Ali Efendi Camii • Konumu, Fotoğrafları ve ...",
+        "link": "https://kulturenvanteri.com/de/yer/bereketzade-ali-efendi-camii/",
+        "snippet": "Bereketzade Ali Efendi Camii ; Typ: Moschee ; Thema: Wiederhergestellte Bauwerke ; Kultur: Osmanisch ; Jahrhundert: 15. Jahrhundert ; Status: Zugänglich.",
+        "source": "Kültür Envanteri"
+      },
+      {
+        "position": 3,
+        "title": "Отзывы о «Bereketzade Ali Efendi Mosque",
+        "link": "https://yandex.ru/maps/org/bereketzade_ali_efendi_mosque/15382233052/reviews/",
+        "snippet": "Рейтинг 4,7 на основе 40 оценок и 5 отзывов о мечети «Bereketzade Ali Efendi Mosque», M Шишхане, Стамбул, Бейоглу, махалле Берекетзаде, улица Берекетзаде ...",
+        "source": "Яндекс"
+      },
+      {
+        "position": 4,
+        "title": "Untitled",
+        "link": "https://design.lsu.edu/students-research-byzantine-churches-in-istanbul-with-art-history-professor-matt-savage/olympus-digital-camera-14/",
+        "snippet": "Mosque in Middle Eastern city",
+        "source": "Louisiana State University"
+      },
+      {
+        "position": 5,
+        "title": "Beyazıt Mosque - Istanbul's oldest Sultan ... - Travel Explorations",
+        "link": "https://travelexplorations.custompublish.com/beyazt-mosque-istanbuls-oldest-sultan-mosque.6619900-18552.html",
+        "snippet": "The mosque was commissioned by Sultan Bayezid II and was built between 1501 and 1506 by the renowned Ottoman architect Yakup Şah Bin Sultan.",
+        "source": "custompublish.com"
+      },
+      {
+        "position": 6,
+        "title": "Historic - Review of Bereketzade Fountain, Istanbul, Turkiye",
+        "link": "https://www.tripadvisor.com/ShowUserReviews-g293974-d25105186-r866758452-Bereketzade_Fountain-Istanbul.html",
+        "snippet": "Located right next to Galata Tower, Bereketzade Fountain is good for clicks and has an interesting history.",
+        "source": "Tripadvisor"
+      }
+    ]
+  }
+}

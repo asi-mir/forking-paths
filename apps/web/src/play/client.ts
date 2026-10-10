@@ -11,6 +11,7 @@ import {
   type PhotoFields,
   type PhotoResult,
   PhotoResultSchema,
+  QUEST_CLIENT_TIMEOUT_MS,
   type StartRunRequest,
   type StartRunResponse,
   StartRunResponseSchema,
@@ -41,8 +42,8 @@ export class ApiFailure extends Error {
   }
 }
 
-const TIMEOUT_MS = {
-  quest: 120_000, // a new quest: research and one Gemma writing call
+export const TIMEOUT_MS = {
+  quest: QUEST_CLIENT_TIMEOUT_MS, // a new quest: the server's deadline (research, writer, one repair) + margin
   run: 90_000, // a run start voices the quest's lines
   photo: 60_000, // the photo check (Gemma vision)
   finish: 20_000,

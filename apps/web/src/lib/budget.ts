@@ -89,14 +89,23 @@ export async function findReusableQuest(
   return hit ?? null;
 }
 
-/** The nearest ready quest anywhere in the player's language (offered when today's quest cap is hit), or null. */
+/** How far a saved quest offered over today's cap may be: a short ride away, never another city. */
+export const OVER_CAP_RADIUS_KM = 3;
+
+/**
+ * Offered when today's quest cap is hit: the nearest ready quest within ~3 km in the player's
+ * language, of the same length when one exists (else the nearest of the other length), or null.
+ */
 export async function nearestSavedQuest(
   lat: number,
   lng: number,
-  want: { lang: Lang },
+  want: { lang: Lang; minutes: number },
   opts: { store?: Store } = {},
 ): Promise<NearQuest | null> {
   const store = opts.store ?? getStore();
-  const [hit] = await store.questsNear(lat, lng, Infinity, { ...want, status: "ready", limit: 1 });
-  return hit ?? null;
+  const filter = { lang: want.lang, status: "ready" as const, limit: 1 };
+  const [same] = await store.questsNear(lat, lng, OVER_CAP_RADIUS_KM, { ...filter, minutes: want.minutes });
+  if (same) return same;
+  const [other] = await store.questsNear(lat, lng, OVER_CAP_RADIUS_KM, filter);
+  return other ?? null;
 }

@@ -3,7 +3,9 @@ import { MongoDBStore } from "@mastra/mongodb";
 import { MastraStorageExporter, Observability } from "@mastra/observability";
 import { APP_SLUG } from "../lib/app";
 import { dbName } from "../lib/db";
+import { writerAgent } from "./agents/writer";
 import { imageFilter } from "./image-filter";
+import { generateQuestWorkflow } from "./workflows/generate-quest";
 
 const uri = process.env.MONGODB_URI?.trim();
 
@@ -14,8 +16,8 @@ const uri = process.env.MONGODB_URI?.trim();
  * It shares the app's database (its collections are prefixed "mastra_"); `pnpm db:check` tests it.
  */
 export const mastra = new Mastra({
-  agents: {},
-  workflows: {},
+  agents: { writer: writerAgent },
+  workflows: { generateQuest: generateQuestWorkflow },
   storage: uri
     ? new MongoDBStore({ id: APP_SLUG, uri, dbName: dbName() })
     : undefined,

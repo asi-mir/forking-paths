@@ -1,0 +1,66 @@
+{
+  "source": "serpapi-search",
+  "query": "Jewish Museum of Turkey İstanbul history",
+  "payload": {
+    "knowledge_graph": {
+      "title": "The Quincentennial Foundation Museum of Turkish Jews",
+      "type": "Museum in Istanbul, Türkiye",
+      "description": "The Jewish Museum of Turkey is a Jewish museum and cultural center established by the Quincentennial Foundation to inform the society of the traditions and history of Turkish Jewry. It was inaugurated on November 25, 2001.",
+      "source": {
+        "name": "Wikipedia",
+        "link": "https://en.wikipedia.org/wiki/Jewish_Museum_of_Turkey"
+      },
+      "website": "http://www.muze500.com/",
+      "knowledge_graph_search_link": "https://www.google.com/search?kgmid=/m/02qqg9n&hl=en-US&q=The+Quincentennial+Foundation+Museum+of+Turkish+Jews",
+      "attributes": {
+        "place_id": "ChIJA67b3ee5yhQRVjo6b76AwNU",
+        "raw_hours": "Closed · Opens 10 AM Sun",
+        "people_also_search_for_stick": "H4sIAAAAAAAAAONgFuLSz9U3MCosTLfMU0JiawkGZ6aklidWFvulVpQEl6QWFC9iFfdKLc8szlDwLS1OLc1VyE9TCCktyk6t3MHKCAAxvq63SgAAAA"
+      }
+    },
+    "organic_results": [
+      {
+        "position": 1,
+        "title": "As Israel-Turkey tensions rise, so does foot traffic to ...",
+        "link": "https://www.timesofisrael.com/as-israel-turkey-tensions-rise-so-does-foot-traffic-to-istanbuls-jewish-museum/",
+        "snippet": "As Israel-Turkey tensions rise, so does foot traffic to Istanbul's Jewish Museum. While PMs Erdoğan and Netanyahu trade barbs, mostly local ...",
+        "source": "The Times of Israel"
+      },
+      {
+        "position": 2,
+        "title": "Jewish Museum of Turkey — Synagogue Guide",
+        "link": "https://thetaiwantimes.com/en/synagogues/jewish-museum-of-turkey",
+        "snippet": "It was inaugurated on November 25, 2001. The Quincentennial Foundation was established in 1989 by 113 Turkish citizens, Jews and Muslims alike, ...",
+        "source": "The Taiwan Times"
+      },
+      {
+        "position": 3,
+        "title": "The Quincentennial Foundation Museum of Turkish Jews",
+        "link": "https://www.tripadvisor.ca/Attraction_Review-g293974-d10338789-Reviews-The_Quincentennial_Foundation_Museum_of_Turkish_Jews-Istanbul.html",
+        "snippet": "The museum itself is small, two levels. You learn the history of the Jews in Turkey and it is fascinating to see the jewry from then until now.",
+        "source": "Tripadvisor"
+      },
+      {
+        "position": 4,
+        "title": "500. Yıl Vakfı Türk Musevileri Müzesi - İstanbul",
+        "link": "https://www.muze500.com/",
+        "snippet": "Karaköy Perçemli Sokak'ta 2001 yılından beri hizmet vermekte olan 500. Yıl Vakfı Türk Musevileri Müzesi, güncellenmiş içeriği ve modern sergileme ...",
+        "source": "500. Yıl Vakfı Türk Musevileri Müzesi"
+      },
+      {
+        "position": 5,
+        "title": "Turkey Virtual Jewish History Tour",
+        "link": "https://jewishvirtuallibrary.org/turkey-virtual-jewish-history-tour",
+        "snippet": "The 15th and 16th-century Haskoy and Kuzguncuk cemeteries in Istanbul are still in use today. There are eleven Kosher butcher shops, a Jewish newspaper, and two ...",
+        "source": "Jewish Virtual Library"
+      },
+      {
+        "position": 6,
+        "title": "Jewish Museum of Turkey",
+        "link": "https://www.wikiwand.com/en//Zulfaris_Synagogue",
+        "snippet": "It was inaugurated on November 25, 2001. The Quincentennial Foundation was established in 1989 by 113 Turkish citizens, Jews and Muslims alike, ...",
+        "source": "Wikiwand"
+      }
+    ]
+  }
+}

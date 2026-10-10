@@ -1,0 +1,80 @@
+{
+  "source": "serpapi-maps",
+  "query": "fountain monument",
+  "payload": {
+    "local_results": [
+      {
+        "position": 1,
+        "title": "Matbah Emini Hasan Aga Fountain",
+        "place_id": "ChIJyc_vdee5yhQRru_i0fRegz4",
+        "data_id": "0x14cab9e775efcfc9:0x3e835ef4d1e2efae",
+        "gps_coordinates": {
+          "latitude": 41.0254599,
+          "longitude": 28.975005799999998
+        },
+        "type": "Historical landmark",
+        "types": [
+          "Historical landmark"
+        ],
+        "address": "Müeyyetzade, Lüleci Hendek Cd. No:69, 34425 Beyoğlu/İstanbul, Türkiye",
+        "description": "Ancient fountain in an urban setting. This centuries-old stone fountain is situated on a street corner & has 2 facades with inscriptions.",
+        "open_state": "Open 24 hours",
+        "hours": "Open 24 hours",
+        "operating_hours": {
+          "saturday": "Open 24 hours",
+          "sunday": "Open 24 hours",
+          "monday": "Open 24 hours",
+          "tuesday": "Open 24 hours",
+          "wednesday": "Open 24 hours",
+          "thursday": "Open 24 hours",
+          "friday": "Open 24 hours"
+        }
+      },
+      {
+        "position": 2,
+        "title": "German Fountain",
+        "place_id": "ChIJX-Xbj725yhQRmYqQNxSlTjM",
+        "data_id": "0x14cab9bd8fdbe55f:0x334ea51437908a99",
+        "gps_coordinates": {
+          "latitude": 41.0070765,
+          "longitude": 28.976688499999998
+        },
+        "type": "Drinking water fountain",
+        "types": [
+          "Drinking water fountain",
+          "Historical place",
+          "Tourist attraction"
+        ],
+        "address": "Binbirdirek, At Meydanı Cd, 34122 Fatih/İstanbul, Türkiye",
+        "description": "Late 19th-century Ottoman fountain. Elaborately decorated fountain built in 1898 & adorned with mirrors & floral motifs.",
+        "open_state": "Open now"
+      },
+      {
+        "position": 3,
+        "title": "Hekimoğlu Ali Pasha Fountain",
+        "place_id": "ChIJwRkKlHu3yhQRjYkHrjiYmD0",
+        "data_id": "0x14cab77b940a19c1:0x3d989838ae07898d",
+        "gps_coordinates": {
+          "latitude": 41.0332515,
+          "longitude": 28.9918668
+        },
+        "type": "Museum",
+        "types": [
+          "Museum"
+        ],
+        "address": "Ömer Avni, İETT Kabataş Durağı, 34427 Beyoğlu/İstanbul, Türkiye",
+        "open_state": "Open 24 hours",
+        "hours": "Open 24 hours",
+        "operating_hours": {
+          "saturday": "Open 24 hours",
+          "sunday": "Open 24 hours",
+          "monday": "Open 24 hours",
+          "tuesday": "Open 24 hours",
+          "wednesday": "Open 24 hours",
+          "thursday": "Open 24 hours",
+          "friday": "Open 24 hours"
+        }
+      }
+    ]
+  }
+}
