@@ -49,3 +49,5 @@ next-env.d.ts
 
 # reader eval photos (downloaded from Wikimedia Commons)
 /eval/photos/.cache/
+# eval reports and fetched pages (scripts/eval-*.ts --out-dir defaults here)
+/eval/runs/

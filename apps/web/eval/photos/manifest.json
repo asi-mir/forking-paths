@@ -521,6 +521,166 @@
         "plausible": false
       },
       "note": "A computer monitor on a desk at home."
+    },
+    {
+      "id": "karakoy-bereketzade-inscription",
+      "title": "File:Bereketzade Fountain DSCF3605.jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:Bereketzade_Fountain_DSCF3605.jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/d/d2/Bereketzade_Fountain_DSCF3605.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d2/Bereketzade_Fountain_DSCF3605.jpg/1280px-Bereketzade_Fountain_DSCF3605.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "author": "R Prazeres",
+      "licence": "CC BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "placeName": "Bereketzade Fountain",
+      "offeredCues": [
+        "writing",
+        "water"
+      ],
+      "label": {
+        "cue": "writing",
+        "plausible": true
+      },
+      "note": "Karaköy demo fork (one you can read, one that flows): the gilded inscription panels above the arch, close up."
+    },
+    {
+      "id": "karakoy-bereketzade-spout",
+      "title": "File:Galata, fontana di bereketzade, 1732, 03.jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:Galata,_fontana_di_bereketzade,_1732,_03.jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/0/0b/Galata%2C_fontana_di_bereketzade%2C_1732%2C_03.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0b/Galata%2C_fontana_di_bereketzade%2C_1732%2C_03.jpg/1280px-Galata%2C_fontana_di_bereketzade%2C_1732%2C_03.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "author": "Francesco Bini",
+      "licence": "CC BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "placeName": "Bereketzade Fountain",
+      "offeredCues": [
+        "writing",
+        "water"
+      ],
+      "label": {
+        "cue": "water",
+        "plausible": true
+      },
+      "note": "Karaköy demo fork, the other detail: the spout and basin under the arch. Hard case: gilded inscriptions fill the top of the frame too."
+    },
+    {
+      "id": "karakoy-hasan-aga-inscription",
+      "title": "File:Hasan Ağa Çeşmesi IMG 9851.jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:Hasan_A%C4%9Fa_%C3%87e%C5%9Fmesi_IMG_9851.jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/9/97/Hasan_A%C4%9Fa_%C3%87e%C5%9Fmesi_IMG_9851.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/97/Hasan_A%C4%9Fa_%C3%87e%C5%9Fmesi_IMG_9851.jpg/1280px-Hasan_A%C4%9Fa_%C3%87e%C5%9Fmesi_IMG_9851.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "author": "Ali Osman Dilekoğlu",
+      "licence": "CC BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "placeName": "Hasan Ağa Fountain",
+      "offeredCues": [
+        "writing",
+        "door-window-arch"
+      ],
+      "label": {
+        "cue": "writing",
+        "plausible": true
+      },
+      "note": "Karaköy: a carved inscription panel in a brick wall, the top of an arch below it."
+    },
+    {
+      "id": "karakoy-mosque-fountain",
+      "title": "File:Bereketzade Ali Efendi Camii Çeşmesi.jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:Bereketzade_Ali_Efendi_Camii_%C3%87e%C5%9Fmesi.jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/7/7d/Bereketzade_Ali_Efendi_Camii_%C3%87e%C5%9Fmesi.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7d/Bereketzade_Ali_Efendi_Camii_%C3%87e%C5%9Fmesi.jpg/1280px-Bereketzade_Ali_Efendi_Camii_%C3%87e%C5%9Fmesi.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "author": "Basak",
+      "licence": "CC BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "placeName": "Bereketzade Ali Efendi Mosque",
+      "offeredCues": [
+        "water",
+        "writing"
+      ],
+      "label": {
+        "cue": "water",
+        "plausible": true
+      },
+      "note": "Karaköy: the mosque's small wall fountain, a niche with a basin and a carved spout plate."
+    },
+    {
+      "id": "karakoy-mosque-sign",
+      "title": "File:Bereketzade Ali Efendi Camii minaredeki yazı.jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:Bereketzade_Ali_Efendi_Camii_minaredeki_yaz%C4%B1.jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/6/65/Bereketzade_Ali_Efendi_Camii_minaredeki_yaz%C4%B1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/65/Bereketzade_Ali_Efendi_Camii_minaredeki_yaz%C4%B1.jpg/1280px-Bereketzade_Ali_Efendi_Camii_minaredeki_yaz%C4%B1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "author": "Basak",
+      "licence": "CC BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "placeName": "Bereketzade Ali Efendi Mosque",
+      "offeredCues": [
+        "writing",
+        "material"
+      ],
+      "label": {
+        "cue": "writing",
+        "plausible": true
+      },
+      "note": "Karaköy: a white information sign with text fixed to the striped brick and stone minaret base."
+    },
+    {
+      "id": "negative-mountain-wrong-place",
+      "title": "File:Marmolada, Italy.jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:Marmolada,_Italy.jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/6/63/Marmolada%2C_Italy.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/63/Marmolada%2C_Italy.jpg/1280px-Marmolada%2C_Italy.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "author": "Marco Bonomo",
+      "licence": "CC0",
+      "licenceUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "placeName": "Bereketzade Fountain",
+      "offeredCues": [
+        "writing",
+        "water"
+      ],
+      "label": {
+        "cue": null,
+        "plausible": false
+      },
+      "note": "Wrong place: snowy Alpine peaks, nothing like a city fountain."
+    },
+    {
+      "id": "negative-kitchen-at-home",
+      "title": "File:A Dingy Apartment Kitchen in Canada.jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:A_Dingy_Apartment_Kitchen_in_Canada.jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/d/d0/A_Dingy_Apartment_Kitchen_in_Canada.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d0/A_Dingy_Apartment_Kitchen_in_Canada.jpg/1280px-A_Dingy_Apartment_Kitchen_in_Canada.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "author": "Gogerr",
+      "licence": "CC BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "placeName": "Bereketzade Fountain",
+      "offeredCues": [
+        "writing",
+        "water"
+      ],
+      "label": {
+        "cue": null,
+        "plausible": false
+      },
+      "note": "Indoors at home: an apartment kitchen and hallway."
+    },
+    {
+      "id": "negative-supermarket-wrong-place",
+      "title": "File:Aisle in L Intermarche supermarket in Quebec City.jpg",
+      "filePage": "https://commons.wikimedia.org/wiki/File:Aisle_in_L_Intermarche_supermarket_in_Quebec_City.jpg",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/d/dc/Aisle_in_L_Intermarche_supermarket_in_Quebec_City.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dc/Aisle_in_L_Intermarche_supermarket_in_Quebec_City.jpg/1280px-Aisle_in_L_Intermarche_supermarket_in_Quebec_City.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "author": "Wilfredor",
+      "licence": "CC BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "placeName": "Hasan Ağa Fountain",
+      "offeredCues": [
+        "writing",
+        "door-window-arch"
+      ],
+      "label": {
+        "cue": null,
+        "plausible": false
+      },
+      "note": "Wrong place, indoors: a supermarket aisle (shelves full of labels, so writing is everywhere)."
     }
   ]
 }

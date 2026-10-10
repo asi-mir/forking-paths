@@ -15,7 +15,12 @@
     "mastra:dev": "mastra dev",
     "e2e": "playwright test",
     "eval:photos:fetch": "tsx scripts/photos-fetch.ts",
-    "eval:reader": "tsx scripts/reader-eval.ts"
+    "eval:reader": "tsx scripts/reader-eval.ts",
+    "eval:coverage": "tsx scripts/eval-coverage.ts",
+    "eval:facts": "tsx scripts/eval-facts.ts",
+    "eval:reveals": "tsx scripts/eval-reveals.ts",
+    "eval:validator": "tsx scripts/eval-validator.ts",
+    "eval:reader:compare": "tsx scripts/eval-reader.ts"
   },
   "dependencies": {
     "@ai-sdk/google": "^4.0.92",

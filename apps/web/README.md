@@ -104,6 +104,32 @@ pnpm mastra:dev                                             # Studio shows the w
 
 The script calls the workflow directly (no daily quest cap; the SerpApi budget still applies).
 
+## Evals
+
+Five scripts measure what the game claims. Each prints its headline numbers and writes a markdown
+table and a JSON file to `--out-dir` (default `eval/runs/`, git-ignored) as `<date>-<name>`.
+Without a key they skip that part and say so.
+
+| Script | Measures |
+|---|---|
+| `scripts/eval-coverage.ts` | Places within 900 m from Wikipedia alone vs. with SerpApi Google Maps, at 15 points (5 cities × centre, residential, edge; `eval/coverage-points.ts`). Maps searches only, ≤ 2 per point, cached and paced. `--no-spend` for Wikipedia only. |
+| `scripts/eval-facts.ts` | Fact check (page → fact): fetches the link of ~30 facts cited by generated quests and checks the page says it. Word-for-word matches (every number in the fact on the page too) count in code; Gemma pre-checks the rest. |
+| `scripts/eval-reveals.ts` | Reveal check (fact → narration): ~20 reveals, link reasons, mysteries, finales and walked bridge lines against the facts they cite; Gemma pre-checks. |
+| `scripts/eval-validator.ts` | How many generated quests passed the validator on the first draft, after one repair, or failed, and the most common errors (`quest.validation` and `generate-quest.ts --out` records). `--generate <cities>` makes more quests first. |
+| `scripts/eval-reader.ts` | The photo reader on the labelled photo set (`eval/photos/manifest.json`), Google vs. local: plausibility, cue match, the no-GPS pass rule, latency p50/p95. |
+
+The fact and reveal checks take `--review <file.json>`: verdicts from a person (`"by": "agent"`
+or `"owner"`) that replace Gemma's pre-check, so the report says who checked what. Quests are
+read from `--dbs` (default `MONGODB_DB`; `all` = every `forking-paths*` database) and `--records`
+(a folder of `generate-quest.ts --out` files). Samples are seeded (`--seed`), so a rerun picks the
+same items.
+
+```bash
+pnpm eval:photos:fetch && pnpm eval:reader:compare --providers ollama,google
+pnpm eval:coverage --no-spend
+pnpm eval:facts --dbs all --records <dir> --precheck ollama
+```
+
 ## The demo quest
 
 `src/quest/__fixtures__/karakoy.json` is the desk demo's quest: four places below Galata Tower in
