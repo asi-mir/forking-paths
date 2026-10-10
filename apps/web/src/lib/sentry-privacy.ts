@@ -13,6 +13,51 @@ type DataCollection = NonNullable<NodeOptions["dataCollection"]>;
 /** Every trace is kept: traffic is small and every walk matters. */
 export const TRACES_SAMPLE_RATE = 1.0;
 
+/** Paths whose requests are never traced: the host's health check, every few seconds. */
+export const UNTRACED_PATHS: readonly string[] = ["/api/health"];
+
+/** What `tracesSampler` reads from Sentry's sampling context (a subset, so tests can build one). */
+export type SamplingInput = {
+  name?: string;
+  attributes?: Record<string, unknown>;
+  normalizedRequest?: { url?: string };
+  inheritOrSampleWith?: (fallbackSampleRate: number) => number;
+};
+
+const PATH_ATTRIBUTES = ["url.path", "http.target", "http.route", "next.route", "url.full", "http.url"] as const;
+
+function pathOf(value: unknown): string | undefined {
+  if (typeof value !== "string" || !value) return undefined;
+  const bare = stripQuery(value);
+  if (/^https?:\/\//i.test(bare)) {
+    try {
+      return new URL(bare).pathname;
+    } catch {
+      return undefined;
+    }
+  }
+  return bare.startsWith("/") ? bare : undefined;
+}
+
+/** True when a span being sampled is a request to an untraced path (by URL, route or name). */
+export function isUntracedRequest(ctx: SamplingInput): boolean {
+  const paths = [pathOf(ctx.normalizedRequest?.url), ...PATH_ATTRIBUTES.map((k) => pathOf(ctx.attributes?.[k]))];
+  const name = ctx.name?.trim() ?? "";
+  return UNTRACED_PATHS.some(
+    (p) => paths.some((x) => x === p || x === `${p}/`) || name === p || name.endsWith(` ${p}`),
+  );
+}
+
+/**
+ * The server's `tracesSampler`: drops the health check's traces (about six spans per ping, which
+ * would bury the walks), and keeps every other trace at `TRACES_SAMPLE_RATE`. A name filter
+ * (`ignoreSpans`) is not enough: the request's root span is still named "GET" when it is sampled.
+ */
+export function sampleTrace(ctx: SamplingInput): number {
+  if (isUntracedRequest(ctx)) return 0;
+  return ctx.inheritOrSampleWith ? ctx.inheritOrSampleWith(TRACES_SAMPLE_RATE) : TRACES_SAMPLE_RATE;
+}
+
 /**
  * No personal data: no user fields, cookies, headers, query strings, request or response bodies,
  * database payloads or local variables. Gen-AI prompts and outputs stay on (quest generation is

@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import {
+  isUntracedRequest,
+  sampleTrace,
   DATA_COLLECTION,
   GEN_AI_CONTENT_KEYS,
   REDACTED,
@@ -170,5 +172,21 @@ describe("prepareSpan", () => {
     );
     expect(out.attributes).not.toHaveProperty("gen_ai.input.messages");
     expect(out.attributes.role).toBe("reader");
+  });
+});
+
+describe("sampleTrace", () => {
+  it("drops the health check, found by URL, route attribute or name", () => {
+    expect(sampleTrace({ name: "GET", normalizedRequest: { url: "http://localhost:3111/api/health?x=1" } })).toBe(0);
+    expect(sampleTrace({ name: "GET", attributes: { "url.path": "/api/health" } })).toBe(0);
+    expect(sampleTrace({ name: "GET", attributes: { "http.target": "/api/health/" } })).toBe(0);
+    expect(sampleTrace({ name: "GET /api/health" })).toBe(0);
+    expect(isUntracedRequest({ name: "GET /api/healthz" })).toBe(false);
+  });
+
+  it("keeps every other request at the trace rate, or the incoming decision", () => {
+    expect(sampleTrace({ name: "POST /api/quests", normalizedRequest: { url: "/api/quests" } })).toBe(1);
+    expect(sampleTrace({ name: "GET /", inheritOrSampleWith: () => 0.5 })).toBe(0.5);
+    expect(sampleTrace({ name: "GET", attributes: { "url.path": "/api/runs/abc/photo" } })).toBe(1);
   });
 });

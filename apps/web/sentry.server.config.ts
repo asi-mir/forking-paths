@@ -1,7 +1,7 @@
 // Sentry for the Node.js runtime: route handlers, server components and the Mastra agents.
 // Loaded by src/instrumentation.ts. Without a DSN nothing is initialised and nothing is sent.
 import * as Sentry from "@sentry/nextjs";
-import { DATA_COLLECTION, TRACES_SAMPLE_RATE, prepareSpan } from "./src/lib/sentry-privacy";
+import { DATA_COLLECTION, TRACES_SAMPLE_RATE, prepareSpan, sampleTrace } from "./src/lib/sentry-privacy";
 
 const dsn = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN;
 
@@ -11,6 +11,8 @@ if (dsn) {
     environment:
       process.env.SENTRY_ENVIRONMENT || process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT || process.env.NODE_ENV,
     tracesSampleRate: TRACES_SAMPLE_RATE,
+    // Takes precedence over the rate: every trace except the host's health check.
+    tracesSampler: sampleTrace,
     dataCollection: DATA_COLLECTION,
     // No trace headers on calls to Google, SerpApi, ElevenLabs or Wikipedia.
     tracePropagationTargets: [],

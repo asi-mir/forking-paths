@@ -143,6 +143,49 @@ live model fails or is rate-limited, a sample photo uses its stored result, labe
 `/demo/near` generates a quest near you, or in a city you pick, and shows every line, fork and
 fact with its link.
 
+## Deploy your own game master
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/asi-mir/forking-paths)
+
+The button creates the services in [`render.yaml`](render.yaml): one Node web service for
+`apps/web` (Node 22, and the pnpm version pinned in `package.json`), always on (`0.5c-512mb`;
+switch to `1c-2g` if it runs out of memory), with `/api/health` as its health check. Render
+asks for the variables below that have no default; the rest are set and can be changed in the
+service's Environment tab.
+
+| Variable | Needed? | What it is for |
+|---|---|---|
+| `GOOGLE_GENERATIVE_AI_API_KEY` | yes | Gemma 4 on Google AI Studio: writing quests, reading photos, narrator lines. A free key works. |
+| `MONGODB_URI` | yes | A MongoDB Atlas connection string: quests, walks, voiced clips, caches and the daily caps. Add Render's outbound IP addresses (service → Connect → Outbound) to the Atlas IP access list. |
+| `WIKIPEDIA_USER_AGENT` | recommended | Wikipedia asks API clients for a contact, e.g. `ForkingPaths/0.1 (https://github.com/<you>/forking-paths; you@example.com)`. Empty: a generic one with this repo's link. |
+| `SERPAPI_API_KEY` | recommended | Places and facts from Google Maps and Google Search. Without it, quests use Wikipedia alone. |
+| `ELEVENLABS_API_KEY`, `ELEVENLABS_VOICE_ID` | optional | The narrator's voice. Without them nothing new is voiced, and a line without a clip shows as text. |
+| `SENTRY_DSN`, `NEXT_PUBLIC_SENTRY_DSN` | optional | Tracing. Leave empty to turn Sentry off. |
+| `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, `SENTRY_PROJECT` | optional | Source map upload from the Render build (all three, or none). |
+| `GEMMA_PROVIDER` = `google`, `GEMMA_WRITER_MODEL` = `gemma-4-31b-it`, `GEMMA_READER_MODEL` = `gemma-4-26b-a4b-it` | set | Which Gemma runs each role. Only Gemma IDs are accepted. |
+| `BUDGET_QUESTS_PER_DAY` = `3`, `BUDGET_SERPAPI_PER_DAY` = `20`, `BUDGET_TTS_CHARS_PER_DAY` = `1000` | set | Daily caps (UTC days) on new quests, SerpApi searches and voiced characters. Tune them to your credits; over a cap the game reuses saved quests and shows lines as text. |
+| `ELEVENLABS_LIVE` = `1`, `ELEVENLABS_MODEL_ID` = `eleven_v4` | set | Lets the app voice new lines, within the character cap. |
+| `MONGODB_DB` = `forking-paths`, `NEXT_PUBLIC_SENTRY_ENVIRONMENT` = `production`, `NEXT_PUBLIC_MOCK_API` = `0` | set | Database name, trace label, and the real API (not the fixture quest). |
+| `NODE_VERSION` = `22.22.3`, `COREPACK_ENABLE_DOWNLOAD_PROMPT` = `0` | set | Build toolchain: Node 22, and pnpm through corepack without a prompt. |
+
+To run the photo check on your own machine while the app runs on Render, add
+`GEMMA_READER_PROVIDER=ollama`, `OLLAMA_BASE_URL` and `OLLAMA_AUTH_HEADER` in the dashboard (see
+"The app elsewhere, Ollama on your laptop, through a tunnel" above).
+
+After the deploy, open `https://<your-service>.onrender.com/api/health`. It answers 200 with
+the Gemma provider and model for each role, whether the database answers, which services are
+configured (true or false, never a key) and the daily caps; `ready: false` means a model
+setting or its key is missing. It answers 503 when the database does not answer: check
+`MONGODB_URI` and the Atlas access list.
+
+The same build and start, locally:
+
+```bash
+cd apps/web
+corepack pnpm install --frozen-lockfile && corepack pnpm build
+PORT=3111 pnpm start                      # then: curl localhost:3111/api/health
+```
+
 ## For contributors and coding agents
 
 Start with [`AGENTS.md`](AGENTS.md): commands, hard rules and how to work.
