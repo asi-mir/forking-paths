@@ -1,4 +1,4 @@
-import { resolveModelConfig } from "@/lib/model";
+import { ollamaHeaders, ollamaRoot, resolveModelConfig } from "@/lib/model";
 import { getStore, type Store } from "@/lib/store";
 import { runAudio, speak, voiceQuest, type QuestVoice, type VoiceOptions } from "@/lib/voice";
 import type { FinishResponse, PhotoResult, Receipt, StartRunResponse } from "./api";
@@ -27,8 +27,9 @@ import type { Quest, RunVoice } from "./schema";
 /**
  * The phone gives up on a photo request after 60 s (`src/play/client.ts`), so the server answers
  * well before that: the reader gets 40 s in total (with GPS near, `checkPhoto` already cuts it to
- * 10 s and passes), and the fork's meaning pick plus the bridge line get 12 s; past that the
- * fork takes the nearest link and the bridge is the link's stored reason.
+ * 10 s on Google or 25 s on local Gemma, and passes), and the fork's meaning pick plus the bridge
+ * line get 12 s; past that the fork takes the nearest link and the bridge is the link's stored
+ * reason.
  */
 export const READER_DEADLINE_MS = 40_000;
 export const BRIDGE_DEADLINE_MS = 12_000;
@@ -39,7 +40,7 @@ let lastWarm = 0;
 
 /**
  * Loads the local reader model in the background when a run starts (Ollama only), so the first
- * photo is read within `checkPhoto`'s 10 s near-GPS budget. A cold `gemma4:e4b` takes longer
+ * photo is read within `checkPhoto`'s near-GPS budget. A cold `gemma4:e4b` takes longer
  * than that to load, and the first fork then fell back to the nearest link. An empty prompt
  * makes Ollama load the model without generating anything. Never awaited, never throws; at most
  * once a minute. Returns whether a request was sent.
@@ -57,10 +58,10 @@ export function warmLocalReader(
   }
   if (config.provider !== "ollama" || !config.baseURL || now - lastWarm < 60_000) return false;
   lastWarm = now;
-  const root = config.baseURL.replace(/\/v1$/, "");
-  void fetchImpl(`${root}/api/generate`, {
+  void fetchImpl(`${ollamaRoot(config)}/api/generate`, {
     method: "POST",
-    headers: { "content-type": "application/json" },
+    // A tunnel protected at its edge needs the same header as the reader's own requests.
+    headers: { ...ollamaHeaders(env), "content-type": "application/json" },
     body: JSON.stringify({ model: config.modelId, keep_alive: WARM_KEEP_ALIVE }),
     signal: AbortSignal.timeout(180_000),
   })

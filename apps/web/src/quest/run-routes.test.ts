@@ -104,6 +104,9 @@ describe("POST /api/runs/[runId]/photo", () => {
     expect(r1).toMatchObject({ status: "passed", next: { chosenBy: "cue", stop: { placeId: "P3", stop: 2 } } });
     expect(reads[0]).toMatchObject({ placeName: "Bereketzade Fountain", cues: ["writing", "water"] });
     expect(reads[0].image.mediaType).toBe("image/jpeg");
+    // The phone learns which Gemma read the photo, and where, for the receipt.
+    if (r1.status !== "passed") throw new Error(`expected passed, got ${r1.status}`);
+    expect(r1.verdict?.checkedBy).toEqual({ provider: "ollama", model: "gemma4:e4b" });
 
     nextVerdict = { plausible: true, confidence: 0.85, observed: "marble basin under a pointed arch", cue: null };
     const P3 = loc("P3");
@@ -241,5 +244,22 @@ describe("warmLocalReader", () => {
     expect(calls).toHaveLength(1);
     expect(calls[0][0]).toBe("http://127.0.0.1:11434/api/generate");
     expect(JSON.parse(String(calls[0][1]?.body))).toEqual({ model: "gemma4:e4b", keep_alive: "30m" });
+    expect(new Headers(calls[0][1]?.headers).has("authorization")).toBe(false);
+  });
+
+  it("sends OLLAMA_AUTH_HEADER to a protected tunnel", async () => {
+    const calls: Array<[string, RequestInit | undefined]> = [];
+    const fake = (async (url: string, init?: RequestInit) => {
+      calls.push([url, init]);
+      return new Response("{}");
+    }) as unknown as typeof fetch;
+    const env = {
+      GEMMA_READER_PROVIDER: "ollama",
+      OLLAMA_BASE_URL: "https://gemma.tunnel.test/v1",
+      OLLAMA_AUTH_HEADER: "Basic dGVzdDpub3QtcmVhbA==",
+    };
+    expect(warmLocalReader(env, fake, Date.now() + 7_200_000)).toBe(true);
+    expect(calls[0][0]).toBe("https://gemma.tunnel.test/api/generate");
+    expect(new Headers(calls[0][1]?.headers).get("authorization")).toBe("Basic dGVzdDpub3QtcmVhbA==");
   });
 });

@@ -136,6 +136,11 @@ test("the writing branch with one too-far retry: P1 → P2 → P4, finale and ca
   await shot(page, 9, "case-file");
   await page.evaluate(() => window.scrollTo(0, document.querySelector("[data-testid=route]")!.getBoundingClientRect().top + window.scrollY - 40));
   await shot(page, 10, "route-road-not-taken");
+  // The receipt names the Gemma that read the photos, and where (E2E_CHECKER, e.g.
+  // "Gemma 4 E4B on my laptop (Ollama)").
+  await expect(page.getByTestId("photo-check")).toContainText(process.env.E2E_CHECKER ?? /Gemma 4 .+ on /);
+  await page.evaluate(() => window.scrollTo(0, document.querySelector("[data-testid=receipt]")!.getBoundingClientRect().top + window.scrollY - 40));
+  await shot(page, 13, "receipt-photo-check");
 });
 
 test("the water branch: P1 → P3 → P4, and the case file shows the writing road not taken", async ({ page, context }) => {

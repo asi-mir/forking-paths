@@ -2,7 +2,7 @@ import type { LanguageModel } from "ai";
 import { z } from "zod";
 import { generateJson, type ImageInput, type ModelCallMeta } from "@/lib/json";
 import { modelLabel, resolveModelConfig } from "@/lib/model";
-import { aiTelemetry, withSpan, type TraceTags } from "@/lib/trace";
+import { aiTelemetry, tagRequest, withSpan, type TraceTags } from "@/lib/trace";
 import type { MeaningPicker } from "@/quest/fork";
 import { CUES, OBSERVED_FALLBACK, type Cue, type Verdict } from "@/quest/schema";
 
@@ -159,10 +159,19 @@ function spanTags(role: "reader", env: Record<string, string | undefined> | unde
   return { ...tags, role, provider: config.provider, model: config.modelId };
 }
 
+/** The reader's span tags plus `checkedBy` (`ollama/gemma4:e4b`): only the photo read sets it. */
+export function photoCheckTags(env: Record<string, string | undefined> | undefined, tags: TraceTags = {}): TraceTags {
+  const t = spanTags("reader", env, tags);
+  return { ...t, checkedBy: `${t.provider}/${t.model}` };
+}
+
 /** Read one photo. Throws `ModelCallError` / `ModelOutputError` (from `generateJson`) on failure. */
 export async function readPhoto(input: ReaderInput, options: ReadOptions = {}): Promise<ReadResult> {
   const offered = [...new Set(input.cues ?? [])].filter((c) => (CUES as readonly string[]).includes(c));
-  const tags = spanTags("reader", options.env, options.tags);
+  const tags = photoCheckTags(options.env, options.tags);
+  // Where the photo went: google (AI Studio) or ollama (the owner's machine), on every span of the
+  // request and as tags of its transaction, so traces can be filtered by where photos were read.
+  tagRequest({ "photo_check.provider": tags.provider, "photo_check.model": tags.model });
   return withSpan(
     "photo.read",
     tags,

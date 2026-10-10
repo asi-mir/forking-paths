@@ -1,5 +1,5 @@
 import { generateJson, type ImageInput } from "@/lib/json";
-import { modelLabel, resolveModelConfig } from "@/lib/model";
+import { modelLabel, resolveModelConfig, type Provider } from "@/lib/model";
 import { aiTelemetry, withSpan, type TraceTags } from "@/lib/trace";
 import {
   gemmaMeaningPicker,
@@ -9,6 +9,7 @@ import {
   type ReadResult,
 } from "@/mastra/agents/reader";
 import type { CitedSpokenLine, Hint, VerdictView } from "./api";
+import { viewOfVerdict } from "./checker";
 import {
   acceptBridge,
   bridgeLine,
@@ -63,8 +64,18 @@ export type CheckPhotoInput = {
  */
 export const NEAR_READER_BUDGET_MS = 10_000;
 
+/**
+ * The near-GPS budget per reader provider. Local Gemma on a laptop gets longer: through a tunnel,
+ * with the laptop busy, a loaded `gemma4:e4b` took 16.6 s for its first photo and about 3.3 s
+ * after that, and a cut verdict loses the very photo check the local setup exists for.
+ */
+export const NEAR_READER_BUDGET_BY_PROVIDER: Record<Provider, number> = {
+  google: NEAR_READER_BUDGET_MS,
+  ollama: 25_000,
+};
+
 export type CheckPhotoOptions = ReadOptions & {
-  /** Total reader budget when GPS says near (default `NEAR_READER_BUDGET_MS`). */
+  /** Total reader budget when GPS says near (default: `NEAR_READER_BUDGET_BY_PROVIDER`). */
   nearBudgetMs?: number;
   /** Test seam: the reader call (default `readPhoto`). */
   read?: (input: ReaderInput, options: ReadOptions) => Promise<ReadResult>;
@@ -93,16 +104,17 @@ export type PhotoCheck = {
 };
 
 /** The verdict as the player sees it. */
-export function verdictView(check: Pick<PhotoCheck, "verdict" | "verdictSource">): VerdictView | null {
+export function verdictView(check: Pick<PhotoCheck, "verdict" | "verdictSource" | "provider">): VerdictView | null {
   if (!check.verdict || !check.verdictSource) return null;
-  return { ...check.verdict, source: check.verdictSource };
+  return viewOfVerdict(check.verdict, check.verdictSource, check.provider);
 }
 
 /**
  * Check one photo for one stop: presence first (no model call when GPS says too far), then the
  * reader, then the pass rule. GPS near passes whatever the reader says, and a reader that fails
  * or times out never blocks a player whom GPS puts at the place: when GPS says near, the reader
- * gets `NEAR_READER_BUDGET_MS` in total, not its full timeout and retries.
+ * gets its provider's near budget in total (`NEAR_READER_BUDGET_BY_PROVIDER`), not its full
+ * timeout and retries.
  */
 export async function checkPhoto(input: CheckPhotoInput, options: CheckPhotoOptions = {}): Promise<PhotoCheck> {
   const place = placeById(input.quest, input.placeId);
@@ -138,8 +150,11 @@ export async function checkPhoto(input: CheckPhotoInput, options: CheckPhotoOpti
   const nearGps = p.gps && p.near;
   const budget = nearGps ? new AbortController() : null;
   let timer: ReturnType<typeof setTimeout> | undefined;
+  let nearBudgetMs = options.nearBudgetMs ?? NEAR_READER_BUDGET_MS;
   try {
-    provider = modelLabel(resolveModelConfig("reader", options.env ?? process.env));
+    const config = resolveModelConfig("reader", options.env ?? process.env);
+    provider = modelLabel(config);
+    nearBudgetMs = options.nearBudgetMs ?? NEAR_READER_BUDGET_BY_PROVIDER[config.provider];
     const signal = budget ? (options.signal ? AbortSignal.any([options.signal, budget.signal]) : budget.signal) : options.signal;
     const call = read(
       { image: input.image, placeName: place.name, cues },
@@ -149,7 +164,7 @@ export async function checkPhoto(input: CheckPhotoInput, options: CheckPhotoOpti
       ? await Promise.race([
           call,
           new Promise<never>((_, reject) => {
-            const ms = options.nearBudgetMs ?? NEAR_READER_BUDGET_MS;
+            const ms = nearBudgetMs;
             timer = setTimeout(() => {
               budget.abort();
               reject(new Error(`reader stopped after ${ms} ms: GPS had already passed the stop`));

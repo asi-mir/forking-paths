@@ -198,6 +198,7 @@ export function CaseFileScreen({ runId }: { runId: string }) {
           startedAt={run.createdAt}
           finishedAt={finishedAt}
           saved={run.finish !== null}
+          checkers={run.checkers ?? []}
         />
       </section>
     </Screen>

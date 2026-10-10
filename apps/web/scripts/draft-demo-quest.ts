@@ -13,7 +13,7 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { generateJson, type ModelCallMeta } from "../src/lib/json";
-import { modelLabel, resolveModelConfig } from "../src/lib/model";
+import { modelLabel, ollamaHeaders, resolveModelConfig } from "../src/lib/model";
 import { CUES, type Candidate, type Fact, WriterOutputSchema, type WriterOutput } from "../src/quest/schema";
 import { LIMITS, validateQuest, type ValidateOptions } from "../src/quest/validate";
 
@@ -106,7 +106,7 @@ async function main() {
     return;
   }
   if (config.provider === "ollama") {
-    const up = await fetch(`${config.baseURL}/models`, { signal: AbortSignal.timeout(10_000) })
+    const up = await fetch(`${config.baseURL}/models`, { headers: ollamaHeaders(), signal: AbortSignal.timeout(10_000) })
       .then((r) => r.ok)
       .catch(() => false);
     if (!up) {

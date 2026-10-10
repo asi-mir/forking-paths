@@ -15,6 +15,7 @@ import {
   type StopPrompt,
 } from "./api";
 import { citedFacts } from "./bridge";
+import { viewOfVerdict } from "./checker";
 import type { Position } from "./check";
 import type { CheckPhotoInput, CheckPhotoOptions, ChooseNextInput, ChooseNextOptions, NextChoice, PhotoCheck } from "./photo-check";
 import { isFork, placeById, roadNotTaken } from "./routes";
@@ -191,7 +192,7 @@ export type PhotoStep = {
 };
 
 const verdictOf = (check: PhotoCheck) =>
-  check.verdict && check.verdictSource ? { ...check.verdict, source: check.verdictSource } : null;
+  check.verdict && check.verdictSource ? viewOfVerdict(check.verdict, check.verdictSource, check.provider) : null;
 
 /**
  * One photo for the stop the player is at. Returns the result for the phone, the attempt and,
@@ -331,7 +332,7 @@ export function replayResult(quest: Quest, run: Pick<Run, "path" | "voice">, att
   if (!step || !place) throw new RunError("That photo is for a different stop.", "wrong-place", 409);
   const last = [...attempts].reverse().find((a) => a.placeId === placeId && a.passed && a.verdict);
   const verdict =
-    step.status === "passed" && last?.verdict ? { ...last.verdict, source: last.storedVerdict ? ("stored" as const) : ("live" as const) } : null;
+    step.status === "passed" && last?.verdict ? viewOfVerdict(last.verdict, last.storedVerdict ? "stored" : "live", last.provider) : null;
   const base = {
     status: step.status,
     placeId,

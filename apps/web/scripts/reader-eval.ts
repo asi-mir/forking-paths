@@ -11,7 +11,7 @@
  */
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { modelLabel, resolveModelConfig, type Provider } from "../src/lib/model";
+import { modelLabel, ollamaHeaders, ollamaRoot, resolveModelConfig, type Provider } from "../src/lib/model";
 import { readPhoto } from "../src/mastra/agents/reader";
 import { passRule } from "../src/quest/check";
 import type { Verdict } from "../src/quest/schema";
@@ -57,8 +57,11 @@ async function runProvider(provider: Provider, photos: EvalPhoto[]): Promise<Row
   const config = resolveModelConfig("reader", env);
   const label = modelLabel(config);
   if (provider === "ollama") {
-    const base = config.baseURL?.replace(/\/v1$/, "") ?? "http://127.0.0.1:11434";
-    const up = await fetch(`${base}/api/tags`, { signal: AbortSignal.timeout(5_000) }).then((r) => r.ok, () => false);
+    const base = ollamaRoot(config);
+    const up = await fetch(`${base}/api/tags`, { headers: ollamaHeaders(env), signal: AbortSignal.timeout(5_000) }).then(
+      (r) => r.ok,
+      () => false,
+    );
     if (!up) {
       console.log(`skipped: Ollama not reachable at ${base}`);
       return null;

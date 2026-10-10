@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { APP_NAME } from "@/lib/app";
 import type { Receipt } from "@/quest/api";
+import { checkerLabel, type PhotoChecker } from "@/quest/checker";
 import { SCORE_RULES, formatDuration, scoreRun, screenOnShareOf } from "@/play/receipt";
 
 /** The screen-time receipt, printed like a thermal till receipt. */
@@ -13,6 +14,7 @@ export function ReceiptView({
   startedAt,
   finishedAt,
   saved,
+  checkers = [],
 }: {
   runId: string;
   receipt: Receipt;
@@ -22,6 +24,8 @@ export function ReceiptView({
   startedAt: number;
   finishedAt: number;
   saved: boolean;
+  /** Which Gemma read the photos, and where; nothing is printed when no live check ran. */
+  checkers?: readonly PhotoChecker[];
 }) {
   const share = screenOnShareOf(receipt);
   const score = scoreRun({ stopsFound, receipt });
@@ -59,6 +63,17 @@ export function ReceiptView({
         <span>SCORE</span>
         <span data-testid="score">{serverScore ?? score.total}</span>
       </div>
+      {checkers.length > 0 ? (
+        <>
+          <Rule />
+          <div className="text-[11.5px] leading-snug" data-testid="photo-check">
+            <p className="text-muted">PHOTO CHECK</p>
+            {checkers.map((c) => (
+              <p key={`${c.provider}/${c.model}`}>{checkerLabel(c)}</p>
+            ))}
+          </div>
+        </>
+      ) : null}
       <Rule />
       <p className="text-center text-[11px] leading-snug text-muted">
         A peek is an unlock on the way to a stop without &ldquo;I&apos;m here&rdquo; within 20 s, or a replayed clue (one per

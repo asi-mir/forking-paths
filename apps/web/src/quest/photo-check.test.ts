@@ -3,7 +3,7 @@ import { ModelCallError, type ModelCallMeta } from "@/lib/json";
 import { scriptedModel, userText } from "@/test/mock-model";
 import type { ReaderInput, ReadResult } from "@/mastra/agents/reader";
 import { demoQuest } from "./demo";
-import { checkPhoto, chooseNext, verdictView, writeBridge } from "./photo-check";
+import { checkPhoto, chooseNext, NEAR_READER_BUDGET_BY_PROVIDER, verdictView, writeBridge } from "./photo-check";
 import { placeById } from "./routes";
 import type { Verdict } from "./schema";
 
@@ -152,5 +152,40 @@ describe("chooseNext", () => {
 
   it("refuses the answer place", async () => {
     await expect(chooseNext({ quest, placeId: "P4", verdict: verdict() }, { env: OLLAMA })).rejects.toThrow(/answer place/);
+  });
+});
+
+describe("checkPhoto: the near-GPS reader budget per provider", () => {
+  const hanging = () => {
+    const signals: AbortSignal[] = [];
+    const read = vi.fn(async (_input: ReaderInput, options: { signal?: AbortSignal }) => {
+      signals.push(options.signal!);
+      return new Promise<ReadResult>(() => {});
+    });
+    return { read, signals };
+  };
+
+  it("gives local Gemma longer than Google before the stop passes without a verdict", async () => {
+    vi.useFakeTimers();
+    try {
+      expect(NEAR_READER_BUDGET_BY_PROVIDER).toEqual({ google: 10_000, ollama: 25_000 });
+      const GOOGLE = { GEMMA_PROVIDER: "google", GOOGLE_GENERATIVE_AI_API_KEY: "test-key-not-real" };
+      for (const [env, ms] of [
+        [GOOGLE, 10_000],
+        [OLLAMA, 25_000],
+      ] as const) {
+        const { read, signals } = hanging();
+        const pending = checkPhoto({ quest, placeId: "P1", image, position: atP1 }, { env, read });
+        await vi.advanceTimersByTimeAsync(ms - 100);
+        expect(signals[0].aborted).toBe(false);
+        await vi.advanceTimersByTimeAsync(200);
+        const check = await pending;
+        expect(signals[0].aborted).toBe(true);
+        expect(check).toMatchObject({ verdict: null, decision: { passed: true } });
+        expect(check.readerError).toMatch(new RegExp(`after ${ms} ms`));
+      }
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

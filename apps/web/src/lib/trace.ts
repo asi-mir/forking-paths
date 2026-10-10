@@ -73,6 +73,15 @@ export function setTraceTags(tags: TraceTags, options: Pick<SpanOptions, "image"
   rememberTrace(keyOf(span), tags, options.image);
 }
 
+/**
+ * Sentry tags on the request's scope, so its transaction and any error event carry them (span
+ * attributes alone do not tag error events). Empty values are skipped. No-op without a DSN.
+ */
+export function tagRequest(tags: Record<string, string | undefined>): void {
+  const clean = Object.fromEntries(Object.entries(tags).filter((e): e is [string, string] => Boolean(e[1])));
+  if (Object.keys(clean).length) Sentry.getIsolationScope().setTags(clean);
+}
+
 /** The active trace id, to log next to a run so a walk can be matched with its trace. */
 export function currentTraceId(): string | undefined {
   const traceId = Sentry.getActiveSpan()?.spanContext().traceId;

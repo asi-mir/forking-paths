@@ -9,6 +9,7 @@ import {
   meaningPrompt,
   mentionsPeople,
   OBSERVED_FALLBACK,
+  photoCheckTags,
   readerPrompt,
   readPhoto,
   toVerdict,
@@ -126,5 +127,20 @@ describe("meaning picker", () => {
     const model = scriptedModel(['{"to":"P2"}']);
     await gemmaMeaningPicker({ env: OLLAMA, model })(input);
     expect(userText(model)).toContain("closest in meaning");
+  });
+});
+
+describe("photoCheckTags", () => {
+  it("tags the photo read with where it ran, for traces", () => {
+    expect(photoCheckTags({ GEMMA_READER_PROVIDER: "ollama" }, { runId: "r1" })).toEqual({
+      runId: "r1",
+      role: "reader",
+      provider: "ollama",
+      model: "gemma4:e4b",
+      checkedBy: "ollama/gemma4:e4b",
+    });
+    expect(photoCheckTags({ GEMMA_PROVIDER: "google", GOOGLE_GENERATIVE_AI_API_KEY: "test-key-not-real" }).checkedBy).toBe(
+      "google/gemma-4-26b-a4b-it",
+    );
   });
 });

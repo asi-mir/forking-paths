@@ -200,6 +200,20 @@ function userContent(prompt: string, images: readonly ImageInput[] | undefined):
 }
 
 /**
+ * Ollama, or a protected tunnel in front of it, refused the request: say what to check. Ollama
+ * itself answers 403 to a Host header that is not its own, which a tunnel forwards unless told
+ * to rewrite it.
+ */
+export function authHint(provider: Provider, statusCode: number): string {
+  if (provider !== "ollama") return "";
+  if (statusCode === 401 || statusCode === 407) return " (the tunnel refused the request: check OLLAMA_AUTH_HEADER)";
+  if (statusCode === 403) {
+    return " (refused: check OLLAMA_AUTH_HEADER, and that the tunnel rewrites the Host header to localhost:11434)";
+  }
+  return "";
+}
+
+/**
  * Ask Gemma for one JSON value that matches `schema`.
  *
  * - Sends the schema as the provider's structured-output format (Google `responseJsonSchema`,
@@ -285,7 +299,7 @@ export async function generateJson<T>(
         const reason = timedOut
           ? `timed out after ${timeoutMs} ms`
           : statusCode
-            ? `HTTP ${statusCode}`
+            ? `HTTP ${statusCode}${authHint(config.provider, statusCode)}`
             : (error as Error).message;
         throw new ModelCallError(
           `${role} call to ${config.provider}/${config.modelId} failed: ${reason}`,

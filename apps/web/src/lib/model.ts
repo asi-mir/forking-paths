@@ -31,6 +31,12 @@ export interface ModelConfig {
   modelId: string;
   /** Ollama only: the OpenAI-compatible base URL. */
   baseURL?: string;
+  /**
+   * Ollama only: whether `OLLAMA_AUTH_HEADER` is set (a tunnel protected at its edge). The header
+   * itself never sits in the config, so a logged config never carries it; `ollamaHeaders(env)`
+   * reads it when a request is made.
+   */
+  auth?: boolean;
   /** Thinking depth (`GEMMA_<ROLE>_THINKING`). */
   thinking: ThinkingLevel;
   /** Per-attempt timeout in ms. */
@@ -137,7 +143,73 @@ export function resolveModelConfig(role: Role, env: Env = process.env): ModelCon
   const modelId = value(env, "OLLAMA_MODEL") ?? DEFAULT_MODELS.ollama;
   assertOpenWeight(provider, modelId);
   const baseURL = (value(env, "OLLAMA_BASE_URL") ?? DEFAULT_MODELS.ollamaBaseURL).replace(/\/+$/, "");
-  return { role, provider, modelId, baseURL, thinking, timeoutMs };
+  const auth = Object.keys(ollamaHeaders(env)).length > 0;
+  checkOllamaURL(baseURL, auth);
+  return { role, provider, modelId, baseURL, auth, thinking, timeoutMs };
+}
+
+const LOOPBACK = /^(localhost|127(?:\.\d{1,3}){3}|\[::1\])$/i;
+
+/**
+ * `OLLAMA_BASE_URL` must be a plain http(s) URL without a user name or password (fetch refuses
+ * those, and a URL ends up in logs). With `OLLAMA_AUTH_HEADER` set it must be https, or a
+ * loopback address: the header carries a password and must not cross the network in clear.
+ * Error messages never repeat the URL, which may name a private tunnel.
+ */
+function checkOllamaURL(baseURL: string, auth: boolean): void {
+  let url: URL;
+  try {
+    url = new URL(baseURL);
+  } catch {
+    throw new ModelConfigError("OLLAMA_BASE_URL is not a valid URL (e.g. http://localhost:11434/v1)");
+  }
+  if (url.protocol !== "http:" && url.protocol !== "https:") {
+    throw new ModelConfigError("OLLAMA_BASE_URL must start with http:// or https://");
+  }
+  if (url.username || url.password) {
+    throw new ModelConfigError(
+      "OLLAMA_BASE_URL must not contain a user name or password: put the credentials in OLLAMA_AUTH_HEADER",
+    );
+  }
+  if (auth && url.protocol === "http:" && !LOOPBACK.test(url.hostname)) {
+    throw new ModelConfigError("OLLAMA_AUTH_HEADER is sent only over https (or to localhost): use the tunnel's https URL");
+  }
+}
+
+/** An HTTP header name (RFC 9110 token). */
+const HEADER_NAME = /^[A-Za-z0-9!#$%&'*+.^_`|~-]+$/;
+const AUTH_HINT =
+  'OLLAMA_AUTH_HEADER must be an Authorization value such as "Basic <base64 of user:password>", ' +
+  'or "Header-Name: value" pairs separated by "; "';
+
+/**
+ * Headers for every request to Ollama, from `OLLAMA_AUTH_HEADER` (a tunnel protected at its edge):
+ *
+ * - `Basic dXNlcjpwYXNz` or `Bearer <token>`  → `Authorization: <value>`
+ * - `Header-Name: value`                      → that header (e.g. a tunnel's own auth header)
+ * - `A: x; B: y`                              → both headers
+ *
+ * Empty when the variable is unset. Throws ModelConfigError on a malformed value; the message
+ * never repeats the value. Never log the result.
+ */
+export function ollamaHeaders(env: Env = process.env): Record<string, string> {
+  const raw = value(env, "OLLAMA_AUTH_HEADER");
+  if (!raw) return {};
+  if (/[\r\n\0]/.test(raw)) throw new ModelConfigError(AUTH_HINT);
+  const named = /^([^\s:]+):\s+(\S.*)$/;
+  const first = named.exec(raw);
+  if (!first) {
+    // An Authorization value: a scheme, a space, then the credentials.
+    if (!/^[A-Za-z][A-Za-z0-9-]*\s+\S+$/.test(raw)) throw new ModelConfigError(AUTH_HINT);
+    return { Authorization: raw };
+  }
+  const headers: Record<string, string> = {};
+  for (const part of raw.split(/;\s+(?=[^\s:;]+:\s)/)) {
+    const m = named.exec(part.trim());
+    if (!m || !HEADER_NAME.test(m[1])) throw new ModelConfigError(AUTH_HINT);
+    headers[m[1]] = m[2].trim();
+  }
+  return headers;
 }
 
 type GoogleProvider = ReturnType<typeof createGoogleGenerativeAI>;
@@ -170,15 +242,20 @@ export function modelFromConfig(config: ModelConfig, env: Env = process.env): Ge
   }
 
   const baseURL = config.baseURL ?? DEFAULT_MODELS.ollamaBaseURL;
-  let ollama = ollamaProviders.get(baseURL);
+  const headers = ollamaHeaders(env);
+  // Keyed by URL and headers, in memory only: a changed OLLAMA_AUTH_HEADER gets a new provider.
+  const key = JSON.stringify([baseURL, headers]);
+  let ollama = ollamaProviders.get(key);
   if (!ollama) {
     ollama = createOpenAICompatible({
       name: "ollama",
       baseURL,
+      // Sent on every request (OpenAI-compatible provider); never logged.
+      ...(Object.keys(headers).length ? { headers } : {}),
       supportsStructuredOutputs: true,
       includeUsage: true,
     });
-    ollamaProviders.set(baseURL, ollama);
+    ollamaProviders.set(key, ollama);
   }
   return ollama.chatModel(config.modelId);
 }
@@ -206,6 +283,11 @@ export function providerOptionsFor(config: ModelConfig): ProviderOptions {
 }
 
 /** A short label for logs and traces, e.g. `google/gemma-4-31b-it`. */
-export function modelLabel(config: ModelConfig): string {
+export function modelLabel(config: Pick<ModelConfig, "provider" | "modelId">): string {
   return `${config.provider}/${config.modelId}`;
+}
+
+/** Ollama's native API root (`/api/...`) for an OpenAI-compatible base URL (`.../v1`). */
+export function ollamaRoot(config: Pick<ModelConfig, "baseURL">): string {
+  return (config.baseURL ?? DEFAULT_MODELS.ollamaBaseURL).replace(/\/v1$/, "");
 }

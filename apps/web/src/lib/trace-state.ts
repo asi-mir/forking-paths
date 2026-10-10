@@ -14,9 +14,14 @@ export interface TraceTags {
   questId?: string;
   runId?: string;
   placeId?: string;
+  /**
+   * The photo check's Gemma, `provider/model` (e.g. `ollama/gemma4:e4b`). Set only by the reader,
+   * so it survives on the request's spans when a later call (the bridge line) runs elsewhere.
+   */
+  checkedBy?: string;
 }
 
-export const TAG_KEYS = ["provider", "model", "role", "questId", "runId", "placeId"] as const;
+export const TAG_KEYS = ["provider", "model", "role", "questId", "runId", "placeId", "checkedBy"] as const;
 
 /** Span attribute that marks a trace whose model calls carry an image. */
 export const IMAGE_ATTRIBUTE = "has_image";

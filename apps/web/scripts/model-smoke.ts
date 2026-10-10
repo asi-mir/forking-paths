@@ -24,6 +24,7 @@ import {
   DEFAULT_MODELS,
   getModel,
   modelLabel,
+  ollamaHeaders,
   providerOptionsFor,
   resolveModelConfig,
   type Provider,
@@ -342,7 +343,7 @@ function report(provider: Provider, results: CheckResult[], sweep: CheckResult[]
 async function ollamaReachable(env: Env): Promise<string | undefined> {
   const base = resolveModelConfig("reader", envFor("ollama", env)).baseURL!;
   try {
-    const res = await fetch(`${base}/models`, { signal: AbortSignal.timeout(5_000) });
+    const res = await fetch(`${base}/models`, { headers: ollamaHeaders(envFor("ollama", env)), signal: AbortSignal.timeout(5_000) });
     return res.ok ? undefined : `Ollama answered HTTP ${res.status} at ${base}`;
   } catch {
     return `Ollama not reachable at ${base}`;

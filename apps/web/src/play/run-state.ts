@@ -5,6 +5,7 @@ import type {
   StartRunResponse,
   StopPrompt,
 } from "@/quest/api";
+import { addChecker, type PhotoChecker } from "@/quest/checker";
 import type { TimelineEvent } from "./receipt";
 
 /**
@@ -40,6 +41,8 @@ export type RunState = {
   miss: MissResult | null; // the last too-far or needs-retry answer
   passed: Array<{ placeId: string; name: string; status: "passed" | "skipped" }>;
   timeline: TimelineEvent[];
+  /** Which Gemma read this walk's photos, and where (live checks only), for the receipt. */
+  checkers?: PhotoChecker[];
   end: RunEnd | null;
   finish: FinishResponse | null;
   finishedAt: number | null;
@@ -58,6 +61,7 @@ export function newRun(start: StartRunResponse, mock: boolean, now: number): Run
     miss: null,
     passed: [],
     timeline: [{ t: now, e: "visible" }],
+    checkers: [],
     end: null,
     finish: null,
     finishedAt: null,
@@ -99,7 +103,8 @@ export const replayed = (s: RunState, now: number): RunState => push(s, { t: now
 
 export const checking = (s: RunState): RunState => ({ ...s, phase: "checking" });
 
-export function applyResult(s: RunState, r: PhotoResult): RunState {
+export function applyResult(prev: RunState, r: PhotoResult): RunState {
+  const s = "verdict" in r && r.verdict?.checkedBy ? { ...prev, checkers: addChecker(prev.checkers ?? [], r.verdict.checkedBy) } : prev;
   if (r.status === "too-far" || r.status === "needs-retry") {
     return { ...s, phase: r.status, miss: r };
   }

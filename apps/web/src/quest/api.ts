@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { COMPASS_8 } from "@/lib/geo";
+import { PhotoCheckerSchema } from "./checker";
 import {
   CueSchema,
   FactIdSchema,
@@ -209,6 +210,7 @@ export const VerdictViewSchema = z.object({
   plausible: z.boolean(), // plausibly a photo taken here
   confidence: z.number().min(0).max(1),
   source: z.enum(["live", "stored"]), // stored = the desk demo's saved result (live model failed or was rate-limited)
+  checkedBy: PhotoCheckerSchema.optional(), // live only: which Gemma read the photo, and where it ran (the receipt shows it)
 });
 export type VerdictView = z.infer<typeof VerdictViewSchema>;
 

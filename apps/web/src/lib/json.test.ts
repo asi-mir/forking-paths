@@ -2,7 +2,7 @@ import { APICallError } from "ai";
 import { MockLanguageModelV4 } from "ai/test";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
-import { extractJson, generateJson, ModelCallError, ModelOutputError } from "./json";
+import { authHint, extractJson, generateJson, ModelCallError, ModelOutputError } from "./json";
 import { solidPng } from "./solid-png";
 
 type GenerateResult = Awaited<ReturnType<MockLanguageModelV4["doGenerate"]>>;
@@ -186,5 +186,14 @@ describe("generateJson", () => {
     const parts = user?.content as Array<{ type: string; mediaType?: string }>;
     expect(parts.map((p) => p.type)).toEqual(["text", "file"]);
     expect(parts[1].mediaType).toBe("image/png");
+  });
+});
+
+describe("authHint", () => {
+  it("points at OLLAMA_AUTH_HEADER when a tunnel refuses an Ollama request", () => {
+    expect(authHint("ollama", 401)).toMatch(/OLLAMA_AUTH_HEADER/);
+    expect(authHint("ollama", 403)).toMatch(/OLLAMA_AUTH_HEADER.*Host header/);
+    expect(authHint("ollama", 500)).toBe("");
+    expect(authHint("google", 401)).toBe("");
   });
 });
