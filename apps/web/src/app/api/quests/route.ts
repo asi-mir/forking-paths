@@ -1,5 +1,7 @@
 import { runGenerateQuest } from "@/mastra/generate";
 import { createQuest, tracedGeneration } from "@/quest/create";
+import { DEMO_QUEST_ID } from "@/quest/demo";
+import { loadQuest } from "@/quest/run-service";
 
 /**
  * POST /api/quests { lat, lng, minutes, lang, timeZone? } → { questId, reused, overCap?, distanceM? }.
@@ -17,6 +19,9 @@ export async function POST(request: Request) {
   } catch {
     return Response.json({ error: "Send a JSON body: { lat, lng, minutes, lang }.", code: "bad-request" }, { status: 400 });
   }
+  // The desk demo's case counts as saved from the first request on: on an empty database,
+  // "Generate a quest near me" in Karaköy reuses it instead of writing a new one.
+  await loadQuest(DEMO_QUEST_ID).catch(() => undefined);
   const result = await createQuest(body, { generate });
   return Response.json(result.body, { status: result.status });
 }

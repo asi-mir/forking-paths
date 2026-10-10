@@ -4,8 +4,14 @@ import { type BrowserContext, expect, type Page, test } from "@playwright/test";
  * The phone play loop, end to end, on the mock adapter (no server routes, no network):
  * start → briefing → clue → pocket → I'm here → photo → result → fork → … → finale → case file.
  *
+ * It needs a mock build (NEXT_PUBLIC_MOCK_API=1 pnpm build) or `pnpm dev`, so it runs only with
+ * E2E_MOCK=1 and E2E_BASE_URL set to that server. The default checks (`pnpm e2e`) play the real
+ * routes instead.
+ *
  * Screenshots: set SHOTS_DIR to an absolute folder (and SHOTS_PREFIX for the file names).
  */
+
+test.skip(process.env.E2E_MOCK !== "1", "needs a mock build or the dev server (E2E_MOCK=1)");
 
 const SHOTS_DIR = process.env.SHOTS_DIR;
 const PREFIX = process.env.SHOTS_PREFIX ?? "play";

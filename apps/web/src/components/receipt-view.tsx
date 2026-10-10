@@ -15,6 +15,7 @@ export function ReceiptView({
   finishedAt,
   saved,
   checkers = [],
+  desk = false,
 }: {
   runId: string;
   receipt: Receipt;
@@ -26,6 +27,8 @@ export function ReceiptView({
   saved: boolean;
   /** Which Gemma read the photos, and where; nothing is printed when no live check ran. */
   checkers?: readonly PhotoChecker[];
+  /** The desk demo: the walk was skipped, so the times are the time at the desk. */
+  desk?: boolean;
 }) {
   const share = screenOnShareOf(receipt);
   const score = scoreRun({ stopsFound, receipt });
@@ -46,8 +49,13 @@ export function ReceiptView({
       <p className="text-center text-[13px] font-semibold tracking-[0.2em]">{APP_NAME.toUpperCase()}</p>
       <p className="text-center text-[11px] tracking-[0.14em] text-muted">SCREEN-TIME RECEIPT</p>
       <Rule />
-      <Row left={`RUN ${runId.slice(-6).toUpperCase()}`} right={date} small />
+      <Row left={`CASE ${runId.slice(-4).toUpperCase()}`} right={date} small />
       <Row left={`${time(startedAt)} → ${time(finishedAt)}`} right={`${stopsFound}/${stopsTotal} STOPS`} small />
+      {desk ? (
+        <p className="text-[11.5px] text-muted" data-testid="receipt-desk">
+          DESK DEMO · THE WALK WAS SKIPPED
+        </p>
+      ) : null}
       <Rule />
       <Row left="WALK" right={formatDuration(total)} />
       <Row left="SCREEN ON" right={<span data-testid="screen-on">{formatDuration(onS * 1000)} · {pct(share)}</span>} />
@@ -80,7 +88,7 @@ export function ReceiptView({
         unlock).
         {saved ? null : " Not saved to the server: no connection at the end."}
       </p>
-      <p className="mt-2 text-center text-[11px] tracking-[0.2em] text-muted">* THANK YOU FOR WALKING *</p>
+      <p className="mt-2 text-center text-[11px] tracking-[0.2em] text-muted">{desk ? "* NEXT TIME, WALK IT *" : "* THANK YOU FOR WALKING *"}</p>
     </div>
   );
 }

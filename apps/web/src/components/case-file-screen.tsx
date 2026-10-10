@@ -165,7 +165,7 @@ export function CaseFileScreen({ runId }: { runId: string }) {
                 These stay on this phone. The server checked each photo and kept none.{" "}
                 <button
                   type="button"
-                  className="font-medium text-link underline underline-offset-2"
+                  className="-my-3 inline-flex min-h-11 items-center font-medium text-link underline underline-offset-2"
                   onClick={async () => {
                     await deletePhotos(runId);
                     setDeleted(true);
@@ -205,6 +205,7 @@ export function CaseFileScreen({ runId }: { runId: string }) {
           finishedAt={finishedAt}
           saved={run.finish !== null}
           checkers={run.checkers ?? []}
+          desk={run.desk === true}
         />
       </section>
     </Screen>
@@ -233,10 +234,10 @@ function FactLinks({ facts }: { facts: CitedFact[] }) {
             href={f.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex min-h-9 items-center gap-1 font-mono text-[12px] text-link underline decoration-link/40 underline-offset-2"
+            className="inline-block py-2 font-mono text-[12px] leading-snug text-link underline decoration-link/40 underline-offset-2"
           >
             {f.id} · {f.sourceTitle}
-            <ExternalIcon size={13} />
+            <ExternalIcon size={13} className="ml-1 inline-block align-[-2px]" />
           </a>
         </li>
       ))}

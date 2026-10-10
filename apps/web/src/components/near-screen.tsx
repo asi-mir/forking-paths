@@ -22,6 +22,13 @@ export function NearScreen() {
   const [error, setError] = useState<string | null>(null);
   const [made, setMade] = useState<Made | null>(null);
   const desk = useDeskStart();
+  // The progress and any error print below the city list: bring them into view on a phone.
+  const status = useRef<HTMLDivElement>(null);
+  const hasError = error !== null;
+  const hasLog = log !== null;
+  useEffect(() => {
+    if (hasError || hasLog) status.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }, [hasError, hasLog]);
 
   const generate = async (lat: number, lng: number, place: string) => {
     setError(null);
@@ -127,12 +134,22 @@ export function NearScreen() {
         </p>
       </section>
 
+      <div ref={status} className="scroll-mb-28">
       {error ? (
         <div className="mt-5">
           <ErrorNote>{error}</ErrorNote>
+          <Link
+            href="/demo"
+            data-testid="near-desk-demo"
+            className="mt-3 flex min-h-12 items-center gap-2 text-[15px] font-medium text-link underline underline-offset-2"
+          >
+            <DeskIcon size={18} />
+            Play the saved Karaköy case from your desk
+          </Link>
         </div>
       ) : null}
       {log ? <StartLog log={log} /> : null}
+      </div>
     </Screen>
   );
 }
@@ -140,7 +157,7 @@ export function NearScreen() {
 function DeskTop() {
   return (
     <>
-      <Link href="/demo" className="flex items-center gap-2 text-ink">
+      <Link href="/demo" className="flex min-h-11 items-center gap-2 text-ink">
         <ForkMark size={24} />
         <span className="label">Desk demo</span>
       </Link>
@@ -223,7 +240,7 @@ function PlayLine({ questId, line, onPlaying }: { questId: string; line: QuestVi
         onClick={() => void play()}
         disabled={state.s === "loading"}
         data-testid={`play-${line.key}`}
-        className="flex h-9 items-center gap-1.5 rounded-full border-[1.5px] border-ink/30 pl-2.5 pr-3.5 text-[13px] font-medium active:bg-ink/5 disabled:opacity-60"
+        className="flex h-11 items-center gap-1.5 rounded-full border-[1.5px] border-ink/30 pl-3 pr-4 text-[13.5px] font-medium active:bg-ink/5 disabled:opacity-60"
       >
         {state.s === "playing" ? <StopIcon size={14} /> : <PlayIcon size={14} />}
         {state.s === "loading" ? "Voicing…" : state.s === "playing" ? "Stop" : "Play this line"}
@@ -260,6 +277,7 @@ function QuestPreview({
   const { view, made: res } = made;
   const [, setPlaying] = useState<string | null>(null);
   const q = view.questId;
+  const forks = view.places.filter((p) => p.fork).length;
   return (
     <Screen
       top={<DeskTop />}
@@ -270,13 +288,20 @@ function QuestPreview({
       }
     >
       <section className="pt-5" data-testid="quest-preview">
-        <button type="button" onClick={onBack} className="label underline underline-offset-2">
+        <button type="button" onClick={onBack} className="label -my-2 inline-flex min-h-11 items-center underline underline-offset-2">
           ← Another place
         </button>
-        <p className="label mt-4">
-          {res.overCap ? "Nearest saved case (today's limit reached)" : res.reused ? "A saved case" : "A new case"} ·{" "}
-          {view.stopsPerRun} stops · {view.places.filter((p) => p.fork).length} fork
-          {view.writer ? ` · written by ${view.writer.replace(/^[a-z]+\//, "")}` : ""}
+        <p className="label mt-3">
+          {res.overCap ? "Nearest saved case (today's limit reached)" : res.reused ? "A saved case" : "A new case"}
+        </p>
+        <p className="label mt-1">
+          {view.stopsPerRun} stops · {forks} {forks === 1 ? "fork" : "forks"}
+          {view.writer ? (
+            <>
+              {" "}
+              · written by <span className="whitespace-nowrap">{view.writer.replace(/^[a-z]+\//, "")}</span>
+            </>
+          ) : null}
         </p>
         <h1 className="narration mt-2 text-[32px] font-[560] leading-[1.08]" data-testid="preview-title">
           {view.title}
@@ -285,7 +310,7 @@ function QuestPreview({
           <Label className="mb-1">The question</Label>
           <p className="narration text-[20px] italic leading-[1.35]">{view.mystery.question}</p>
           <details className="mt-2">
-            <summary className="cursor-pointer text-[14px] font-medium text-link">Show the answer</summary>
+            <summary className="-my-1.5 cursor-pointer py-3 text-[14px] font-medium text-link">Show the answer</summary>
             <p className="mt-2 text-[15px] leading-snug">{view.mystery.answer}</p>
             <p className="mt-1 font-mono text-[11px] text-muted">cites {view.mystery.facts.join(", ")}</p>
           </details>

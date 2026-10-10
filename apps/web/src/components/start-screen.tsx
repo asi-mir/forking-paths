@@ -177,6 +177,14 @@ export function StartScreen() {
               ) : null}
             </p>
             <DeskDemoLink strong />
+            <Link
+              href="/demo/near"
+              data-testid="pick-city"
+              className="mt-2 flex min-h-12 items-center justify-center gap-2 text-[15px] font-medium text-link underline underline-offset-2"
+            >
+              <PinIcon size={16} />
+              Or see a case in a city you pick
+            </Link>
             </>
           ) : (
             <button

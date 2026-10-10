@@ -547,6 +547,11 @@ function Walk({ run, narrator }: { run: RunState; narrator: Narrator | null }) {
                   The other ways stay closed until the case file.
                 </p>
               </div>
+            ) : atFork ? (
+              <p className="mt-3 text-[15px] leading-snug text-muted" data-testid="fork-fallback">
+                The photo reader did not answer, so the walk takes the nearest way on. The other ways stay closed until
+                the case file.
+              </p>
             ) : null}
           </div>
           <div className="mt-7">

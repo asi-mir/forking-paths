@@ -203,8 +203,22 @@ The routes:
 - `POST /api/runs/<runId>/finish` `{ receipt }` saves screen-on time, pocket time, peeks and the
   score, once.
 
-Open `/?quest=demo-karakoy` to start a walk on a saved quest instead of finding one near you. The
-browser check against the real routes needs a running server with a photo reader and the eval
+Open `/?quest=demo-karakoy` to start a walk on a saved quest instead of finding one near you.
+
+## Browser checks
+
+`pnpm build && pnpm e2e` plays the app in headless Chrome on a phone viewport (390 × 844).
+Playwright starts the production build on port 3200 with the settings in
+`e2e/env.ts`: a fresh test database (`forking-paths-qa-e2e`, MongoDB must be running), no Google,
+SerpApi or ElevenLabs key, and a photo reader that never answers, so every result is the same on
+every run and no paid API is called. The checks cover the desk demo with location denied (each
+fork photo leads to a different stop, the case file, every fact with its link, the receipt), a
+street walk with the phone's position set to each stop (GPS alone passes a stop, too far gives the
+hint, lock, unlock and reload keep the walk), the start page and "Generate a quest near me" over
+the daily cap, the audio rules (with short test clips in the test database) and tap targets.
+Set `SHOTS_DIR` to an absolute folder to save a screenshot of every screen.
+
+The other browser check against the real routes needs a running server with a photo reader and the eval
 photos (`pnpm eval:photos:fetch`):
 
 ```bash

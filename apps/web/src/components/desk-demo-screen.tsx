@@ -70,7 +70,7 @@ export function DeskDemoScreen() {
     <Screen
       top={
         <>
-          <Link href="/" className="flex items-center gap-2 text-ink">
+          <Link href="/" className="flex min-h-11 items-center gap-2 text-ink">
             <ForkMark size={24} />
             <span className="label">A walking mystery</span>
           </Link>
@@ -96,7 +96,7 @@ export function DeskDemoScreen() {
       </section>
 
       <section className="mt-6 rounded-[12px] border border-rule bg-card p-4 shadow-[0_1px_0_rgb(28_26_23/0.06)]">
-        <Label className="mb-3">The first fork: two details, two ways on</Label>
+        <Label className="mb-3">The fork: two details, two ways on</Label>
         <div className="grid grid-cols-2 gap-3">
           {fork.map((s) => (
             <figure key={s.id}>

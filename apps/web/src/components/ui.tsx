@@ -297,9 +297,9 @@ export function FactCard({ fact }: { fact: CitedFact }) {
         href={fact.url}
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-2.5 inline-flex min-h-11 max-w-full items-center gap-1.5 text-[15px] font-medium text-link underline decoration-link/40 underline-offset-[3px]"
+        className="mt-2.5 inline-flex min-h-11 max-w-full items-center gap-1.5 py-1.5 text-[15px] font-medium leading-snug text-link underline decoration-link/40 underline-offset-[3px]"
       >
-        <span className="truncate">{fact.sourceTitle}</span>
+        <span className="min-w-0 break-words">{fact.sourceTitle}</span>
         <ExternalIcon size={15} className="shrink-0" />
         <span className="sr-only">({hostOf(fact.url)})</span>
       </a>

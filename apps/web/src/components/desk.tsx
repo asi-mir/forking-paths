@@ -58,7 +58,7 @@ export function SamplePicker({
                   disabled={disabled}
                   onClick={() => onSample(s)}
                   data-testid={`sample-${s.id}`}
-                  className="group flex flex-col overflow-hidden rounded-[10px] border-[1.5px] border-ink/80 bg-card text-left transition active:translate-y-px disabled:opacity-50"
+                  className="group flex flex-1 flex-col overflow-hidden rounded-[10px] border-[1.5px] border-ink/80 bg-card text-left transition active:translate-y-px disabled:opacity-50"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element -- a small static sample, shown as is */}
                   <img
@@ -68,7 +68,7 @@ export function SamplePicker({
                     height={s.height}
                     className={`w-full object-cover ${samples.length > 1 ? "aspect-square" : "aspect-[4/3]"}`}
                   />
-                  <span className="flex min-h-12 items-center justify-between gap-2 px-3 py-2">
+                  <span className="flex min-h-12 flex-1 items-center justify-between gap-2 px-3 py-2">
                     <span className="text-[14.5px] font-semibold leading-tight">{s.detail}</span>
                     <ArrowRightIcon size={16} className="shrink-0" />
                   </span>
