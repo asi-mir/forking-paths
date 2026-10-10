@@ -72,6 +72,37 @@ pnpm exec tsx scripts/draft-demo-quest.ts --out /tmp/karakoy-draft.json
 
 The draft is validated (one repair on failure) and saved to `--out`; the fixture is not changed.
 
+## Narrator voice
+
+The narrator is an ElevenLabs voice (`src/lib/voice.ts`); the character and the line rules,
+including the audio tags (`[whispers]`, `[curious]`, `[sighs]`, `[excited]`), are in
+`src/mastra/agents/narrator-style.md`. The screen shows every line as text, with the tags
+removed.
+
+- `speak(text)` voices one line and returns a clip id: `hash(text + voice + model)`, stored in the
+  `clips` collection, so the same line is paid for once. `voiceQuest(quest)` voices a quest's
+  briefing, each place's clue, look, hint and reveal, and the finale when a run starts (never
+  when a quest is generated). Both check the daily `tts-chars` cap first; over it, or with no
+  key, they make no request and the run is text only.
+- `GET /api/audio/<clipId>` serves a clip as `audio/mpeg` (cached for a year; byte ranges for Safari).
+- The ambience (12 s, loops) plays under the briefing and the clues only; nothing plays while
+  you walk. A "found" or "not here" stinger plays on a photo result (`src/lib/audio-mix.ts`).
+- New lines are voiced only with `ELEVENLABS_LIVE=1`. Without it (local work, tests, browser
+  checks) clips that already exist still play and nothing new is requested.
+
+One-off scripts (safe to rerun: cached clips cost nothing; each prints `skipped` without a key):
+
+```bash
+pnpm exec tsx scripts/design-voice.ts --write-env   # Voice Design → ELEVENLABS_VOICE_ID (premade voice if the plan has no Voice Design)
+pnpm exec tsx scripts/make-sounds.ts --export       # ambience + two stingers
+pnpm exec tsx scripts/seed-demo-voice.ts --export   # voice the demo quest (refuses past --max-chars, default 3000)
+pnpm exec tsx scripts/voice-sample.ts --out /tmp/narrator-sample   # 3 lines over the ambience (needs ffmpeg for the mix)
+```
+
+`--export` copies the demo's clips and the sounds into `public/audio/` (with `manifest.json`),
+so the desk demo speaks on a fresh deployment with an empty database and no credits left.
+`--dry-run` runs any of them against a mock client and memory, writing only to `--out`.
+
 ## Where code goes
 
 Routes in `src/app`, pure game rules in `src/quest` (unit-tested), external services in
