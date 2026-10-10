@@ -243,8 +243,20 @@ export const PathStepSchema = z.object({
   cue: CueSchema.nullable(), // the cue that picked the next stop, at a fork
   bridge: z.string().nullable(), // the line said on the way to the next stop
   notTaken: z.array(z.object({ to: PlaceIdSchema, cue: CueSchema.nullable() })),
+  // Set by the play routes, so a lost response can be sent again without a model call:
+  to: PlaceIdSchema.nullable().optional(), // the next stop (null at the answer place)
+  chosenBy: z.enum(["cue", "meaning", "nearest", "only-link"]).optional(), // how the next stop was picked
+  bridgeFactIds: z.array(FactIdSchema).optional(), // the facts the bridge line cites
+  bridgeClipId: z.string().optional(), // the bridge line's audio, when it was voiced
 });
 export type PathStep = z.infer<typeof PathStepSchema>;
+
+/** A run's voice, fixed when it starts: clip id per quest line key (`briefing`, `P1.clue`, …). */
+export const RunVoiceSchema = z.object({
+  on: z.boolean(), // false: text only (voice off, no key, or over the daily cap)
+  clips: z.record(z.string(), z.string()),
+});
+export type RunVoice = z.infer<typeof RunVoiceSchema>;
 
 export const RunSchema = z.object({
   id: z.string(),
@@ -258,6 +270,7 @@ export const RunSchema = z.object({
   stopsFound: z.number().int().nonnegative().optional(),
   score: z.number().optional(),
   userAgent: z.string().optional(),
+  voice: RunVoiceSchema.optional(),
 });
 export type Run = z.infer<typeof RunSchema>;
 

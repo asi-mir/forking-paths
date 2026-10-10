@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { APP_NAME } from "@/lib/app";
 import { getApi } from "@/play/api-browser";
 import { preloadClips } from "@/play/audio";
-import { ApiFailure, mockRequested } from "@/play/client";
+import { ApiFailure, mockRequested, savedQuestParam } from "@/play/client";
 import { type GpsFix, readPosition } from "@/play/photo";
 import { newRun } from "@/play/run-state";
 import { lastRunId, readRun, useHydrated, writeRun } from "@/play/run-store";
@@ -27,6 +27,8 @@ export function StartScreen() {
   const router = useRouter();
   const hydrated = useHydrated();
   const mock = hydrated && mockRequested(window.location.search);
+  // ?quest=<id> plays a saved quest (e.g. the Karaköy case) instead of finding one near the player.
+  const savedQuestId = hydrated && !mock ? savedQuestParam(window.location.search) : null;
   const resumeId = hydrated ? lastRunId() : null;
   const resume = resumeId ? readRun(resumeId) : null;
 
@@ -71,16 +73,23 @@ export function StartScreen() {
     try {
       const api = getApi(mock);
       const center = where.s === "ok" ? where.fix : mockQuest(minutes).center;
-      say("Looking for places and facts near you…");
-      const quest = await api.createQuest({ lat: center.lat, lng: center.lng, minutes, lang: "en" });
-      say(
-        quest.overCap
-          ? "Today's limit for new cases is reached: here is the nearest saved case."
-          : quest.reused
-            ? "Found a case already written near here."
-            : "The case is written.",
-        true,
-      );
+      let quest: { questId: string };
+      if (savedQuestId) {
+        quest = { questId: savedQuestId };
+        say("Opening the saved case.");
+      } else {
+        say("Looking for places and facts near you…");
+        const made = await api.createQuest({ lat: center.lat, lng: center.lng, minutes, lang: "en" });
+        say(
+          made.overCap
+            ? "Today's limit for new cases is reached: here is the nearest saved case."
+            : made.reused
+              ? "Found a case already written near here."
+              : "The case is written.",
+          true,
+        );
+        quest = made;
+      }
       say("Getting the narrator ready…");
       const run = await api.startRun({ questId: quest.questId });
       say(run.voice ? "The narrator is ready." : "Voice is off today: every line shows as text.", true);

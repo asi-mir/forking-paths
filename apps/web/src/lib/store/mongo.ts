@@ -116,6 +116,7 @@ export function createMongoStore(opts: { uri: string; dbName: string; now?: () =
         path: [],
         startedAt: input.startedAt ?? now(),
         ...(input.userAgent ? { userAgent: input.userAgent } : {}),
+        ...(input.voice ? { voice: structuredClone(input.voice) } : {}),
       };
       await (await c()).runs.insertOne(doc);
       return runFromDoc(doc);

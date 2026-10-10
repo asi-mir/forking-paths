@@ -121,3 +121,9 @@ export function mockRequested(search: string, env: { mockApi?: string; nodeEnv?:
   if (env.nodeEnv === "production") return false;
   return new URLSearchParams(search).get("mock") === "1";
 }
+
+/** `?quest=<id>` on the start page: play that saved quest instead of finding one near the player. */
+export function savedQuestParam(search: string): string | null {
+  const id = new URLSearchParams(search).get("quest")?.trim();
+  return id && /^[A-Za-z0-9_-]{1,64}$/.test(id) ? id : null;
+}

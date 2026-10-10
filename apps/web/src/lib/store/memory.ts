@@ -78,6 +78,7 @@ export function createMemoryStore(opts: { now?: () => Date } = {}): Store {
         path: [],
         startedAt: (input.startedAt ?? now()).toISOString(),
         ...(input.userAgent ? { userAgent: input.userAgent } : {}),
+        ...(input.voice ? { voice: structuredClone(input.voice) } : {}),
       };
       if (runs.has(run.id)) throw new Error(`run ${run.id} already exists`);
       runs.set(run.id, run);

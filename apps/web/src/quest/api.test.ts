@@ -6,6 +6,8 @@ import {
   type CitedFact,
   CreateQuestRequestSchema,
   parsePhotoForm,
+  PHOTO_MAX_BYTES,
+  sniffPhotoType,
   PhotoResultSchema,
   StartRunResponseSchema,
 } from "./api";
@@ -82,9 +84,35 @@ describe("parsePhotoForm", () => {
     expect(r.ok && r.value.fields).toEqual({ placeId: "P1", sampleId: "p1-writing" });
   });
 
-  it("rejects half a GPS reading, a non-JPEG, a missing photo and a bad place ID", () => {
+  it("accepts PNG and WebP, the desk demo's sample formats", () => {
+    expect(parsePhotoForm(form({ image: new Blob(["x"], { type: "image/png" }), placeId: "P1" })).ok).toBe(true);
+    expect(parsePhotoForm(form({ image: new Blob(["x"], { type: "image/webp" }), placeId: "P1" })).ok).toBe(true);
+  });
+
+  it("rejects GPS fields that are not plain numbers", () => {
+    for (const lat of ["abc", " ", "0x10", "Infinity", "41,02", "1e999"]) {
+      expect(parsePhotoForm(form({ image: jpeg(), placeId: "P1", lat, lng: "28.97" })).ok, lat).toBe(false);
+    }
+    expect(parsePhotoForm(form({ image: jpeg(), placeId: "P1", lat: "41", lng: "28", accuracy: "-1" })).ok).toBe(false);
+    expect(parsePhotoForm(form({ image: jpeg(), placeId: "P1", lat: "91", lng: "28" })).ok).toBe(false);
+  });
+
+  it("rejects a photo over the size limit", () => {
+    const big = new Blob([new Uint8Array(PHOTO_MAX_BYTES + 1)], { type: "image/jpeg" });
+    expect(parsePhotoForm(form({ image: big, placeId: "P1" })).ok).toBe(false);
+  });
+
+  it("tells JPEG, PNG and WebP apart by their first bytes", () => {
+    expect(sniffPhotoType(new Uint8Array([0xff, 0xd8, 0xff, 0xe0]))).toBe("image/jpeg");
+    expect(sniffPhotoType(new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))).toBe("image/png");
+    expect(sniffPhotoType(new TextEncoder().encode("RIFF\0\0\0\0WEBPVP8 "))).toBe("image/webp");
+    expect(sniffPhotoType(new TextEncoder().encode("GIF89a"))).toBeNull();
+    expect(sniffPhotoType(new TextEncoder().encode("<svg"))).toBeNull();
+  });
+
+  it("rejects half a GPS reading, a GIF, a missing photo and a bad place ID", () => {
     expect(parsePhotoForm(form({ image: jpeg(), placeId: "P1", lat: "41" })).ok).toBe(false);
-    expect(parsePhotoForm(form({ image: new Blob(["x"], { type: "image/png" }), placeId: "P1" })).ok).toBe(false);
+    expect(parsePhotoForm(form({ image: new Blob(["x"], { type: "image/gif" }), placeId: "P1" })).ok).toBe(false);
     expect(parsePhotoForm(form({ placeId: "P1" })).ok).toBe(false);
     expect(parsePhotoForm(form({ image: jpeg(), placeId: "fountain" })).ok).toBe(false);
   });

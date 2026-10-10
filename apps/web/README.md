@@ -103,6 +103,31 @@ pnpm exec tsx scripts/voice-sample.ts --out /tmp/narrator-sample   # 3 lines ove
 so the desk demo speaks on a fresh deployment with an empty database and no credits left.
 `--dry-run` runs any of them against a mock client and memory, writing only to `--out`.
 
+## Play routes
+
+A walk is a plain run record (`src/quest/run.ts`, a small state machine) stored in the `runs` and
+`attempts` collections (or in memory without `MONGODB_URI`). The phone UI talks to these routes
+through the shapes in `src/quest/api.ts`:
+
+- `POST /api/runs` `{ questId }` starts a run and voices the quest's lines (text only when voice is
+  off or over the daily cap). The demo quest `demo-karakoy` is loaded from its fixture when the
+  database has no copy yet, and saved.
+- `POST /api/runs/<runId>/photo` (multipart: `image` as JPEG, PNG or WebP up to 2 MB, `placeId`,
+  and optionally `lat`, `lng`, `accuracy`) checks the photo and moves the walk on. GPS near the
+  place passes it; too far gives the place's hint with distance and direction (two retries, then
+  the stop is skipped); without GPS the photo must look plausible to Gemma. The photo stays in
+  memory for the reader call: it is never stored, logged or traced.
+- `POST /api/runs/<runId>/finish` `{ receipt }` saves screen-on time, pocket time, peeks and the
+  score, once.
+
+Open `/?quest=demo-karakoy` to start a walk on a saved quest instead of finding one near you. The
+browser check against the real routes needs a running server with a photo reader and the eval
+photos (`pnpm eval:photos:fetch`):
+
+```bash
+E2E_REAL=1 E2E_BASE_URL=http://localhost:3000 pnpm exec playwright test e2e/play-real.spec.ts
+```
+
 ## Where code goes
 
 Routes in `src/app`, pure game rules in `src/quest` (unit-tested), external services in

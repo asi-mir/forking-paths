@@ -1,4 +1,4 @@
-import type { Attempt, Lang, PathStep, Quest, Run } from "@/quest/schema";
+import type { Attempt, Lang, PathStep, Quest, Run, RunVoice } from "@/quest/schema";
 
 /** A saved quest: it always has an id and a creation time, and its centre is rounded to ~100 m. */
 export type StoredQuest = Quest & { id: string; createdAt: string };
@@ -20,6 +20,8 @@ export type StoredAttempt = Attempt & { id: string };
 export type StartRunInput = {
   questId: string;
   userAgent?: string;
+  /** The run's voice: clip ids per quest line, fixed at start. */
+  voice?: RunVoice;
   /** Default: a new id. */
   id?: string;
   /** Default: now. */

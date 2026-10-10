@@ -29,9 +29,22 @@ export const API = {
 export const PHOTO_RETRIES = 2;
 /** The longest side of the photo the phone sends; it is re-encoded as JPEG, which drops EXIF. */
 export const PHOTO_MAX_PX = 1024;
-/** Upload limit for one photo. */
-export const PHOTO_MAX_BYTES = 3 * 1024 * 1024;
+/** Upload limit for one photo (a 1024 px JPEG from the phone is far smaller). */
+export const PHOTO_MAX_BYTES = 2 * 1024 * 1024;
+/** What the phone encodes to. */
 export const PHOTO_TYPE = "image/jpeg";
+/** What the photo route accepts (the desk demo's sample photos may be PNG or WebP). */
+export const PHOTO_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
+export type PhotoType = (typeof PHOTO_TYPES)[number];
+
+/** The image type from the file's first bytes, or null when it is not a JPEG, PNG or WebP. */
+export function sniffPhotoType(bytes: Uint8Array): PhotoType | null {
+  const at = (i: number, ...b: number[]) => b.every((x, j) => bytes[i + j] === x);
+  if (at(0, 0xff, 0xd8, 0xff)) return "image/jpeg";
+  if (at(0, 0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a)) return "image/png";
+  if (at(0, 0x52, 0x49, 0x46, 0x46) && at(8, 0x57, 0x45, 0x42, 0x50)) return "image/webp"; // RIFF....WEBP
+  return null;
+}
 
 // ---------------------------------------------------------------------------
 // Shared pieces
@@ -124,10 +137,17 @@ export type StartRunResponse = z.infer<typeof StartRunResponseSchema>;
 // ---------------------------------------------------------------------------
 // POST /api/runs/[runId]/photo (multipart/form-data)
 
+/** A plain decimal ("41.0258", "-3", "12.5"): no hex, no blanks, no "Infinity". */
+const DECIMAL = /^[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?$/;
+
 const optionalNumber = (min: number, max: number) =>
   z.preprocess(
-    (v) => (v === "" || v === null || v === undefined ? undefined : Number(v)),
-    z.number().min(min).max(max).optional(),
+    (v) => {
+      if (v === "" || v === null || v === undefined) return undefined;
+      if (typeof v === "number") return v;
+      return typeof v === "string" && DECIMAL.test(v.trim()) ? Number(v.trim()) : Number.NaN;
+    },
+    z.number({ error: "lat, lng and accuracy must be numbers" }).min(min).max(max).optional(),
   );
 
 /** The form fields next to the `image` file. GPS is optional (denied, or the desk demo). */
@@ -146,11 +166,16 @@ export type PhotoFields = z.infer<typeof PhotoFieldsSchema>;
 
 export type PhotoForm = { image: Blob; fields: PhotoFields };
 
-/** Parse the photo form: a JPEG `image` (≤ PHOTO_MAX_BYTES) plus PhotoFields. */
+/**
+ * Parse the photo form: an `image` (JPEG, PNG or WebP, ≤ PHOTO_MAX_BYTES) plus PhotoFields.
+ * The route also checks the file's first bytes (`sniffPhotoType`): the declared type is not proof.
+ */
 export function parsePhotoForm(form: FormData): { ok: true; value: PhotoForm } | { ok: false; error: string } {
   const image = form.get("image");
   if (!(image instanceof Blob) || image.size === 0) return { ok: false, error: "The photo is missing." };
-  if (image.type !== PHOTO_TYPE) return { ok: false, error: "The photo must be a JPEG, re-encoded on the phone." };
+  if (!(PHOTO_TYPES as readonly string[]).includes(image.type)) {
+    return { ok: false, error: "The photo must be a JPEG, PNG or WebP image." };
+  }
   if (image.size > PHOTO_MAX_BYTES) return { ok: false, error: "The photo is too large; resize it to 1024 px first." };
   const fields = PhotoFieldsSchema.safeParse({
     placeId: form.get("placeId") ?? undefined,
