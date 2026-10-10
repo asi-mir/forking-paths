@@ -1,0 +1,76 @@
+{
+  "note": "Synthetic test data for the validator: made-up places and facts, example.org links. Not a playable quest.",
+  "opts": { "center": { "lat": 41.025, "lng": 28.975 }, "minutes": 15, "lang": "en" },
+  "facts": [
+    { "id": "F1", "placeId": "P1", "text": "The Test Square fountain was built in 1732 and carries a carved verse inscription.", "sourceUrl": "https://example.org/wiki/Test_Square_Fountain", "sourceTitle": "Test Square Fountain", "query": "Test Square Fountain history", "source": "wikipedia" },
+    { "id": "F2", "placeId": "P1", "text": "The fountain was fed by a cistern that held 1,500 cubic metres of water.", "sourceUrl": "https://example.org/search/test-square-fountain", "sourceTitle": "Test Square Fountain - City Guide", "query": "Test Square Fountain history", "source": "serpapi-search" },
+    { "id": "F3", "placeId": "P2", "text": "The Test Library was founded in 1740 by the patron whose verse is on the fountain.", "sourceUrl": "https://example.org/wiki/Test_Library", "sourceTitle": "Test Library", "query": "geosearch 41.025,28.975", "source": "wikipedia" },
+    { "id": "F4", "placeId": "P3", "text": "The Test Bathhouse took its water from the same cistern from the 18th century onward.", "sourceUrl": "https://example.org/maps/test-bathhouse", "sourceTitle": "Test Bathhouse", "query": "historical landmark", "source": "serpapi-maps" },
+    { "id": "F5", "placeId": "P4", "text": "The clock tower's bell was cast in 1803 from the metal of the old fountain's pipes.", "sourceUrl": "https://example.org/wiki/Test_Clock_Tower", "sourceTitle": "Test Clock Tower", "query": "geosearch 41.025,28.975", "source": "wikipedia" },
+    { "id": "F6", "placeId": "P4", "text": "The clock tower stands on the site of the patron's first workshop.", "sourceUrl": "https://example.org/search/test-clock-tower", "sourceTitle": "Test Clock Tower - Heritage Notes", "query": "Test Clock Tower history", "source": "serpapi-search" },
+    { "id": "F7", "placeId": "P5", "text": "The Test Far Gate was rebuilt in 1911.", "sourceUrl": "https://example.org/wiki/Test_Far_Gate", "sourceTitle": "Test Far Gate", "query": "geosearch 41.025,28.975", "source": "wikipedia" }
+  ],
+  "candidates": [
+    { "id": "P1", "name": "Test Square Fountain", "location": { "lat": 41.026, "lng": 28.975 }, "sourceUrl": "https://example.org/wiki/Test_Square_Fountain" },
+    { "id": "P2", "name": "Test Library", "location": { "lat": 41.027, "lng": 28.974 }, "sourceUrl": "https://example.org/wiki/Test_Library" },
+    { "id": "P3", "name": "Test Bathhouse", "location": { "lat": 41.027, "lng": 28.9762 }, "sourceUrl": "https://example.org/maps/test-bathhouse", "openNow": true },
+    { "id": "P4", "name": "Test Clock Tower", "location": { "lat": 41.028, "lng": 28.9752 }, "sourceUrl": "https://example.org/wiki/Test_Clock_Tower" },
+    { "id": "P5", "name": "Test Far Gate", "location": { "lat": 41.033, "lng": 28.968 }, "sourceUrl": "https://example.org/wiki/Test_Far_Gate", "gated": true }
+  ],
+  "writer": {
+    "title": "The Patron's Bell",
+    "mystery": {
+      "question": "What became of the pipes that fed the old fountain?",
+      "answer": "They were melted down and cast into the clock tower's bell in 1803.",
+      "factIds": ["F5"]
+    },
+    "briefing": "A patron left his mark on these streets, and something of his still rings every hour. Follow what he left behind. Stay on the pavement, daylight only.",
+    "places": [
+      {
+        "id": "P1",
+        "clue": "Walk toward the square with the big plane tree; a stone fountain stands beside the café tables.",
+        "look": "Two things here keep a story: one you can read, one that flows. Photograph the one you trust.",
+        "hint": "Look for the big plane tree and the café tables around it.",
+        "reveal": { "text": "This fountain was built in 1732, and its carved verse names the man who paid for it.", "factIds": ["F1"] },
+        "links": [
+          { "to": "P2", "cue": "writing", "reason": "The verse names its patron, and his library is just up the lane.", "factIds": ["F1", "F3"] },
+          { "to": "P3", "cue": "water", "reason": "That water came from a cistern of 1,500 cubic metres, and the bathhouse up the hill drank from it too.", "factIds": ["F2", "F4"] }
+        ]
+      },
+      {
+        "id": "P2",
+        "clue": "Head up the lane toward the arched doorway with a carved book above it.",
+        "look": "Look closely. Photograph the one detail you think matters.",
+        "hint": "Follow the lane uphill from the fountain until you see a carved book over an arch.",
+        "reveal": { "text": "The same patron founded this library in 1740.", "factIds": ["F3"] },
+        "links": [
+          { "to": "P4", "reason": "His story ends where his first workshop stood, under the clock tower.", "factIds": ["F6"] }
+        ]
+      },
+      {
+        "id": "P3",
+        "clue": "Follow the low domes uphill; the bathhouse roof has rows of small glass skylights.",
+        "look": "Look closely. Photograph the one detail you think matters.",
+        "hint": "Look for low domes dotted with glass skylights, uphill from the fountain.",
+        "reveal": { "text": "From the 18th century on, this bathhouse drew its water from the fountain's cistern.", "factIds": ["F4"] },
+        "links": [
+          { "to": "P4", "reason": "The pipes that fed the fountain did not stay pipes: follow them to the clock tower.", "factIds": ["F5"] }
+        ]
+      },
+      {
+        "id": "P4",
+        "clue": "Listen for the bell and walk toward the clock face above the rooftops.",
+        "look": "Look closely. Photograph the one detail you think matters.",
+        "hint": "The clock face shows above the rooftops; walk toward it.",
+        "reveal": { "text": "The bell above you was cast in 1803 from the old fountain's pipes.", "factIds": ["F5"] },
+        "links": []
+      }
+    ],
+    "startPlaceId": "P1",
+    "answerPlaceId": "P4",
+    "finale": {
+      "text": "The pipes that carried the fountain's water became the bell you hear: cast in 1803, on the site of the patron's first workshop.",
+      "factIds": ["F5", "F6"]
+    }
+  }
+}
