@@ -48,6 +48,8 @@ GEMMA_PROVIDER=ollama
 OLLAMA_BASE_URL=http://localhost:11434/v1
 ```
 
+Or keep only the photo check on your machine: `GEMMA_READER_PROVIDER=ollama`.
+
 ## For contributors and coding agents
 
 Start with [`AGENTS.md`](AGENTS.md): commands, hard rules and how to work.

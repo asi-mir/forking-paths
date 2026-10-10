@@ -27,6 +27,24 @@ Local database without Atlas:
 docker run -d --name forking-paths-mongo -p 27017:27017 mongo:8
 ```
 
+## Gemma provider
+
+`src/lib/model.ts` picks where Gemma runs, per role (`writer`, `reader` for the photo check,
+`narrator`), from env: `GEMMA_PROVIDER=auto|google|ollama` (auto = Google AI Studio when
+`GOOGLE_GENERATIVE_AI_API_KEY` is set, otherwise Ollama), with per-role overrides such as
+`GEMMA_READER_PROVIDER=ollama`. Only Gemma IDs run on Google; Ollama cloud models are refused.
+`src/lib/json.ts` → `generateJson(role, schema, prompt, images?)` returns a zod-validated object
+plus usage (provider, model, tokens, latency).
+
+Check a provider end to end (JSON, a tool call through a Mastra agent, an image, and a tool
+with a JSON schema in one call):
+
+```bash
+pnpm exec tsx scripts/model-smoke.ts --provider ollama   # or google, or all
+```
+
+A provider that is not configured is skipped.
+
 ## Where code goes
 
 Routes in `src/app`, pure game rules in `src/quest` (unit-tested), external services in
