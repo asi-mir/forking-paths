@@ -1,0 +1,521 @@
+{
+  "source": "serpapi-maps",
+  "query": "historical landmark",
+  "payload": {
+    "local_results": [
+      {
+        "position": 1,
+        "title": "Galata Tower",
+        "place_id": "ChIJQ3x3p-e5yhQRCzOLzD3Pdkw",
+        "data_id": "0x14cab9e7a7777c43:0x4c76cf3dcc8b330b",
+        "gps_coordinates": {
+          "latitude": 41.025569,
+          "longitude": 28.9741286
+        },
+        "type": "Historical landmark",
+        "types": [
+          "Historical landmark",
+          "Tourist attraction"
+        ],
+        "type_id": "historical_landmark",
+        "type_ids": [
+          "historical_landmark",
+          "tourist_attraction"
+        ],
+        "address": "Bereketzade, 34421 Beyoğlu/İstanbul, Türkiye",
+        "description": "67-meter Byzantine tower & restaurant. Restored 14th-century tower and former prison overlooking the Bosphorus with a top-floor restaurant.",
+        "open_state": "Open · Closes 10 PM",
+        "hours": "Open · Closes 10 PM",
+        "operating_hours": {
+          "saturday": "8:30 AM–10 PM",
+          "sunday": "8:30 AM–10 PM",
+          "monday": "8:30 AM–10 PM",
+          "tuesday": "8:30 AM–10 PM",
+          "wednesday": "8:30 AM–10 PM",
+          "thursday": "8:30 AM–10 PM",
+          "friday": "8:30 AM–10 PM"
+        }
+      },
+      {
+        "position": 2,
+        "title": "Turnacıbaşı 30",
+        "place_id": "ChIJHecNh6G3yhQRWpEXDZi-X1Q",
+        "data_id": "0x14cab7a1870de71d:0x545fbe980d17915a",
+        "gps_coordinates": {
+          "latitude": 41.033240899999996,
+          "longitude": 28.980926999999998
+        },
+        "type": "Historical landmark",
+        "types": [
+          "Historical landmark"
+        ],
+        "type_id": "historical_landmark",
+        "type_ids": [
+          "historical_landmark"
+        ],
+        "address": "Kuloğlu, Turnacıbaşı Cd. No 30/2, 34433 Beyoğlu/İstanbul, Türkiye",
+        "open_state": "Open 24 hours",
+        "hours": "Open 24 hours",
+        "operating_hours": {
+          "saturday": "Open 24 hours",
+          "sunday": "Open 24 hours",
+          "monday": "Open 24 hours",
+          "tuesday": "Open 24 hours",
+          "wednesday": "Open 24 hours",
+          "thursday": "Open 24 hours",
+          "friday": "Open 24 hours"
+        }
+      },
+      {
+        "position": 3,
+        "title": "Tarihi Çeşme",
+        "place_id": "ChIJQyv2VuC5yhQRSxSqRUBtSX4",
+        "data_id": "0x14cab9e056f62b43:0x7e496d4045aa144b",
+        "gps_coordinates": {
+          "latitude": 41.030550399999996,
+          "longitude": 28.9737297
+        },
+        "type": "Historical landmark",
+        "types": [
+          "Historical landmark"
+        ],
+        "type_id": "historical_landmark",
+        "type_ids": [
+          "historical_landmark"
+        ],
+        "address": "Asmalı Mescit, Asmalı Mescit Cd. No:65, 34430 Beyoğlu/İstanbul, Türkiye"
+      },
+      {
+        "position": 4,
+        "title": "Karakoy PALACE",
+        "place_id": "ChIJbx0JEOi5yhQR76GX_KMzR40",
+        "data_id": "0x14cab9e810091d6f:0x8d4733a3fc97a1ef",
+        "gps_coordinates": {
+          "latitude": 41.0231529,
+          "longitude": 28.975460899999998
+        },
+        "type": "Historical landmark",
+        "types": [
+          "Historical landmark"
+        ],
+        "type_id": "historical_landmark",
+        "type_ids": [
+          "historical_landmark"
+        ],
+        "address": "Kemankeş Karamustafa Paşa, Havyar Haniçi Sk., 34425 Beyoğlu/İstanbul, Türkiye",
+        "description": "Striking landmark, now home to a bank. Landmark, early 20th-century building with neo-Byzantine elements, housing the offices of a bank.",
+        "open_state": "Closed · Opens 9 AM Mon",
+        "hours": "Closed · Opens 9 AM Mon",
+        "operating_hours": {
+          "saturday": "Closed",
+          "sunday": "Closed",
+          "monday": "9 AM–6 PM",
+          "tuesday": "9 AM–6 PM",
+          "wednesday": "9 AM–6 PM",
+          "thursday": "9 AM–6 PM",
+          "friday": "9 AM–6 PM"
+        }
+      },
+      {
+        "position": 5,
+        "title": "Tarihi Bina Kalıntıları",
+        "place_id": "ChIJoe4NxOi5yhQRwBN5yQYvru8",
+        "data_id": "0x14cab9e8c40deea1:0xefae2f06c97913c0",
+        "gps_coordinates": {
+          "latitude": 41.022592499999995,
+          "longitude": 28.971380399999997
+        },
+        "type": "Historical landmark",
+        "types": [
+          "Historical landmark"
+        ],
+        "type_id": "historical_landmark",
+        "type_ids": [
+          "historical_landmark"
+        ],
+        "address": "Arap Cami, Arap Kayyum Sk. No:16, 34421 Beyoğlu/İstanbul, Türkiye"
+      },
+      {
+        "position": 6,
+        "title": "Tarihi Pasaj - Elhamra",
+        "place_id": "ChIJL22mB2C3yhQRzD-qgYSNRA0",
+        "data_id": "0x14cab76007a66d2f:0xd448d8481aa3fcc",
+        "gps_coordinates": {
+          "latitude": 41.0324592,
+          "longitude": 28.9762088
+        },
+        "type": "Historical landmark",
+        "types": [
+          "Historical landmark"
+        ],
+        "type_id": "historical_landmark",
+        "type_ids": [
+          "historical_landmark"
+        ],
+        "address": "Asmalı Mescit, 34430 Beyoğlu/İstanbul, Türkiye"
+      },
+      {
+        "position": 7,
+        "title": "Karaköy İskelesi",
+        "place_id": "ChIJz09aDgC5yhQRRIA1NtHRhxY",
+        "data_id": "0x14cab9000e5a4fcf:0x1687d1d136358044",
+        "gps_coordinates": {
+          "latitude": 41.0216168,
+          "longitude": 28.9754826
+        },
+        "type": "Historical landmark",
+        "types": [
+          "Historical landmark"
+        ],
+        "type_id": "historical_landmark",
+        "type_ids": [
+          "historical_landmark"
+        ],
+        "address": "Kemankeş Karamustafa Paşa, Rıhtım Cd., 34425 Beyoğlu/İstanbul, Türkiye"
+      },
+      {
+        "position": 8,
+        "title": "Tarihi Çeşme",
+        "place_id": "ChIJCzQyAgC5yhQRBDqxwnkcUpU",
+        "data_id": "0x14cab9000232340b:0x95521c79c2b13a04",
+        "gps_coordinates": {
+          "latitude": 41.029168399999996,
+          "longitude": 28.9844847
+        },
+        "type": "Historical landmark",
+        "types": [
+          "Historical landmark"
+        ],
+        "type_id": "historical_landmark",
+        "type_ids": [
+          "historical_landmark"
+        ],
+        "address": "Kılıçali Paşa, İlyas Çelebi Sk. No:34, 34433 Beyoğlu/İstanbul, Türkiye"
+      },
+      {
+        "position": 9,
+        "title": "Kamondo Stairs",
+        "place_id": "ChIJu99kiuu5yhQRR1_Dcz5aeI8",
+        "data_id": "0x14cab9eb8a64dfbb:0x8f785a3e73c35f47",
+        "gps_coordinates": {
+          "latitude": 41.023962499999996,
+          "longitude": 28.973717999999998
+        },
+        "type": "Historical landmark",
+        "types": [
+          "Historical landmark",
+          "Tourist attraction"
+        ],
+        "type_id": "historical_landmark",
+        "type_ids": [
+          "historical_landmark",
+          "tourist_attraction"
+        ],
+        "address": "Bereketzade, Bankalar Cd. NO:10, 34421 Beyoğlu/İstanbul, Türkiye",
+        "description": "Art nouveau stairs to Galata Tower. Elegant set of 19th-century art nouveau stairs en route to the Galata Tower, popular for photos.",
+        "open_state": "Open 24 hours",
+        "hours": "Open 24 hours",
+        "operating_hours": {
+          "saturday": "Open 24 hours",
+          "sunday": "Open 24 hours",
+          "monday": "Open 24 hours",
+          "tuesday": "Open 24 hours",
+          "wednesday": "Open 24 hours",
+          "thursday": "Open 24 hours",
+          "friday": "Open 24 hours"
+        }
+      },
+      {
+        "position": 10,
+        "title": "Tarihi Çeşme",
+        "place_id": "ChIJl0RoZQC5yhQRHHizdGdSmTM",
+        "data_id": "0x14cab90065684497:0x3399526774b3781c",
+        "gps_coordinates": {
+          "latitude": 41.0262202,
+          "longitude": 28.958701599999998
+        },
+        "type": "Historical landmark",
+        "types": [
+          "Historical landmark"
+        ],
+        "type_id": "historical_landmark",
+        "type_ids": [
+          "historical_landmark"
+        ],
+        "address": "Cibali, 34083 Fatih/İstanbul, Türkiye",
+        "open_state": "Open 24 hours",
+        "hours": "Open 24 hours",
+        "operating_hours": {
+          "saturday": "Open 24 hours",
+          "sunday": "Open 24 hours",
+          "monday": "Open 24 hours",
+          "tuesday": "Open 24 hours",
+          "wednesday": "Open 24 hours",
+          "thursday": "Open 24 hours",
+          "friday": "Open 24 hours"
+        }
+      },
+      {
+        "position": 11,
+        "title": "Tarihi Han",
+        "place_id": "ChIJ17qWHN25yhQRwUIA1NaNrvE",
+        "data_id": "0x14cab9dd1c96bad7:0xf1ae8dd6d40042c1",
+        "gps_coordinates": {
+          "latitude": 41.0237237,
+          "longitude": 28.978763899999997
+        },
+        "type": "Historical landmark",
+        "types": [
+          "Historical landmark"
+        ],
+        "type_id": "historical_landmark",
+        "type_ids": [
+          "historical_landmark"
+        ],
+        "address": "Kemankeş Karamustafa Paşa, Kemankeş Cd. No:43, 34425 Beyoğlu/İstanbul, Türkiye"
+      },
+      {
+        "position": 12,
+        "title": "Galata Walls",
+        "place_id": "ChIJB3DG9OW5yhQRr8SJIKaV5lQ",
+        "data_id": "0x14cab9e5f4c67007:0x54e695a62089c4af",
+        "gps_coordinates": {
+          "latitude": 41.0249277,
+          "longitude": 28.9689272
+        },
+        "type": "Historical landmark",
+        "types": [
+          "Historical landmark",
+          "Tourist attraction"
+        ],
+        "type_id": "historical_landmark",
+        "type_ids": [
+          "historical_landmark",
+          "tourist_attraction"
+        ],
+        "address": "Arap Cami, Cevahir Çk. 1 A, 34421 Beyoğlu/İstanbul, Türkiye"
+      },
+      {
+        "position": 13,
+        "title": "Passage Hazzopulo",
+        "place_id": "ChIJTdQJdwC3yhQRXOEWapj7RkQ",
+        "data_id": "0x14cab7007709d44d:0x4446fb986a16e15c",
+        "gps_coordinates": {
+          "latitude": 41.033189,
+          "longitude": 28.976642299999998
+        },
+        "type": "Historical landmark",
+        "types": [
+          "Historical landmark"
+        ],
+        "type_id": "historical_landmark",
+        "type_ids": [
+          "historical_landmark"
+        ],
+        "address": "İstiklal, 34430 Beyoğlu/İstanbul, Türkiye",
+        "open_state": "Open 24 hours",
+        "hours": "Open 24 hours",
+        "operating_hours": {
+          "saturday": "Open 24 hours",
+          "sunday": "Open 24 hours",
+          "monday": "Open 24 hours",
+          "tuesday": "Open 24 hours",
+          "wednesday": "Open 24 hours",
+          "thursday": "Open 24 hours",
+          "friday": "Open 24 hours"
+        }
+      },
+      {
+        "position": 14,
+        "title": "Çinili Han",
+        "place_id": "ChIJ2UT6hqi5yhQRc0WRlZLYIDM",
+        "data_id": "0x14cab9a886fa44d9:0x3320d89295914573",
+        "gps_coordinates": {
+          "latitude": 41.0233146,
+          "longitude": 28.9785236
+        },
+        "type": "Historical landmark",
+        "types": [
+          "Historical landmark"
+        ],
+        "type_id": "historical_landmark",
+        "type_ids": [
+          "historical_landmark"
+        ],
+        "address": "Kemankeş Karamustafa Paşa, Kemankeş Cd. No:36, 34425 Beyoğlu/İstanbul, Türkiye",
+        "open_state": "Open 24 hours",
+        "hours": "Open 24 hours",
+        "operating_hours": {
+          "saturday": "Open 24 hours",
+          "sunday": "Open 24 hours",
+          "monday": "Open 24 hours",
+          "tuesday": "Open 24 hours",
+          "wednesday": "Open 24 hours",
+          "thursday": "Open 24 hours",
+          "friday": "Open 24 hours"
+        }
+      },
+      {
+        "position": 15,
+        "title": "Tarihi çeşme",
+        "place_id": "ChIJhSAMIgC5yhQRvYAH-G_sjwc",
+        "data_id": "0x14cab900220c2085:0x78fec6ff80780bd",
+        "gps_coordinates": {
+          "latitude": 41.0264454,
+          "longitude": 28.9531176
+        },
+        "type": "Historical landmark",
+        "types": [
+          "Historical landmark"
+        ],
+        "type_id": "historical_landmark",
+        "type_ids": [
+          "historical_landmark"
+        ],
+        "address": "Yavuz Sultan Selim, Çırakçı Çeşmesi Sk. No:99, 34083 Fatih/İstanbul, Türkiye"
+      },
+      {
+        "position": 16,
+        "title": "Byzantine ruins",
+        "place_id": "ChIJW1T43di5yhQRB32ygXXRiyg",
+        "data_id": "0x14cab9d8ddf8545b:0x288bd17581b27d07",
+        "gps_coordinates": {
+          "latitude": 41.0280651,
+          "longitude": 28.9834179
+        },
+        "type": "Historical landmark",
+        "types": [
+          "Historical landmark"
+        ],
+        "type_id": "historical_landmark",
+        "type_ids": [
+          "historical_landmark"
+        ],
+        "address": "Kılıçali Paşa, 34433 Beyoğlu/İstanbul, Türkiye"
+      },
+      {
+        "position": 17,
+        "title": "Süleymaniye Tıp Medresesi",
+        "place_id": "ChIJoyOSF425yhQR6EI0Bshku2M",
+        "data_id": "0x14cab98d179223a3:0x63bb64c8063442e8",
+        "gps_coordinates": {
+          "latitude": 41.0159364,
+          "longitude": 28.962280999999997
+        },
+        "type": "Historical landmark",
+        "types": [
+          "Historical landmark"
+        ],
+        "type_id": "historical_landmark",
+        "type_ids": [
+          "historical_landmark"
+        ],
+        "address": "Süleymaniye, Prof. Dr. Sıddık Sami Onar Cd. No:45, 34116 Fatih/İstanbul, Türkiye",
+        "open_state": "Open 24 hours",
+        "hours": "Open 24 hours",
+        "operating_hours": {
+          "saturday": "Open 24 hours",
+          "sunday": "Open 24 hours",
+          "monday": "Open 24 hours",
+          "tuesday": "Open 24 hours",
+          "wednesday": "Open 24 hours",
+          "thursday": "Open 24 hours",
+          "friday": "Open 24 hours"
+        }
+      },
+      {
+        "position": 18,
+        "title": "Galataport Saat Kulesi Meydanı",
+        "place_id": "ChIJb9Jp4BS5yhQRguqq4UaBD1g",
+        "data_id": "0x14cab914e069d26f:0x580f8146e1aaea82",
+        "gps_coordinates": {
+          "latitude": 41.0267051,
+          "longitude": 28.9828875
+        },
+        "type": "Historical landmark",
+        "types": [
+          "Historical landmark",
+          "Tourist attraction"
+        ],
+        "type_id": "historical_landmark",
+        "type_ids": [
+          "historical_landmark",
+          "tourist_attraction"
+        ],
+        "address": "Kılıçali Paşa, Gümrük Muhafaza Kısım Amirliği No:5, 34433 Beyoğlu/İstanbul, Türkiye"
+      },
+      {
+        "position": 19,
+        "title": "Fransız Saint Joseph Yetimhanesi",
+        "place_id": "ChIJ_Tkg8UO5yhQR1QKqNmKyGJI",
+        "data_id": "0x14cab943f12039fd:0x9218b26236aa02d5",
+        "gps_coordinates": {
+          "latitude": 41.029613,
+          "longitude": 28.9789943
+        },
+        "type": "Historical landmark",
+        "types": [
+          "Historical landmark"
+        ],
+        "type_id": "historical_landmark",
+        "type_ids": [
+          "historical_landmark"
+        ],
+        "address": "Tomtom, 34433 Beyoğlu/İstanbul, Türkiye",
+        "open_state": "Open · Closes 10 PM",
+        "hours": "Open · Closes 10 PM",
+        "operating_hours": {
+          "saturday": "10 AM–10 PM",
+          "sunday": "10 AM–10 PM",
+          "monday": "10 AM–12 AM",
+          "tuesday": "10 AM–10 PM",
+          "wednesday": "10 AM–10 PM",
+          "thursday": "10 AM–10 PM",
+          "friday": "10 AM–10 PM"
+        }
+      },
+      {
+        "position": 20,
+        "title": "Tarihi Çeşme Hamamı 1720",
+        "place_id": "ChIJYQI3nei5yhQRu0gYBC2-dVA",
+        "data_id": "0x14cab9e89d370261:0x5075be2d041848bb",
+        "gps_coordinates": {
+          "latitude": 41.024166,
+          "longitude": 28.9726429
+        },
+        "type": "Historical landmark",
+        "types": [
+          "Historical landmark",
+          "Foot massage parlor",
+          "Public bath",
+          "Massage spa",
+          "Spa",
+          "Spa and health club",
+          "Thai massage therapist"
+        ],
+        "type_id": "historical_landmark",
+        "type_ids": [
+          "historical_landmark",
+          "foot_massage_parlor",
+          "public_bath",
+          "massage_spa",
+          "spa",
+          "spa_and_health_club",
+          "thai_massage_therapist"
+        ],
+        "address": "Arap Cami, Bankalar Cd. No:21, 34420 Beyoğlu/İstanbul, Türkiye",
+        "open_state": "Open · Closes 12 AM",
+        "hours": "Open · Closes 12 AM",
+        "operating_hours": {
+          "saturday": "8 AM–12 AM",
+          "sunday": "8 AM–12 AM",
+          "monday": "8 AM–12 AM",
+          "tuesday": "8 AM–12 AM",
+          "wednesday": "8 AM–12 AM",
+          "thursday": "8 AM–12 AM",
+          "friday": "8 AM–12 AM"
+        }
+      }
+    ]
+  }
+}

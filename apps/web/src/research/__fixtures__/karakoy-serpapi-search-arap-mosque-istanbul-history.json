@@ -1,0 +1,50 @@
+{
+  "source": "serpapi-search",
+  "query": "Arap Mosque İstanbul history",
+  "payload": {
+    "organic_results": [
+      {
+        "position": 1,
+        "title": "History, Architecture & Timeline of the ... - Hagia Sophia Tickets",
+        "link": "https://www.hagia-sophia-tickets.com/hagia-sophia-history/",
+        "snippet": "1453–1934 AD: After the Ottoman conquest, Hagia Sophia functions as a mosque throughout the Ottoman era and the early Republican period. 1934 AD: The Turkish ...",
+        "source": "hagia-sophia-tickets.com"
+      },
+      {
+        "position": 2,
+        "title": "4W2A5740-HDR | Arap Mosque (Turkish",
+        "link": "https://www.flickr.com/photos/52187164@N05/24754981532/",
+        "snippet": "The church was converted into a mosque by the Ottomans between 1475 and 1478, during the reign of Sultan Mehmed II, and became known as the ...",
+        "source": "Flickr"
+      },
+      {
+        "position": 3,
+        "title": "Arap mosque hi-res stock photography and images",
+        "link": "https://www.alamy.com/stock-photo/arap-mosque.html",
+        "snippet": "Arap Mosque was converted from an old church into a mosque. It is thought to have been built in the 8th century. Mosque was originally a Roman Catholic Church ...",
+        "source": "Alamy"
+      },
+      {
+        "position": 4,
+        "title": "Arap Camii, Istanbul",
+        "link": "https://www.tripadvisor.ie/Attraction_Review-g293974-d2206597-Reviews-Arap_Camii-Istanbul.html",
+        "snippet": "In 1475 Fethy converted Istanbul to a Mosque by the Sultan of Fatih. it is renowned as one of the first Transliterated mosques of the Isman period, known for ...",
+        "source": "Tripadvisor"
+      },
+      {
+        "position": 5,
+        "title": "Hagia Sophia as a mosque",
+        "link": "https://smarthistory.org/hagia-sophia-as-a-mosque/",
+        "snippet": "it was turned from an Orthodox church into a mosque, it survived. is a symbol of the sultan's power in the city. There are two earlier ones, one built by ...",
+        "source": "Smarthistory"
+      },
+      {
+        "position": 6,
+        "title": "Arap Mosque",
+        "link": "https://www.instagram.com/popular/arap-mosque/",
+        "snippet": "Watch short videos about arap mosque from people around the world. Where every stone whispers a thousand years of history. Full history day in Istanbul and it",
+        "source": "Instagram"
+      }
+    ]
+  }
+}

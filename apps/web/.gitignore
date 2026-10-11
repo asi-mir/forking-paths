@@ -40,3 +40,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# reader eval photos (downloaded from Wikimedia Commons)
+/eval/photos/.cache/
+# eval reports and fetched pages (scripts/eval-*.ts --out-dir defaults here)
+/eval/runs/

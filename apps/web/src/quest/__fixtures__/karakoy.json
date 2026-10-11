@@ -1,0 +1,371 @@
+{
+  "questId": "demo-karakoy",
+  "demo": true,
+  "note": "The desk demo's quest: four real places below Galata Tower, Karaköy, Istanbul. Facts come from the Wikipedia pages they link to (Turkish pages translated into English). The text was drafted by Gemma from these facts; hand edits are listed in editedByHand.",
+  "model": {
+    "provider": "google",
+    "writer": "gemma-4-31b-it"
+  },
+  "editedByHand": [
+    "mystery.question: \"these stairs\" became \"the curving stairs below the tower\" (the question is heard at the start, not at the stairs)",
+    "mystery.factIds: added F14, the fact that names the banker the answer mentions",
+    "P1 look: \"up close\" added, so a photo of the spout does not also take in the writing above it",
+    "P1 → P2 link reason: \"The writing here speaks of an older fountain built by a warden of the tower\" became two sentences, \"The writing tells of an older fountain this one replaced. That one was built by a warden of the tower, beside the mosque he founded.\", so it no longer reads as if the inscription names the warden; cites F2 (the inscription mentions the fountain it replaced), F3 and F8 (the warden founded the mosque) instead of F3 alone (fact F2 was extended to quote more of its page sentence)",
+    "P1 → P3 link reason: \"the people of the area\" became \"the people of Galata and Tophane\" (as in F2), and \"Step a few paces to the corner of the street\" became \"Another fountain waits a short walk away, on the street corner\" (the fountain is about 76 m away)",
+    "P2 → P4 link reason: \"Like that secret passage, there is another hidden link between the lanes\" (not in any fact) became \"Another way down from these lanes was no secret: it was built as an easy link to the street of banks\", citing F15 as well as F10",
+    "P3 hint: \"a few steps from the tower square\" became \"a short walk from the tower square\"",
+    "finale: a first sentence from F15 (home, work on the street of banks, school) was added, naming Camondo as in F14; F14 and F15 are cited; Gemma's two sentences were joined into one"
+  ],
+  "opts": {
+    "center": {
+      "lat": 41.0247,
+      "lng": 28.9744
+    },
+    "minutes": 15,
+    "lang": "en"
+  },
+  "route": {
+    "startPlaceId": "P1",
+    "answerPlaceId": "P4",
+    "fork": [
+      {
+        "from": "P1",
+        "to": "P2",
+        "cue": "writing"
+      },
+      {
+        "from": "P1",
+        "to": "P3",
+        "cue": "water"
+      }
+    ],
+    "beforeAnswer": [
+      "P2",
+      "P3"
+    ]
+  },
+  "walkingNotes": {
+    "P1": "A marble wall fountain carved with fruit and flowers, with gilded writing and a spout, set into a stretch of old stone wall facing Galata Tower, on the tower's open paved square.",
+    "P2": "A small mosque with a tall striped brick-and-stone minaret, a short walk down the cobbled lane that runs downhill from the tower toward the water.",
+    "P3": "A stone fountain with a gilded verse panel over an arched niche, on a street corner a short walk from the tower square.",
+    "P4": "Curving stone stairs that loop like a braid, further down the lanes below the tower, toward the water and the old street of banks."
+  },
+  "facts": [
+    {
+      "id": "F1",
+      "placeId": "P1",
+      "text": "The Bereketzade Fountain was built in 1732, in the reign of Mahmud I, in place of a small old fountain that stood elsewhere, on Bereketzade Street.",
+      "sourceUrl": "https://tr.wikipedia.org/wiki/Bereketzade_%C3%87e%C5%9Fmesi",
+      "sourceTitle": "Bereketzade Çeşmesi (Turkish Wikipedia)",
+      "query": "Wikipedia GeoSearch (tr) around 41.0247,28.9744, radius 600 m; full page read",
+      "source": "wikipedia"
+    },
+    {
+      "id": "F2",
+      "placeId": "P1",
+      "text": "Its building inscription, a poem of 12 couplets, says that after the palace learned the people of Galata and Tophane were short of water, chief treasurer Mehmed Efendi had this fountain built in place of a 15th-century one.",
+      "sourceUrl": "https://tr.wikipedia.org/wiki/Bereketzade_%C3%87e%C5%9Fmesi",
+      "sourceTitle": "Bereketzade Çeşmesi (Turkish Wikipedia)",
+      "query": "Wikipedia GeoSearch (tr) around 41.0247,28.9744, radius 600 m; full page read",
+      "source": "wikipedia"
+    },
+    {
+      "id": "F3",
+      "placeId": "P1",
+      "text": "The old fountain it replaced had been built in the 15th century by Bereketzade Hacı Ali, warden of Galata Tower, beside the Bereketzade Ali Efendi Mosque.",
+      "sourceUrl": "https://tr.wikipedia.org/wiki/Bereketzade_%C3%87e%C5%9Fmesi",
+      "sourceTitle": "Bereketzade Çeşmesi (Turkish Wikipedia)",
+      "query": "Wikipedia GeoSearch (tr) around 41.0247,28.9744, radius 600 m; full page read",
+      "source": "wikipedia"
+    },
+    {
+      "id": "F4",
+      "placeId": "P1",
+      "text": "In 1957 it was decided to take the fountain down from its old place and fix it to a piece of the old city wall at the foot of Galata Tower.",
+      "sourceUrl": "https://tr.wikipedia.org/wiki/Bereketzade_%C3%87e%C5%9Fmesi",
+      "sourceTitle": "Bereketzade Çeşmesi (Turkish Wikipedia)",
+      "query": "Wikipedia GeoSearch (tr) around 41.0247,28.9744, radius 600 m; full page read",
+      "source": "wikipedia"
+    },
+    {
+      "id": "F5",
+      "placeId": "P1",
+      "text": "Below the repair inscription, a line from the Quran (Surah Al-Anbiya, verse 30) is carved: \"…and We made every living thing from water.\"",
+      "sourceUrl": "https://tr.wikipedia.org/wiki/Bereketzade_%C3%87e%C5%9Fmesi",
+      "sourceTitle": "Bereketzade Çeşmesi (Turkish Wikipedia)",
+      "query": "Wikipedia GeoSearch (tr) around 41.0247,28.9744, radius 600 m; full page read",
+      "source": "wikipedia"
+    },
+    {
+      "id": "F6",
+      "placeId": "P1",
+      "text": "The marble face is carved with fruit and flowers: dishes of split figs, pears on footed dishes, and vases of roses, buds and chrysanthemums.",
+      "sourceUrl": "https://tr.wikipedia.org/wiki/Bereketzade_%C3%87e%C5%9Fmesi",
+      "sourceTitle": "Bereketzade Çeşmesi (Turkish Wikipedia)",
+      "query": "Wikipedia GeoSearch (tr) around 41.0247,28.9744, radius 600 m; full page read",
+      "source": "wikipedia"
+    },
+    {
+      "id": "F7",
+      "placeId": "P2",
+      "text": "Built just below Galata Tower in the 15th century, the Bereketzade Ali Efendi Mosque is known as the first mosque built in Galata after the conquest of Istanbul.",
+      "sourceUrl": "https://tr.wikipedia.org/wiki/Bereketzade_Ali_Efendi_Camii",
+      "sourceTitle": "Bereketzade Ali Efendi Camii (Turkish Wikipedia)",
+      "query": "Wikipedia GeoSearch (tr) around 41.0247,28.9744, radius 600 m; full page read",
+      "source": "wikipedia"
+    },
+    {
+      "id": "F8",
+      "placeId": "P2",
+      "text": "The mosque was founded by Bereketzade Hacı Ali bin Hasan, one of the wardens of Galata Tower.",
+      "sourceUrl": "https://tr.wikipedia.org/wiki/Bereketzade_Ali_Efendi_Camii",
+      "sourceTitle": "Bereketzade Ali Efendi Camii (Turkish Wikipedia)",
+      "query": "Wikipedia GeoSearch (tr) around 41.0247,28.9744, radius 600 m; full page read",
+      "source": "wikipedia"
+    },
+    {
+      "id": "F9",
+      "placeId": "P2",
+      "text": "The city demolished the mosque completely in 1948–1952 and turned its plot into a car park; it was rebuilt true to the original in the 1990s.",
+      "sourceUrl": "https://tr.wikipedia.org/wiki/Bereketzade_Ali_Efendi_Camii",
+      "sourceTitle": "Bereketzade Ali Efendi Camii (Turkish Wikipedia)",
+      "query": "Wikipedia GeoSearch (tr) around 41.0247,28.9744, radius 600 m; full page read",
+      "source": "wikipedia"
+    },
+    {
+      "id": "F10",
+      "placeId": "P2",
+      "text": "The mosque's inscription says that a secret passage, wide enough for only one person, ran from Galata Tower to the mosque's minaret and from there down to the old harbour at Karaköy.",
+      "sourceUrl": "https://tr.wikipedia.org/wiki/Bereketzade_Ali_Efendi_Camii",
+      "sourceTitle": "Bereketzade Ali Efendi Camii (Turkish Wikipedia)",
+      "query": "Wikipedia GeoSearch (tr) around 41.0247,28.9744, radius 600 m; full page read",
+      "source": "wikipedia"
+    },
+    {
+      "id": "F11",
+      "placeId": "P3",
+      "text": "Hasan Ağa, steward of the palace kitchen in the reign of Mehmed IV, had this fountain built in 1649.",
+      "sourceUrl": "https://tr.wikipedia.org/wiki/Hasan_A%C4%9Fa_%C3%87e%C5%9Fmesi_(Beyo%C4%9Flu)",
+      "sourceTitle": "Hasan Ağa Çeşmesi (Beyoğlu) (Turkish Wikipedia)",
+      "query": "Wikipedia GeoSearch (tr) around 41.0247,28.9744, radius 600 m; full page read",
+      "source": "wikipedia"
+    },
+    {
+      "id": "F12",
+      "placeId": "P3",
+      "text": "The Hasan Ağa Fountain is a classical-style fountain of cut stone with two faces; its main face looks onto Lüleci Hendek Street.",
+      "sourceUrl": "https://tr.wikipedia.org/wiki/Hasan_A%C4%9Fa_%C3%87e%C5%9Fmesi_(Beyo%C4%9Flu)",
+      "sourceTitle": "Hasan Ağa Çeşmesi (Beyoğlu) (Turkish Wikipedia)",
+      "query": "Wikipedia GeoSearch (tr) around 41.0247,28.9744, radius 600 m; full page read",
+      "source": "wikipedia"
+    },
+    {
+      "id": "F13",
+      "placeId": "P3",
+      "text": "Its mirror stone sits in a plain, rectangular marble frame; above it is a notched arch, and above the arch the fountain's verse inscription, written by the poet Ahmet Cevheri.",
+      "sourceUrl": "https://tr.wikipedia.org/wiki/Hasan_A%C4%9Fa_%C3%87e%C5%9Fmesi_(Beyo%C4%9Flu)",
+      "sourceTitle": "Hasan Ağa Çeşmesi (Beyoğlu) (Turkish Wikipedia)",
+      "query": "Wikipedia GeoSearch (tr) around 41.0247,28.9744, radius 600 m; full page read",
+      "source": "wikipedia"
+    },
+    {
+      "id": "F14",
+      "placeId": "P4",
+      "text": "The curving Camondo Stairs were built circa 1870–1880 by the Ottoman-Venetian Jewish banker Abraham Salomon Camondo, in a mix of Neo-Baroque and early Art Nouveau styles.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Camondo_Stairs",
+      "sourceTitle": "Camondo Stairs (English Wikipedia)",
+      "query": "Wikipedia page lookup: Camondo Stairs (en), the English page of Kamondo Merdivenleri found by GeoSearch (tr) around 41.0247,28.9744; full page read",
+      "source": "wikipedia"
+    },
+    {
+      "id": "F15",
+      "placeId": "P4",
+      "text": "Camondo built the stairs as an easy link between Kart Çınar Sokak, where he lived, and Bankalar Caddesi, where he worked; his children used them to reach the nearby St. George's Austrian High School.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Camondo_Stairs",
+      "sourceTitle": "Camondo Stairs (English Wikipedia)",
+      "query": "Wikipedia page lookup: Camondo Stairs (en), the English page of Kamondo Merdivenleri found by GeoSearch (tr) around 41.0247,28.9744; full page read",
+      "source": "wikipedia"
+    },
+    {
+      "id": "F16",
+      "placeId": "P4",
+      "text": "It is thought that the stairs' shape was designed to stop Camondo's children from falling down the steps if they slipped.",
+      "sourceUrl": "https://tr.wikipedia.org/wiki/Kamondo_Merdivenleri",
+      "sourceTitle": "Kamondo Merdivenleri (Turkish Wikipedia)",
+      "query": "Wikipedia GeoSearch (tr) around 41.0247,28.9744, radius 600 m; full page read",
+      "source": "wikipedia"
+    },
+    {
+      "id": "F17",
+      "placeId": "P4",
+      "text": "The stairs resemble a braid of hair.",
+      "sourceUrl": "https://tr.wikipedia.org/wiki/Kamondo_Merdivenleri",
+      "sourceTitle": "Kamondo Merdivenleri (Turkish Wikipedia)",
+      "query": "Wikipedia GeoSearch (tr) around 41.0247,28.9744, radius 600 m; full page read",
+      "source": "wikipedia"
+    },
+    {
+      "id": "F18",
+      "placeId": "P4",
+      "text": "Henri Cartier-Bresson famously photographed the stairs in 1964.",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Camondo_Stairs",
+      "sourceTitle": "Camondo Stairs (English Wikipedia)",
+      "query": "Wikipedia page lookup: Camondo Stairs (en), the English page of Kamondo Merdivenleri found by GeoSearch (tr) around 41.0247,28.9744; full page read",
+      "source": "wikipedia"
+    }
+  ],
+  "candidates": [
+    {
+      "id": "P1",
+      "name": "Bereketzade Fountain",
+      "location": {
+        "lat": 41.02583333,
+        "lng": 28.97416667
+      },
+      "sourceUrl": "https://tr.wikipedia.org/wiki/Bereketzade_%C3%87e%C5%9Fmesi"
+    },
+    {
+      "id": "P2",
+      "name": "Bereketzade Ali Efendi Mosque",
+      "location": {
+        "lat": 41.02507498,
+        "lng": 28.97418708
+      },
+      "sourceUrl": "https://en.wikipedia.org/wiki/Bereketzade_Ali_Efendi_Mosque"
+    },
+    {
+      "id": "P3",
+      "name": "Hasan Ağa Fountain",
+      "location": {
+        "lat": 41.02555556,
+        "lng": 28.975
+      },
+      "sourceUrl": "https://tr.wikipedia.org/wiki/Hasan_A%C4%9Fa_%C3%87e%C5%9Fmesi_(Beyo%C4%9Flu)"
+    },
+    {
+      "id": "P4",
+      "name": "Camondo Stairs",
+      "location": {
+        "lat": 41.02388889,
+        "lng": 28.97388889
+      },
+      "sourceUrl": "https://en.wikipedia.org/wiki/Camondo_Stairs"
+    }
+  ],
+  "writer": {
+    "title": "The Secret of the Braided Stairs",
+    "mystery": {
+      "question": "Why were the curving stairs below the tower built in such a strange shape?",
+      "answer": "It is thought that the shape was designed to stop the children of the banker who built them from falling down the steps if they slipped.",
+      "factIds": [
+        "F14",
+        "F16"
+      ]
+    },
+    "briefing": "A secret of the old city is hidden in a set of curving stairs. Follow the path from the fountain near the tower to find out why they were built this way.",
+    "places": [
+      {
+        "id": "P1",
+        "clue": "Walk to the fountain set into the old stone wall facing the tower.",
+        "look": "Two things here keep a story: one you can read, one that flows. Photograph the one you trust, up close.",
+        "hint": "Look for the marble wall fountain facing the tower square.",
+        "reveal": {
+          "text": "The Bereketzade Fountain was built in 1732, in the reign of Mahmud I, in place of a small old fountain that stood elsewhere, on Bereketzade Street.",
+          "factIds": [
+            "F1"
+          ]
+        },
+        "links": [
+          {
+            "to": "P2",
+            "cue": "writing",
+            "reason": "The writing tells of an older fountain this one replaced. That one was built by a warden of the tower, beside the mosque he founded. Head downhill toward the water.",
+            "factIds": [
+              "F2",
+              "F3",
+              "F8"
+            ]
+          },
+          {
+            "to": "P3",
+            "cue": "water",
+            "reason": "This fountain was built because the people of Galata and Tophane were short of water. Another fountain waits a short walk away, on the street corner.",
+            "factIds": [
+              "F2"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "P2",
+        "clue": "Walk down the cobbled lane toward the water to find the small mosque with the striped minaret.",
+        "look": "Find a detail on the mosque that speaks of a hidden way.",
+        "hint": "The mosque is just down the hill from the tower.",
+        "reveal": {
+          "text": "The mosque's inscription says that a secret passage, wide enough for only one person, ran from Galata Tower to the mosque's minaret and from there down to the old harbour at Karaköy.",
+          "factIds": [
+            "F10"
+          ]
+        },
+        "links": [
+          {
+            "to": "P4",
+            "cue": null,
+            "reason": "Another way down from these lanes was no secret: it was built as an easy link to the street of banks. Keep walking downhill toward the water.",
+            "factIds": [
+              "F10",
+              "F15"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "P3",
+        "clue": "From the tower square, find the stone fountain with the gilded verse panel on the street corner.",
+        "look": "Find the inscription above the arch of this fountain.",
+        "hint": "The fountain is on a street corner a short walk from the tower square.",
+        "reveal": {
+          "text": "Hasan Ağa, steward of the palace kitchen in the reign of Mehmed IV, had this fountain built in 1649.",
+          "factIds": [
+            "F11"
+          ]
+        },
+        "links": [
+          {
+            "to": "P4",
+            "cue": null,
+            "reason": "This fountain was built by a palace steward. Now seek the stairs built by a banker, further down the lanes toward the water.",
+            "factIds": [
+              "F11",
+              "F14"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "P4",
+        "clue": "Follow the lanes downhill toward the water and the street of banks to find the curving stone stairs.",
+        "look": "Look at the way these stairs loop like a braid.",
+        "hint": "The stairs are further down the lanes below the tower, toward the water.",
+        "reveal": {
+          "text": "The curving Camondo Stairs were built circa 1870-1880 by the Ottoman-Venetian Jewish banker Abraham Salomon Camondo, in a mix of Neo-Baroque and early Art Nouveau styles.",
+          "factIds": [
+            "F14"
+          ]
+        },
+        "links": []
+      }
+    ],
+    "startPlaceId": "P1",
+    "answerPlaceId": "P4",
+    "finale": {
+      "text": "Abraham Salomon Camondo built these stairs as an easy link between his home and his work on the street of banks, and his children climbed them to school. They look like a braid of hair, and it is thought their shape was designed to stop his children from falling down the steps if they slipped.",
+      "factIds": [
+        "F14",
+        "F15",
+        "F16",
+        "F17"
+      ]
+    }
+  }
+}

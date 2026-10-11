@@ -1,0 +1,267 @@
+{
+  "source": "wikipedia",
+  "query": "en.wikipedia.org pages within 900 m of 41.025,28.974",
+  "payload": {
+    "pages": [
+      {
+        "pageid": 762516,
+        "title": "Galata",
+        "description": "Former neighbourhood opposite Constantinople, in modern-day Turkey",
+        "extract": "Galata is the former name of the Karaköy neighbourhood in Istanbul, which is located at the northern shore of the Golden Horn. The district is connected to the historic Fatih district by several bridges that cross the Golden Horn, most notably the Galata Bridge. The medieval citadel of Galata was a colony of the Republic of Genoa between 1273 and 1453. The famous Galata Tower was built by the Genoese in 1348 at the northernmost and highest point of the citadel. Galata is now a quarter within the district of Beyoğlu in Istanbul.\n\n",
+        "fullurl": "https://en.wikipedia.org/wiki/Galata",
+        "coordinates": [
+          {
+            "lat": 41.02277778,
+            "lon": 28.97361111
+          }
+        ]
+      },
+      {
+        "pageid": 822592,
+        "title": "Neve Shalom Synagogue",
+        "description": "Synagogue in Istanbul, Turkey",
+        "extract": "The Neve Shalom Synagogue (Turkish: Neve Şalom Sinagogu; Hebrew: בית הכנסת נווה שלום, romanized: Oasis (or Valley) of Peace) is a Jewish congregation and synagogue, located at Büyük Hendek Caddesi 61, in the Karaköy quarter of the Beyoğlu district of Istanbul, in the Istanbul Province of Turkey.",
+        "fullurl": "https://en.wikipedia.org/wiki/Neve_Shalom_Synagogue",
+        "coordinates": [
+          {
+            "lat": 41.02686,
+            "lon": 28.97254
+          }
+        ]
+      },
+      {
+        "pageid": 1810380,
+        "title": "Arap Mosque",
+        "description": "Mosque in Istanbul, Turkey",
+        "extract": "Arap Mosque (Turkish: Arap Camii, lit. 'Arab mosque') is a mosque in the Karaköy quarter of Istanbul, Turkey. The building was originally a Roman Catholic church erected in 1325 by the friars of the Dominican Order, near or above an earlier chapel dedicated to Saint Paul (Italian: San Paolo) in 1233. Although the structure was altered during the Ottoman period, it is the only example of medieval religious Gothic architecture remaining in Istanbul.\nThe church was converted into a mosque by the Ottomans between 1475 and 1478, during the reign of Sultan Mehmed II, and became known as the Galata Mosque. It was later given by Sultan Bayezid II to Muslim refugees from Al-Andalus who escaped the Spanish Inquisition in 1492 and settled in the Galata neighborhood of Istanbul (hence its current name, Arab Mosque).",
+        "fullurl": "https://en.wikipedia.org/wiki/Arap_Mosque",
+        "coordinates": [
+          {
+            "lat": 41.02432,
+            "lon": 28.97104
+          }
+        ]
+      },
+      {
+        "pageid": 3648069,
+        "title": "St. George's Austrian High School",
+        "description": "Private coeducational gymnasium school in Istanbul, Turkey",
+        "extract": "St. George's Austrian High School (Turkish: Sankt Georg Avusturya Lisesi, German: Österreichisches Sankt Georgs-Kolleg) is a private Austrian-Turkish high school located in Karaköy, Beyoğlu, Istanbul, Turkey. It is one of several secondary schools that were founded by European or American missions in Turkey during the 19th century, but were then secularized after the founding of the modern Turkish Republic in 1923.\nToday, the school is subject to regulation by the Turkish Ministry of National Education, and almost its entire student body is Turkish, but a large part of its administrative and teaching staff remains Austrian, appointed by the Ministry of Education, Science and Research), and it offers a mixture of Turkish and Austrian curricula in a bilingual environment.",
+        "fullurl": "https://en.wikipedia.org/wiki/St._George%27s_Austrian_High_School",
+        "coordinates": [
+          {
+            "lat": 41.02444444,
+            "lon": 28.97361111
+          }
+        ]
+      },
+      {
+        "pageid": 9995390,
+        "title": "Karaköy",
+        "description": "Quarter in Marmara, Turkey",
+        "extract": "Karaköy (Turkish pronunciation: [kaˈɾakøj]), the modern name for the old Galata, is a commercial quarter in the Beyoğlu district of Istanbul, Turkey, located at the northern part of the Golden Horn mouth on the European side of Bosphorus.\nKaraköy is one of the oldest and most historic districts of the city, and is today an important commercial center and transport hub. It is connected with the surrounding neighborhoods by streets radiating out from Karaköy Square. The Galata Bridge links Karaköy to Eminönü to the southwest, Tersane Street links it to Azapkapı to the west, Voyvoda Street (Bankalar Caddesi) links it to Şişhane to the northwest, the steeply sloping Yüksek Kaldırım Street links it to Pera in the north, and Kemeraltı Street and Necatibey Street link it to Tophane to the northeast.\nThe commercial quarter, which was originally the meeting place for banks and insurance companies in the 19th century, is today also home to mechanical, electrical, plumbing and electronic parts suppliers.",
+        "fullurl": "https://en.wikipedia.org/wiki/Karak%C3%B6y",
+        "coordinates": [
+          {
+            "lat": 41.02277778,
+            "lon": 28.975
+          }
+        ]
+      },
+      {
+        "pageid": 10801216,
+        "title": "Jewish Museum of Turkey",
+        "description": "Museum in Istanbul, Turkey",
+        "extract": "The Jewish Museum of Turkey (officially Quincentennial Foundation Museum of Turkish Jews; Turkish: 500. Yıl Vakfı Türk Musevileri Müzesi) is a Jewish museum and cultural center established by the Quincentennial Foundation to inform the society of the traditions and history of Turkish Jewry. It was inaugurated on November 25, 2001. The Quincentennial Foundation was established in 1989 by 113 Turkish citizens, Jews and Muslims alike, to celebrate the five hundredth anniversary of the arrival of Sephardim to the Ottoman Empire. The idea of a museum was proposed by Naim Güleryüz who is now its curator and the foundation was financed by the prominent Jewish Kamhi family.",
+        "fullurl": "https://en.wikipedia.org/wiki/Jewish_Museum_of_Turkey",
+        "coordinates": [
+          {
+            "lat": 41.026749,
+            "lon": 28.972734
+          }
+        ]
+      },
+      {
+        "pageid": 10828471,
+        "title": "Ashkenazi Synagogue of Istanbul",
+        "description": "Synagogue in Istanbula, Turkey",
+        "extract": "The Ashkenazi Synagogue (Turkish: Aşkenazi Sinagogu) is an Orthodox Jewish congregation and synagogue, located near the Galata Tower in Karaköy neighborhood of Beyoğlu in Istanbul, Turkey. The congregation worships in the Ashkenazi rite. It is the only currently active Ashkenazi synagogue in Istanbul open to visits and prayers.",
+        "fullurl": "https://en.wikipedia.org/wiki/Ashkenazi_Synagogue_of_Istanbul",
+        "coordinates": [
+          {
+            "lat": 41.02521,
+            "lon": 28.97509
+          }
+        ]
+      },
+      {
+        "pageid": 10828595,
+        "title": "Italian Synagogue (Istanbul)",
+        "description": "Synagogue in Istanbul, Turkey",
+        "extract": "The Italian Synagogue, also known as Kal de los Frankos, is a Jewish congregation and synagogue, located on Şair Ziya Paşa Street, north of the Golden Horn, in Beyoğlu, Istanbul, in the Istanbul Province of Turkey.\nThe congregation was established by the Italian Jewish community of Istanbul, (Comunità Israelitico-Italiana di Istanbul), in the 19th century. In 1931 the original building was demolished and a new Gothic Revival synagogue was built in its place.\n\n",
+        "fullurl": "https://en.wikipedia.org/wiki/Italian_Synagogue_(Istanbul)",
+        "coordinates": [
+          {
+            "lat": 41.02555556,
+            "lon": 28.9725
+          }
+        ]
+      },
+      {
+        "pageid": 17332531,
+        "title": "Zülfaris Synagogue",
+        "description": "Former synagogue in Instabul, Turkey",
+        "extract": "The Zülfaris Synagogue (Turkish: Zülfaris Sinagogu), also known as the Kal Kadoş Galata Synagogue, is a former Jewish congregation and synagogue located at 39 Büyük Hendek Street, in the Beyoğlu neighbourhood of Istanbul, Turkey. Completed in 1823 and used as a synagogue until 1985, the building was repurposed in 2001 as a Jewish museum.",
+        "fullurl": "https://en.wikipedia.org/wiki/Z%C3%BClfaris_Synagogue",
+        "coordinates": [
+          {
+            "lat": 41.026772,
+            "lon": 28.972733
+          }
+        ]
+      },
+      {
+        "pageid": 21143404,
+        "title": "Bankalar Caddesi",
+        "description": "Street in Istanbul, Turkey (also known as the financial centre of the Ottoman Empire)",
+        "extract": "Bankalar Caddesi (Banks Street), also known as Voyvoda Caddesi (Voivode Street), in the historic Galata quarter (present-day Karaköy) of the Beyoğlu (Pera) district in Istanbul, Turkey, was the financial centre of the late Ottoman Empire. It strikes out west from busy Kemeraltı Caddesi in Karaköy and segues into Okçu Musa Caddesi which leads up to Şişhane and Tepebaşı in Beyoğlu.\nAlthough most of the grand 19th-century buildings that line both sides of the street have survived into the 21st century, they are increasingly being converted into hotels, restaurants and cultural centres.\nThe southern stop of Tünel (1875), the world's second oldest subterranean railway line after London's Underground (1863), is just minutes' walk away from the eastern end of Bankalar Caddesi. The Karaköy tram stop on the T1 line is also very close to the start of the street.",
+        "fullurl": "https://en.wikipedia.org/wiki/Bankalar_Caddesi",
+        "coordinates": [
+          {
+            "lat": 41.02391,
+            "lon": 28.97372
+          }
+        ]
+      },
+      {
+        "pageid": 30558795,
+        "title": "Church of Saints Peter and Paul, Istanbul",
+        "description": "Church in Istanbul, Turkey",
+        "extract": "SS Peter and Paul (Turkish: Sen Pier ve Sen Paul Kilisesi, Italian: Chiesa dei Santi Pietro e Paolo a Galata, French: Eglise Saint Pierre Saint Paul) is a Catholic church in Istanbul, important for historical reasons. The church owns an icon of the Virgin of the Hodegetria type, which originally lay in a Dominican church in Caffa, Crimea.  The current building is a nineteenth-century (1841 to 1843) reconstruction of the Fossati brothers. An adjacent former commercial facility, Saint Pierre Han, is (as of 2022) set to be renovated into a cultural center.",
+        "fullurl": "https://en.wikipedia.org/wiki/Church_of_Saints_Peter_and_Paul,_Istanbul",
+        "coordinates": [
+          {
+            "lat": 41.02472222,
+            "lon": 28.97305556
+          }
+        ]
+      },
+      {
+        "pageid": 30624724,
+        "title": "The Inspection Board of Finance of Turkey",
+        "extract": "The Inspection Board of Finance in Turkey is an institution in the field of investigating, searching for, and suppressing corrupt financial sources.",
+        "fullurl": "https://en.wikipedia.org/wiki/The_Inspection_Board_of_Finance_of_Turkey",
+        "coordinates": [
+          {
+            "lat": 41.023867,
+            "lon": 28.976675
+          }
+        ]
+      },
+      {
+        "pageid": 36710154,
+        "title": "Church of Saint Benoit, Istanbul",
+        "description": "Church in Istanbul, Turkey",
+        "extract": "Saint Benoit (French: Saint Benoît; Turkish: Saint Benoît Latin Katolik Kilisesi; also Italian: Santa Maria della Cisterna) is a Roman Catholic Church in Istanbul, Turkey, important for historical reasons. Established in 1427, the shrine is the oldest Catholic church of Istanbul still in use.\n\n",
+        "fullurl": "https://en.wikipedia.org/wiki/Church_of_Saint_Benoit,_Istanbul",
+        "coordinates": [
+          {
+            "lat": 41.025,
+            "lon": 28.9766
+          }
+        ]
+      },
+      {
+        "pageid": 56087750,
+        "title": "Karaköy (Tünel)",
+        "description": "Funicular station in Istanbul, Turkey",
+        "extract": "Karaköy is a station on the historic Tünel funicular railway in Beyoğlu, Istanbul. Located on Tersane Avenue, just north of the Golden Horn, it is the southern and lower terminus of the 573 m (1,880 ft) railway. The station is located on the ground floor of the IETT General Headquarters Building.",
+        "fullurl": "https://en.wikipedia.org/wiki/Karak%C3%B6y_(T%C3%BCnel)",
+        "coordinates": [
+          {
+            "lat": 41.0228,
+            "lon": 28.9739
+          }
+        ]
+      },
+      {
+        "pageid": 61151467,
+        "title": "Ostreodes",
+        "description": "Town of ancient Thrace",
+        "extract": "Ostreodes was a town of ancient Thrace, inhabited during Roman times. \nIts site is located below Tophane in European Turkey.",
+        "fullurl": "https://en.wikipedia.org/wiki/Ostreodes",
+        "coordinates": [
+          {
+            "lat": 41.023812,
+            "lon": 28.976566
+          }
+        ]
+      },
+      {
+        "pageid": 61151498,
+        "title": "Sykai",
+        "description": "Ancient suburb of Byzantium",
+        "extract": "Sycae (Greek: Συκαί), later known as Justinianae (Ίουστινιάναι) and Justinianopolis (Ίουστινιανούπολις), was a town of ancient Thrace, a suburb of Byzantium-Constantinople, that was inhabited during the Roman and Byzantine empires.\nIts site is located near the neighborhood of Galata in Karaköy, East Thrace (European Turkey).",
+        "fullurl": "https://en.wikipedia.org/wiki/Sykai",
+        "coordinates": [
+          {
+            "lat": 41.023019,
+            "lon": 28.972982
+          }
+        ]
+      },
+      {
+        "pageid": 70847694,
+        "title": "Neve Shalom Synagogue massacre",
+        "description": "1986 terrorist attack in Turkey",
+        "extract": "The Neve Shalom Synagogue massacre happened on 6 September 1986 when a group of suspected Abu Nidal Organization terrorists killed 22 worshipers inside the Neve Shalom Synagogue in Istanbul, Turkey.",
+        "fullurl": "https://en.wikipedia.org/wiki/Neve_Shalom_Synagogue_massacre",
+        "coordinates": [
+          {
+            "lat": 41.02669,
+            "lon": 28.97242
+          }
+        ]
+      },
+      {
+        "pageid": 75868098,
+        "title": "Bereketzade Ali Efendi Mosque",
+        "description": "Mosque in Istanbul, Turkey",
+        "extract": "Bereketzade Ali Efendi Mosque is a mosque in Istanbul, Turkey.\n\n",
+        "fullurl": "https://en.wikipedia.org/wiki/Bereketzade_Ali_Efendi_Mosque",
+        "coordinates": [
+          {
+            "lat": 41.02507498,
+            "lon": 28.97418708
+          }
+        ]
+      },
+      {
+        "pageid": 77791647,
+        "title": "Neolokal",
+        "description": "Michelin-starred restaurant in Istanbul, Turkey",
+        "extract": "Neolokal is a Michelin-starred restaurant located within the SALT Galata building in the Karaköy district of Istanbul, Turkey. Established in 2014 by chef Maksut Aşkar, the restaurant is known for its \"New Anatolian Kitchen\" philosophy, which aims to reinterpret traditional Anatolian recipes using modern techniques and sustainable practices.",
+        "fullurl": "https://en.wikipedia.org/wiki/Neolokal",
+        "coordinates": [
+          {
+            "lat": 41.0238,
+            "lon": 28.9734
+          }
+        ]
+      },
+      {
+        "pageid": 82306491,
+        "title": "St. George's Catholic Church, Istanbul",
+        "description": "Church in Beyoğlu, Istanbul",
+        "extract": "The Catholic church of Saint George (Turkish: Aya Yorgī or Sān Corcī) is a church in the Beyoğlu neighborhood of Istanbul. Dating back at least to 1303, it was rebuilt several times and is now part of St. George's Austrian High School.",
+        "fullurl": "https://en.wikipedia.org/wiki/St._George%27s_Catholic_Church,_Istanbul",
+        "coordinates": [
+          {
+            "lat": 41.02439,
+            "lon": 28.97344
+          }
+        ]
+      }
+    ]
+  }
+}

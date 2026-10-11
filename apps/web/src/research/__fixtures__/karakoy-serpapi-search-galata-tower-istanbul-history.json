@@ -1,0 +1,50 @@
+{
+  "source": "serpapi-search",
+  "query": "Galata Tower İstanbul history",
+  "payload": {
+    "organic_results": [
+      {
+        "position": 1,
+        "title": "Galata Tower",
+        "link": "https://en.wikipedia.org/wiki/Galata_Tower",
+        "snippet": "medieval Genoese tower. Built as a watchtower. Completed 1348; 678 years ago (1348) Renovated 1453 1510 1794 1832 1875 1965-1967 1999-2000 2020 2023",
+        "source": "Wikipedia"
+      },
+      {
+        "position": 2,
+        "title": "Historical Story of Galata Tower",
+        "link": "https://perapalace.com/en/story-of-galata-tower/",
+        "snippet": "Galata Tower was first built by the Byzantine Emperor Justinianos in 507-508 AD. In 1348-1349, the Genoese rebuilt the tower.",
+        "source": "Pera Palace Hotel"
+      },
+      {
+        "position": 3,
+        "title": "Galata Tower",
+        "link": "https://muze.gen.tr/muze-detay/galatakulesi",
+        "snippet": "Galata Tower was first built by the Byzantine Emperor Justinianos in 507-508 AD. The tower was raised between 1445 and 46 years. The building ...",
+        "source": "Muze Istanbul"
+      },
+      {
+        "position": 4,
+        "title": "Galata Tower and the Walls of Galata",
+        "link": "https://www.thebyzantinelegacy.com/galata-tower",
+        "snippet": "Galata Tower, one of the major landmarks of modern Istanbul, was built in the mid-14th century when the Genoese had a colony at Galata.",
+        "source": "The Byzantine Legacy"
+      },
+      {
+        "position": 5,
+        "title": "Galata Tower Story – Under My Wings",
+        "link": "https://www.istairport.com/en/blog/istanbul-under-my-wings-fascinating-story-galata-tower?locale=en",
+        "snippet": "Galata Tower, one of the first buildings. It was included in the UNESCO World Heritage List in 2013 and is also among the oldest towers in the world.",
+        "source": "İstanbul Airport"
+      },
+      {
+        "position": 6,
+        "title": "Galata Tower",
+        "link": "https://istanbultourstudio.com/things-to-do/galata-tower",
+        "snippet": "The origin of the Galata Tower goes back to the fifth century CE when Byzantines built a wooden tower named Magalos Pyrgos (Great Tower) in order to control the ...",
+        "source": "Istanbul Tour Studio"
+      }
+    ]
+  }
+}

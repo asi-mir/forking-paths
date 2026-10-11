@@ -1,0 +1,100 @@
+{
+  "note": "Synthetic test data for the validator: made-up places and facts, example.org links. Not a playable quest.",
+  "opts": { "center": { "lat": 41.025, "lng": 28.975 }, "minutes": 25, "lang": "en" },
+  "facts": [
+    { "id": "F1", "placeId": "P1", "text": "The Test Pier Fountain was built in 1732 and carries a carved verse inscription.", "sourceUrl": "https://example.org/wiki/Test_Pier_Fountain", "sourceTitle": "Test Pier Fountain", "query": "geosearch 41.025,28.975", "source": "wikipedia" },
+    { "id": "F2", "placeId": "P1", "text": "Its water came down from a hillside spring through clay pipes.", "sourceUrl": "https://example.org/search/test-pier-fountain", "sourceTitle": "Test Pier Fountain - City Guide", "query": "Test Pier Fountain history", "source": "serpapi-search" },
+    { "id": "F3", "placeId": "P2", "text": "The Test Library was founded in 1740 by the patron named in the fountain's verse.", "sourceUrl": "https://example.org/wiki/Test_Library", "sourceTitle": "Test Library", "query": "geosearch 41.025,28.975", "source": "wikipedia" },
+    { "id": "F4", "placeId": "P3", "text": "The Test Bathhouse was fed by the same hillside spring as the fountain.", "sourceUrl": "https://example.org/maps/test-bathhouse", "sourceTitle": "Test Bathhouse", "query": "historical landmark", "source": "serpapi-maps" },
+    { "id": "F5", "placeId": "P4", "text": "The Test Guild Hall carries the patron's crest and was a guild hall for tile makers.", "sourceUrl": "https://example.org/wiki/Test_Guild_Hall", "sourceTitle": "Test Guild Hall", "query": "geosearch 41.025,28.975", "source": "wikipedia" },
+    { "id": "F6", "placeId": "P5", "text": "The Test Arcade has 12 marble arches carved by the same workshop as the bathhouse lions.", "sourceUrl": "https://example.org/search/test-arcade", "sourceTitle": "Test Arcade - Heritage Notes", "query": "Test Arcade history", "source": "serpapi-search" },
+    { "id": "F7", "placeId": "P6", "text": "The Test Observatory was the patron's last gift, opened in 1761.", "sourceUrl": "https://example.org/wiki/Test_Observatory", "sourceTitle": "Test Observatory", "query": "geosearch 41.025,28.975", "source": "wikipedia" },
+    { "id": "F8", "placeId": "P6", "text": "The observatory dome is tiled by the guild of tile makers and edged with marble from the arcade's quarry.", "sourceUrl": "https://example.org/search/test-observatory", "sourceTitle": "Test Observatory - City Guide", "query": "Test Observatory history", "source": "serpapi-search" }
+  ],
+  "candidates": [
+    { "id": "P1", "name": "Test Pier Fountain", "location": { "lat": 41.026, "lng": 28.975 }, "sourceUrl": "https://example.org/wiki/Test_Pier_Fountain" },
+    { "id": "P2", "name": "Test Library", "location": { "lat": 41.027, "lng": 28.974 }, "sourceUrl": "https://example.org/wiki/Test_Library" },
+    { "id": "P3", "name": "Test Bathhouse", "location": { "lat": 41.027, "lng": 28.9762 }, "sourceUrl": "https://example.org/maps/test-bathhouse" },
+    { "id": "P4", "name": "Test Guild Hall", "location": { "lat": 41.028, "lng": 28.974 }, "sourceUrl": "https://example.org/wiki/Test_Guild_Hall" },
+    { "id": "P5", "name": "Test Arcade", "location": { "lat": 41.028, "lng": 28.9762 }, "sourceUrl": "https://example.org/search/test-arcade" },
+    { "id": "P6", "name": "Test Observatory", "location": { "lat": 41.029, "lng": 28.9751 }, "sourceUrl": "https://example.org/wiki/Test_Observatory" }
+  ],
+  "writer": {
+    "title": "The Patron's Last Gift",
+    "mystery": {
+      "question": "What was the patron's last gift to these streets?",
+      "answer": "The observatory on the hill, opened in 1761.",
+      "factIds": ["F7"]
+    },
+    "briefing": "One patron paid for half of what you will see today. Find his last gift. Stay on the pavement, daylight only.",
+    "places": [
+      {
+        "id": "P1",
+        "clue": "Walk toward the water; a stone fountain with a carved panel stands by the pier.",
+        "look": "Two things here keep a story: one you can read, one that flows. Photograph the one you trust.",
+        "hint": "Head for the pier; the fountain stands where the benches face the water.",
+        "reveal": { "text": "This fountain was built in 1732, and its verse names the patron who paid for it.", "factIds": ["F1"] },
+        "links": [
+          { "to": "P2", "cue": "writing", "reason": "The verse names a patron, and his library is just up the lane.", "factIds": ["F1", "F3"] },
+          { "to": "P3", "cue": "water", "reason": "This water came from a hillside spring that also fed the bathhouse.", "factIds": ["F2", "F4"] }
+        ]
+      },
+      {
+        "id": "P2",
+        "clue": "Head up the lane toward the arched doorway with a carved book above it.",
+        "look": "Two details here point onward: a sign of the man himself, and what the walls are made of. Photograph one.",
+        "hint": "Follow the lane uphill from the pier until you see a carved book over an arch.",
+        "reveal": { "text": "The same patron founded this library in 1740.", "factIds": ["F3"] },
+        "links": [
+          { "to": "P4", "cue": "symbol-or-emblem", "reason": "His crest appears again on the old guild hall nearby.", "factIds": ["F5"] },
+          { "to": "P5", "cue": "material", "reason": "The marble leads to an arcade of 12 arches.", "factIds": ["F6"] }
+        ]
+      },
+      {
+        "id": "P3",
+        "clue": "Follow the low domes uphill; the bathhouse roof has rows of small glass skylights.",
+        "look": "Two details here point onward: a carved creature and a doorway. Photograph one.",
+        "hint": "Look for low domes dotted with glass skylights, uphill from the pier.",
+        "reveal": { "text": "This bathhouse was fed by the same hillside spring as the fountain.", "factIds": ["F4"] },
+        "links": [
+          { "to": "P4", "cue": "animal-or-figure", "reason": "The carvers worked for the guild hall's patron too.", "factIds": ["F5"] },
+          { "to": "P5", "cue": "door-window-arch", "reason": "The workshop that carved these lions also carved the arcade's arches.", "factIds": ["F6"] }
+        ]
+      },
+      {
+        "id": "P4",
+        "clue": "Look for a crest above a wide wooden door at the top of the steps.",
+        "look": "Look closely. Photograph the one detail you think matters.",
+        "hint": "Climb the public steps beside the library; the crest is above the wide door.",
+        "reveal": { "text": "This hall carries the patron's crest and housed the guild of tile makers.", "factIds": ["F5"] },
+        "links": [
+          { "to": "P6", "reason": "The tile makers' last great job was the dome on the hill.", "factIds": ["F8"] }
+        ]
+      },
+      {
+        "id": "P5",
+        "clue": "Walk toward the row of white arches; count them as you pass.",
+        "look": "Look closely. Photograph the one detail you think matters.",
+        "hint": "The white arches line the lane uphill from the bathhouse.",
+        "reveal": { "text": "These 12 marble arches came from the same workshop as the bathhouse lions.", "factIds": ["F6"] },
+        "links": [
+          { "to": "P6", "reason": "The marble of these arches edges a dome on the hill.", "factIds": ["F8"] }
+        ]
+      },
+      {
+        "id": "P6",
+        "clue": "Walk toward the small tiled dome at the top of the hill.",
+        "look": "Look closely. Photograph the one detail you think matters.",
+        "hint": "The tiled dome is the highest roof around; walk toward it.",
+        "reveal": { "text": "This observatory was the patron's last gift, opened in 1761.", "factIds": ["F7"] },
+        "links": []
+      }
+    ],
+    "startPlaceId": "P1",
+    "answerPlaceId": "P6",
+    "finale": {
+      "text": "Every route ends here: the patron's last gift, opened in 1761, tiled by his guild and edged with marble from the arcade's quarry.",
+      "factIds": ["F7", "F8"]
+    }
+  }
+}

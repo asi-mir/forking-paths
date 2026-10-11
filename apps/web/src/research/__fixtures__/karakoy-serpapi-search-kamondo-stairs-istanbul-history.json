@@ -1,0 +1,56 @@
+{
+  "source": "serpapi-search",
+  "query": "Kamondo Stairs İstanbul history",
+  "payload": {
+    "knowledge_graph": {
+      "title": "Kamondo Stairs",
+      "type": "Historical landmark in Istanbul, Türkiye",
+      "description": "The Camondo Stairs are 19th century stairs on Bankalar Caddesi in the Galata quarter of the Pera district in Istanbul, Turkey.",
+      "source": {
+        "name": "Wikipedia",
+        "link": "https://en.wikipedia.org/wiki/Camondo_Stairs"
+      },
+      "knowledge_graph_search_link": "https://www.google.com/search?kgmid=/g/11b6y4k3w6&hl=en-US&q=Kamondo+Stairs",
+      "attributes": {
+        "raw_hours": "Open 24 hours"
+      }
+    },
+    "organic_results": [
+      {
+        "position": 1,
+        "title": "Kamondo stairs istanbul Stock Photos and Images",
+        "link": "https://www.alamy.com/stock-photo/kamondo-stairs-istanbul.html",
+        "snippet": "Built in the 1870s, Kamondo Stairs, a famous pedestrian stairway leading to Galata Tower, built around 1870, Famous Kamondo Stairs in Galata District in ...",
+        "source": "Alamy"
+      },
+      {
+        "position": 2,
+        "title": "Famous Stairs in Istanbul Neighborhoods",
+        "link": "https://www.facebook.com/fb-answers/famous-stairs-in-istanbul-neighborhoods/?locale=mk_MK",
+        "snippet": "The Kamondo Stairs in Galata are Istanbul's most famous historic staircase, built in the 1870s with a zigzag Art Nouveau design. For colorful photo spots, ...",
+        "source": "Facebook"
+      },
+      {
+        "position": 4,
+        "title": "Kamondo Stairs - Landmark, attraction",
+        "link": "https://yandex.com/maps/org/kamondo_stairs/1064194350/",
+        "snippet": "Landmark, attraction Kamondo Stairs Istanbul, Beyoglu, Arap Cami Neighborhood, Bereketzade Madrasa Street, Şişhane metro station. Read 289 reviews, view 154 ...",
+        "source": "Yandex"
+      },
+      {
+        "position": 5,
+        "title": "CAMONDO STAIRS",
+        "link": "http://culturecityistanbul.blogspot.com/2016/12/camondo-stairs.html",
+        "snippet": "The name of family is living with the staircase, which was built between Bankalar Street and Banker Street in Karaköy between 1870 and 1880.",
+        "source": "Blogger.com"
+      },
+      {
+        "position": 6,
+        "title": "Camondo Stairs, Galata District / Istanbul",
+        "link": "https://www.pinterest.com/pin/774124914883784/",
+        "snippet": "Built by the wealthy Kamondo family in 1850s, it's located on a sloped hill to provide easier pedestrian access to Pera. Its winding and ...",
+        "source": "Pinterest"
+      }
+    ]
+  }
+}

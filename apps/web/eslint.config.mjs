@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    "test-results/**",
+    "playwright-report/**",
+    // Mastra Studio's bundle (`pnpm mastra:dev`); linting it runs out of memory.
+    ".mastra/**",
   ]),
 ]);
 

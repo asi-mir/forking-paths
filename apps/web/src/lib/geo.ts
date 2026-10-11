@@ -26,3 +26,79 @@ export function isNear(
   const slack = Math.min(player.accuracyM ?? 0, 50);
   return distanceM(player, anchor) <= radiusM + slack;
 }
+
+/** Initial great-circle bearing from a to b, in degrees clockwise from north (0 ≤ b < 360). */
+export function bearingDeg(a: LatLng, b: LatLng): number {
+  const lat1 = toRad(a.lat);
+  const lat2 = toRad(b.lat);
+  const dLng = toRad(b.lng - a.lng);
+  const y = Math.sin(dLng) * Math.cos(lat2);
+  const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLng);
+  const deg = (Math.atan2(y, x) * 180) / Math.PI;
+  return (deg + 360) % 360;
+}
+
+export const COMPASS_8 = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"] as const;
+export type Compass8 = (typeof COMPASS_8)[number];
+
+/** Words for the on-screen hint ("120 m north-east"). Spoken lines use landmarks instead. */
+export const COMPASS_NAMES: Record<Compass8, string> = {
+  N: "north",
+  NE: "north-east",
+  E: "east",
+  SE: "south-east",
+  S: "south",
+  SW: "south-west",
+  W: "west",
+  NW: "north-west",
+};
+
+/** The 8-point compass sector for a bearing (each sector is 45° wide, centred on its point). */
+export function compass8(bearing: number): Compass8 {
+  const normalised = ((bearing % 360) + 360) % 360;
+  return COMPASS_8[Math.round(normalised / 45) % 8];
+}
+
+/** Compass direction from a to b, for the "too far" hint on screen. */
+export function compassDirection(a: LatLng, b: LatLng): Compass8 {
+  return compass8(bearingDeg(a, b));
+}
+
+/** Walking pace used to fit a route into its minutes. */
+export const WALK_M_PER_MIN = 70;
+/** Time spent at each stop: listen, look, photograph. */
+export const MIN_PER_STOP = 2;
+
+/** Minutes a walk of `distance` metres with `stops` stops takes (70 m/min plus ~2 min per stop). */
+export function walkMinutes(distance: number, stops: number): number {
+  return distance / WALK_M_PER_MIN + MIN_PER_STOP * stops;
+}
+
+// ---------------------------------------------------------------------------
+// Storage helpers
+
+/** A GeoJSON point. GeoJSON order is [lng, lat], the reverse of LatLng. */
+export type GeoPoint = { type: "Point"; coordinates: [lng: number, lat: number] };
+
+/** LatLng → GeoJSON point ([lng, lat]). */
+export function toPoint(p: LatLng): GeoPoint {
+  return { type: "Point", coordinates: [p.lng, p.lat] };
+}
+
+/** GeoJSON point → LatLng. */
+export function fromPoint(p: GeoPoint): LatLng {
+  return { lat: p.coordinates[1], lng: p.coordinates[0] };
+}
+
+/** Decimal places kept by roundCenter: 0.001° is ~111 m of latitude, ~85 m of longitude at 40°. */
+export const CENTER_DECIMALS = 3;
+
+/**
+ * Rounds a point to ~100 m. Quest centres and cache keys use it, so a stored quest does not
+ * pin down where a player stood, and nearby requests share a cache entry.
+ */
+export function roundCenter(p: LatLng): LatLng {
+  const f = 10 ** CENTER_DECIMALS;
+  // `+ 0` turns -0 into 0, so keys never read "-0".
+  return { lat: Math.round(p.lat * f) / f + 0, lng: Math.round(p.lng * f) / f + 0 };
+}

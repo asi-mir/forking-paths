@@ -1,0 +1,104 @@
+# Render Blueprint: one web service for the Next.js app in apps/web.
+# Spec: https://render.com/docs/blueprint-spec
+#
+# Deploy: the "Deploy to Render" button in README.md, or New > Blueprint in the Render
+# dashboard. Render asks for every variable marked `sync: false` when the Blueprint is
+# first created; the plain values below are safe defaults you can change later.
+# See README.md > "Deploy your own" for what each variable is for.
+
+services:
+  - type: web
+    name: forking-paths
+    runtime: node
+    # Always on: a free instance sleeps after 15 minutes idle and takes about a minute to wake.
+    # Switch to 1c-2g if the instance runs out of memory.
+    plan: 0.5c-512mb
+    region: frankfurt
+    # Files outside rootDir are not available to the build, so apps/web is self-contained:
+    # its own lockfile, .npmrc and .node-version (Node 22).
+    rootDir: apps/web
+    # corepack runs the pnpm version pinned in package.json ("packageManager"); the build
+    # image's /usr/bin is read-only, so `corepack enable` is not an option there.
+    buildCommand: corepack pnpm install --frozen-lockfile && corepack pnpm build
+    # pnpm follows apps/web/.npmrc (use-node-version): when its home holds no Node 22.22.3
+    # yet, it fetches that Node once before `next start` (a few seconds on a fresh instance).
+    startCommand: pnpm start
+    healthCheckPath: /api/health
+    # With rootDir set, Render deploys only for commits that change apps/web.
+    autoDeployTrigger: commit
+    envVars:
+      # --- Build toolchain ------------------------------------------------------
+      - key: NODE_VERSION
+        value: "22.22.3"
+      - key: COREPACK_ENABLE_DOWNLOAD_PROMPT
+        value: "0"
+
+      # --- Gemma 4 (open-weight model) -------------------------------------------
+      - key: GEMMA_PROVIDER
+        value: google
+      - key: GEMMA_WRITER_MODEL
+        value: gemma-4-31b-it
+      - key: GEMMA_READER_MODEL
+        value: gemma-4-26b-a4b-it
+      - key: GOOGLE_GENERATIVE_AI_API_KEY
+        sync: false
+
+      # --- Places and facts ------------------------------------------------------
+      - key: SERPAPI_API_KEY
+        sync: false
+      # Wikipedia asks for a contact in the user agent, e.g.
+      # ForkingPaths/0.1 (https://github.com/<you>/forking-paths; you@example.com)
+      - key: WIKIPEDIA_USER_AGENT
+        sync: false
+
+      # --- Voice -------------------------------------------------------------------
+      - key: ELEVENLABS_API_KEY
+        sync: false
+      - key: ELEVENLABS_VOICE_ID
+        sync: false
+      - key: ELEVENLABS_MODEL_ID
+        value: eleven_v4
+      # 1 = the app may voice new lines, within BUDGET_TTS_CHARS_PER_DAY.
+      - key: ELEVENLABS_LIVE
+        value: "1"
+
+      # --- Database ----------------------------------------------------------------
+      # A MongoDB Atlas connection string. Add Render's outbound IPs (service > Connect >
+      # Outbound) to the Atlas IP access list, or /api/health answers 503.
+      - key: MONGODB_URI
+        sync: false
+      - key: MONGODB_DB
+        value: forking-paths
+
+      # --- Budget guard: daily caps (UTC days); tune them to your credits ---------------
+      - key: BUDGET_QUESTS_PER_DAY
+        value: "3"
+      - key: BUDGET_SERPAPI_PER_DAY
+        value: "20"
+      # A new quest is voiced all at once (about 1,900 characters), so this cap is at least one
+      # quest's worth: below it, every new quest shows as text only.
+      - key: BUDGET_TTS_CHARS_PER_DAY
+        value: "2500"
+      - key: BUDGET_READER_PER_DAY
+        value: "300"
+      - key: BUDGET_RUNS_PER_DAY
+        value: "1000"
+
+      # --- Sentry (optional: leave the DSNs empty to turn it off) -----------------------
+      - key: SENTRY_DSN
+        sync: false
+      - key: NEXT_PUBLIC_SENTRY_DSN
+        sync: false
+      - key: NEXT_PUBLIC_SENTRY_ENVIRONMENT
+        value: production
+      # Source maps upload from the Render build only when all three are set.
+      - key: SENTRY_AUTH_TOKEN
+        sync: false
+      - key: SENTRY_ORG
+        sync: false
+      - key: SENTRY_PROJECT
+        sync: false
+
+      # --- Phone UI ----------------------------------------------------------------
+      - key: NEXT_PUBLIC_MOCK_API
+        value: "0"
